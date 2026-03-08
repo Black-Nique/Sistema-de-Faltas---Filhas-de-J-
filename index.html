@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Faltas - Ordem Estrelar ✧ Bethel 04</title>
+    <title>Sistema de Faltas - Ordem Estrelar</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@300;400;600;700&display=swap');
 
@@ -252,7 +252,7 @@
         }
 
         .botao {
-                        background: linear-gradient(135deg, #6b4e9e, #8a6de9, #b388ff);
+            background: linear-gradient(135deg, #6b4e9e, #8a6de9, #b388ff);
             border: none;
             color: white;
             padding: 16px 32px;
@@ -1484,13 +1484,17 @@
             const grid = document.getElementById('gridFilhas');
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
-            grid.innerHTML = filhas.map((f, i) => `
-                <div class="item-imagem" onclick="pesquisarFilhaEspecifica('${f.nome.replace(/'/g, "\\'")}')">
-                    <div class="icone">${icones[i % icones.length]}</div>
-                    <div class="nome">${f.nome}</div>
-                    <div class="cargo">${f.cargo}</div>
-                </div>
-            `).join('');
+            grid.innerHTML = filhas.map((f, i) => {
+                // Escapar aspas simples no nome para não quebrar o onclick
+                const nomeEscapado = f.nome.replace(/'/g, "\\'");
+                return `
+                    <div class="item-imagem" onclick="pesquisarFilhaEspecifica('${nomeEscapado}')">
+                        <div class="icone">${icones[i % icones.length]}</div>
+                        <div class="nome">${f.nome}</div>
+                        <div class="cargo">${f.cargo}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function atualizarCardsGerais() {
@@ -1580,28 +1584,33 @@
 
             const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
             
-            // Busca exata por nome completo (case insensitive)
+            // Busca exata ignorando maiúsculas/minúsculas e espaços extras
             const filhaEncontrada = filhas.find(f => 
-                f.nome.toLowerCase().trim() === nomeBusca.toLowerCase().trim()
+                f.nome.trim().toLowerCase() === nomeBusca.trim().toLowerCase()
             );
             
             if (!filhaEncontrada) {
-                alert('Filha não encontrada. Verifique o nome digitado.');
+                alert(`Filha "${nomeBusca}" não encontrada. Verifique o nome digitado.`);
                 return;
             }
 
+            // Esconder cards e mostrar resultado
             document.getElementById('cardsGerais').style.display = 'none';
             document.getElementById('resultadoPesquisa').style.display = 'block';
             
+            // Buscar faltas em TODAS as gestões
             const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             
             const faltasPorGestao = [];
             
+            // Percorrer todas as gestões
             Object.entries(rituaisPorGestao).forEach(([gestaoId, gestaoData]) => {
                 const gestao = gestoes.find(g => g.id === gestaoId);
                 if (gestao && gestaoData.rituais) {
+                    // Percorrer todas as datas da gestão
                     Object.entries(gestaoData.rituais).forEach(([data, registro]) => {
+                        // Procurar a filha no registro de filhas
                         const falta = registro.filhas?.find(f => f.nome === filhaEncontrada.nome);
                         if (falta && !falta.presente) {
                             faltasPorGestao.push({
@@ -1615,6 +1624,7 @@
                 }
             });
 
+            // Ordenar por data (mais recente primeiro)
             faltasPorGestao.sort((a, b) => b.data.localeCompare(a.data));
 
             const totalFaltas = faltasPorGestao.length;
@@ -1623,6 +1633,7 @@
             const aceitas = faltasPorGestao.filter(f => f.aceita).length;
             const rejeitadas = faltasPorGestao.filter(f => !f.aceita).length;
 
+            // Criar HTML do resultado
             const resultadoHTML = `
                 <div class="info-detalhada">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
