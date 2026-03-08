@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Sistema de Faltas - Ordem Estrelar</title>
+    <title>✦ Ordem Estrelar - Sistema de Faltas ✦</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,303 +14,446 @@
         }
 
         :root {
-            --primary: #b388ff;
-            --primary-dark: #8a6de9;
-            --primary-light: #e5ceff;
-            --bg-dark: #1a0b2e;
-            --bg-medium: #2d1b45;
-            --bg-light: #3a2355;
+            --primary: #cba6f7;
+            --primary-dark: #b388ff;
+            --primary-deep: #9d7ad9;
+            --primary-light: #e5c9ff;
+            --primary-soft: #f3e5ff;
+            --bg-deep: #0c0717;
+            --bg-dark: #1a1035;
+            --bg-medium: #2a1b4a;
+            --bg-light: #3d2a63;
             --text: #ffffff;
-            --text-secondary: #cbb3ff;
-            --success: #4caf50;
-            --success-light: #a5ffaf;
-            --danger: #ff4757;
-            --danger-light: #ffb3b3;
-            --warning: #ffb347;
-            --warning-light: #ffe17a;
+            --text-secondary: #d4c2ff;
+            --text-muted: #b09bdf;
+            --gold: #ffd966;
+            --gold-light: #fff2cc;
+            --success: #a5d6a5;
+            --success-dark: #6b8e6b;
+            --danger: #ffb3b3;
+            --danger-dark: #cc8f8f;
+            --warning: #ffe5b3;
+            --border-glow: rgba(203, 166, 247, 0.3);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         body {
-            background: var(--bg-dark);
+            background: var(--bg-deep);
             min-height: 100vh;
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Container Principal - Responsivo */
-        .container {
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(203, 166, 247, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: clamp(10px, 3vw, 30px);
+            padding: 20px 16px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Header Responsivo */
+        /* Tipografia Elegante */
         h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            font-weight: 700;
             text-align: center;
-            font-size: clamp(1.8rem, 6vw, 3.2rem);
-            background: linear-gradient(135deg, #fff, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 50%, var(--gold) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: clamp(10px, 2vw, 20px);
-            line-height: 1.2;
-            word-break: break-word;
+            letter-spacing: 6px;
+            margin-bottom: 5px;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        h1::before, h1::after {
+            content: '✧';
+            font-size: 1.2em;
+            margin: 0 15px;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.8;
         }
 
         .subtitulo {
             text-align: center;
             color: var(--text-secondary);
-            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
-            margin-bottom: clamp(15px, 3vw, 30px);
-            padding: clamp(10px, 2vw, 15px);
-            background: rgba(180, 130, 255, 0.1);
-            border-radius: clamp(20px, 5vw, 50px);
-            border: 1px solid var(--primary);
+            font-size: clamp(0.8rem, 3vw, 1.1rem);
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            padding: 15px 20px;
+            background: rgba(26, 16, 53, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            border: 1px solid var(--border-glow);
+            box-shadow: var(--shadow);
+            line-height: 1.6;
             word-break: break-word;
         }
 
-        /* Gestão Info - Grid Responsivo */
+        /* Cards de Gestão Elegantes */
         .gestao-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
-            gap: clamp(10px, 2vw, 20px);
-            background: rgba(180, 130, 255, 0.1);
-            border-radius: clamp(15px, 4vw, 30px);
-            padding: clamp(15px, 3vw, 25px);
-            border: 2px solid var(--primary);
-            margin: clamp(15px, 3vw, 30px) 0;
+            grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+            gap: 15px;
+            margin: 25px 0;
         }
 
         .gestao-item {
-            background: rgba(26, 11, 46, 0.7);
-            border-radius: clamp(12px, 3vw, 20px);
-            padding: clamp(10px, 2vw, 18px);
+            background: linear-gradient(145deg, rgba(42, 27, 74, 0.8), rgba(26, 16, 53, 0.9));
+            border-radius: 30px;
+            padding: 18px 12px;
             border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .gestao-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(203, 166, 247, 0.3);
         }
 
         .gestao-item .label {
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            color: var(--text-secondary);
-            margin-bottom: clamp(4px, 1vw, 8px);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: 300;
         }
 
         .gestao-item .valor {
             font-size: clamp(1.1rem, 4vw, 1.8rem);
-            font-weight: bold;
+            font-weight: 600;
+            font-family: 'Cormorant Garamond', serif;
             background: linear-gradient(135deg, #fff, var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            word-break: break-word;
         }
 
-        /* Seletor de Gestão Responsivo */
+        /* Seletor de Gestão */
         .seletor-gestao {
-            background: rgba(45, 27, 69, 0.6);
-            border: 2px solid var(--primary);
-            border-radius: clamp(15px, 4vw, 30px);
-            padding: clamp(15px, 3vw, 25px);
-            margin: clamp(15px, 3vw, 20px) 0;
+            background: linear-gradient(145deg, rgba(42, 27, 74, 0.6), rgba(26, 16, 53, 0.8));
+            border: 1px solid var(--primary);
+            border-radius: 40px;
+            padding: 25px 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
         }
 
         .seletor-gestao h3 {
             color: var(--primary-light);
-            font-size: clamp(1rem, 4vw, 1.5rem);
-            margin-bottom: clamp(12px, 2.5vw, 20px);
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            font-weight: 400;
+            font-family: 'Cormorant Garamond', serif;
             text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
         }
 
         .grid-gestoes {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
-            gap: clamp(8px, 2vw, 15px);
+            grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+            gap: 12px;
         }
 
         .gestao-card {
-            background: rgba(26, 11, 46, 0.8);
-            border: 2px solid var(--primary);
-            border-radius: clamp(12px, 3vw, 20px);
-            padding: clamp(10px, 2vw, 18px);
+            background: rgba(26, 16, 53, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 25px;
+            padding: 15px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gestao-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gestao-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(203, 166, 247, 0.3);
+        }
+
+        .gestao-card:hover::before {
+            opacity: 1;
         }
 
         .gestao-card.ativa {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            border-color: white;
+            background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark));
+            border-color: var(--gold);
+            box-shadow: 0 0 30px var(--primary);
         }
 
         .gestao-ano {
-            font-size: clamp(1rem, 3.5vw, 1.5rem);
-            font-weight: bold;
+            font-size: 1.3rem;
+            font-weight: 600;
             color: var(--primary-light);
+            font-family: 'Cormorant Garamond', serif;
         }
 
         .gestao-numero {
-            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            margin: clamp(3px, 1vw, 5px) 0;
+            margin: 5px 0;
         }
 
         .gestao-rainha {
-            font-size: clamp(0.6rem, 2vw, 0.9rem);
-            color: var(--primary);
-            word-break: break-word;
+            font-size: 0.8rem;
+            color: var(--gold);
+            font-style: italic;
         }
 
-        /* Botões Responsivos */
+        /* Botões Elegantes */
         .botoes {
             display: flex;
-            gap: clamp(8px, 2vw, 15px);
+            gap: 12px;
             justify-content: center;
-            margin: clamp(15px, 4vw, 35px) 0;
+            margin: 30px 0;
             flex-wrap: wrap;
         }
 
         .botao {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
             border: none;
             color: white;
-            padding: clamp(10px, 2.5vw, 16px) clamp(16px, 4vw, 32px);
-            border-radius: 60px;
-            font-size: clamp(0.8rem, 3vw, 1.1rem);
-            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
             cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(203, 166, 247, 0.2);
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .botao::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(30deg);
+            transition: left 0.5s;
+        }
+
+        .botao:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--primary), 0 0 30px rgba(255, 217, 102, 0.3);
+            border-color: var(--gold);
+        }
+
+        .botao:hover::after {
+            left: 100%;
         }
 
         .botao.perigo {
-            background: linear-gradient(135deg, #b34141, var(--danger));
+            background: linear-gradient(135deg, #b34141, #8f3a3a);
+        }
+
+        .botao.perigo:hover {
+            box-shadow: 0 10px 30px rgba(255, 179, 179, 0.5);
         }
 
         .botao.success {
-            background: linear-gradient(135deg, #2e7d32, var(--success));
+            background: linear-gradient(135deg, #2e7d32, #1e5a21);
         }
 
-        /* Pesquisa Box Responsiva */
-        .pesquisa-box {
-            display: flex;
-            gap: clamp(8px, 2vw, 15px);
-            justify-content: center;
-            margin: clamp(15px, 4vw, 30px) 0;
-            flex-wrap: wrap;
-        }
-
-        .pesquisa-box input {
-            background: rgba(26, 11, 46, 0.9);
-            border: 2px solid var(--primary);
-            border-radius: 60px;
-            padding: clamp(10px, 2.5vw, 16px) clamp(15px, 4vw, 25px);
-            color: white;
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
-            outline: none;
-            width: min(100%, 400px);
-            min-width: 200px;
-        }
-
-        /* Grid de Filhas Responsivo */
+        /* Grid de Filhas Elegante */
         .grid-imagens {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
-            gap: clamp(10px, 2vw, 20px);
-            margin: clamp(15px, 4vw, 35px) 0;
+            grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
+            gap: 16px;
+            margin: 35px 0;
         }
 
         .item-imagem {
-            background: linear-gradient(145deg, var(--bg-medium), var(--bg-dark));
-            border-radius: clamp(15px, 4vw, 25px);
-            padding: clamp(12px, 3vw, 20px);
+            background: linear-gradient(145deg, rgba(42, 27, 74, 0.7), rgba(26, 16, 53, 0.8));
+            border-radius: 30px;
+            padding: 18px 10px;
             text-align: center;
-            border: 2px solid var(--primary);
+            border: 1px solid var(--primary);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-imagem::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .item-imagem:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 15px 35px rgba(203, 166, 247, 0.4);
+        }
+
+        .item-imagem:hover::before {
+            transform: translateX(100%);
         }
 
         .item-imagem .icone {
-            font-size: clamp(2rem, 8vw, 3.5rem);
-            margin-bottom: clamp(5px, 1.5vw, 12px);
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 8px var(--primary));
+            transition: transform 0.3s;
+        }
+
+        .item-imagem:hover .icone {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .item-imagem .nome {
-            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1rem;
             color: var(--primary-light);
-            word-break: break-word;
+            margin-bottom: 4px;
+            font-family: 'Cormorant Garamond', serif;
         }
 
         .item-imagem .cargo {
-            font-size: clamp(0.6rem, 2vw, 0.8rem);
-            color: var(--text-secondary);
-            background: rgba(180, 130, 255, 0.2);
-            padding: clamp(2px, 1vw, 4px) clamp(4px, 1.5vw, 8px);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: rgba(203, 166, 247, 0.15);
+            padding: 4px 8px;
             border-radius: 30px;
             display: inline-block;
-            margin-top: clamp(3px, 1vw, 5px);
-            word-break: break-word;
+            border: 1px solid var(--border-glow);
         }
 
-        /* Cards de Estatísticas Responsivos */
+        /* Cards de Estatísticas */
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
-            gap: clamp(10px, 2vw, 20px);
-            margin: clamp(15px, 4vw, 35px) 0;
+            grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+            gap: 15px;
+            margin: 30px 0;
         }
 
         .card {
-            background: rgba(180, 130, 255, 0.1);
-            border-radius: clamp(15px, 4vw, 25px);
-            padding: clamp(12px, 3vw, 25px);
+            background: linear-gradient(145deg, rgba(203, 166, 247, 0.1), rgba(157, 122, 217, 0.05));
+            border-radius: 25px;
+            padding: 20px 10px;
             text-align: center;
-            border: 2px solid var(--primary);
+            border: 1px solid var(--primary);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(203, 166, 247, 0.2);
         }
 
         .card .numero {
-            font-size: clamp(1.8rem, 6vw, 3rem);
-            font-weight: bold;
-            background: linear-gradient(135deg, #fff, var(--primary-light));
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 700;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #fff, var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
         }
 
         .card .rotulo {
             color: var(--text-secondary);
-            font-size: clamp(0.7rem, 2vw, 1rem);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Lista de Datas Responsiva */
+        /* Lista de Datas */
         .datas {
             display: flex;
-            gap: clamp(5px, 1.5vw, 12px);
+            gap: 8px;
             justify-content: center;
-            margin: clamp(15px, 4vw, 30px) 0;
+            margin: 25px 0;
             flex-wrap: wrap;
         }
 
         .data-botao {
-            background: rgba(45, 27, 69, 0.8);
-            border: 2px solid var(--primary);
-            color: var(--primary-light);
-            padding: clamp(6px, 1.5vw, 12px) clamp(10px, 2.5vw, 24px);
+            background: rgba(42, 27, 74, 0.7);
+            border: 1px solid var(--primary);
+            color: var(--text-secondary);
+            padding: 8px 16px;
             border-radius: 40px;
+            font-size: 0.85rem;
             cursor: pointer;
-            font-size: clamp(0.7rem, 2vw, 1rem);
-            white-space: nowrap;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .data-botao:hover {
+            background: rgba(203, 166, 247, 0.2);
+            border-color: var(--gold);
+            transform: scale(1.05);
         }
 
         .data-botao.ativo {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: var(--bg-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
+            color: white;
+            border-color: var(--gold);
+            box-shadow: 0 0 20px var(--primary);
         }
 
-        /* Tabelas Responsivas */
+        /* Tabelas Elegantes */
         .tabelas {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 25px;
+            margin-top: 25px;
         }
 
         @media (min-width: 900px) {
@@ -318,12 +463,12 @@
         }
 
         .table-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            background: rgba(26, 11, 46, 0.6);
-            border-radius: 20px;
-            border: 2px solid var(--primary);
+            background: rgba(26, 16, 53, 0.6);
+            border-radius: 30px;
+            border: 1px solid var(--primary);
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            box-shadow: var(--shadow);
         }
 
         table {
@@ -333,23 +478,38 @@
         }
 
         th {
-            background: rgba(138, 109, 233, 0.4);
-            padding: clamp(8px, 2vw, 15px);
+            background: linear-gradient(135deg, rgba(157, 122, 217, 0.3), rgba(203, 166, 247, 0.2));
+            padding: 15px 12px;
             text-align: left;
-            border-bottom: 2px solid var(--primary);
             color: var(--primary-light);
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            white-space: nowrap;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--primary);
         }
 
         td {
-            padding: clamp(6px, 1.5vw, 12px);
-            border-bottom: 1px solid rgba(180, 130, 255, 0.2);
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
-            word-break: break-word;
+            padding: 12px;
+            border-bottom: 1px solid rgba(203, 166, 247, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        /* Modal Responsivo */
+        tr:hover td {
+            background: rgba(203, 166, 247, 0.1);
+        }
+
+        .presente { 
+            color: var(--success); 
+            font-weight: 500;
+        }
+        .ausente { 
+            color: var(--danger); 
+            font-weight: 500;
+        }
+
+        /* Modal Elegante */
         .modal {
             display: none;
             position: fixed;
@@ -357,64 +517,95 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(12, 7, 23, 0.95);
+            backdrop-filter: blur(15px);
             z-index: 2000;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px;
         }
 
         .modal-conteudo {
-            max-width: 1200px;
-            margin: 20px auto;
+            max-width: 1100px;
+            margin: 30px auto;
             background: linear-gradient(145deg, var(--bg-medium), var(--bg-dark));
-            border-radius: clamp(20px, 5vw, 50px);
-            padding: clamp(15px, 4vw, 40px);
-            border: 3px solid var(--primary);
+            border-radius: 50px;
+            padding: 30px 25px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 60px rgba(203, 166, 247, 0.3), inset 0 0 30px rgba(255, 217, 102, 0.1);
+            position: relative;
+        }
+
+        .modal-conteudo::before {
+            content: '✧';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 2rem;
+            color: rgba(203, 166, 247, 0.2);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .modal-conteudo::after {
+            content: '✧';
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: rgba(203, 166, 247, 0.2);
+            font-family: 'Cormorant Garamond', serif;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 15px;
         }
 
         .modal-header h2 {
-            font-size: clamp(1.2rem, 5vw, 2.2rem);
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            background: linear-gradient(135deg, var(--primary-light), var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .fechar {
             background: none;
-            border: 2px solid var(--danger-light);
-            color: var(--danger-light);
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            cursor: pointer;
-            width: clamp(35px, 8vw, 50px);
-            height: clamp(35px, 8vw, 50px);
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s;
         }
 
-        /* Info Detalhada Responsiva */
+        .fechar:hover {
+            background: var(--danger);
+            color: var(--bg-dark);
+            transform: rotate(90deg);
+        }
+
+        /* Info Detalhada */
         .info-detalhada {
-            background: rgba(180, 130, 255, 0.1);
-            border-radius: clamp(20px, 5vw, 40px);
-            padding: clamp(15px, 4vw, 35px);
+            background: linear-gradient(145deg, rgba(203, 166, 247, 0.1), rgba(157, 122, 217, 0.05));
+            border-radius: 40px;
+            padding: 30px 20px;
+            border: 2px solid var(--primary);
             margin: 20px 0;
-            border: 3px solid var(--primary);
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 20px;
         }
 
         @media (min-width: 768px) {
@@ -423,148 +614,125 @@
             }
         }
 
-        @media (min-width: 1200px) {
-            .info-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
         .info-card {
-            background: rgba(26, 11, 46, 0.7);
-            border-radius: 20px;
-            padding: clamp(12px, 3vw, 25px);
-            border: 2px solid var(--primary);
+            background: rgba(26, 16, 53, 0.7);
+            border-radius: 30px;
+            padding: 25px 20px;
+            border: 1px solid var(--primary);
         }
 
         .info-card h3 {
             color: var(--primary-light);
-            font-size: clamp(1rem, 3vw, 1.4rem);
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 8px;
+            font-size: 1.3rem;
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 10px;
         }
 
         .estatistica-item {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
-            padding: 5px 0;
-            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
-            border-bottom: 1px dashed rgba(180, 130, 255, 0.3);
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        /* Lista de Faltas Responsiva */
-        .lista-faltas {
-            max-height: 400px;
-            overflow-y: auto;
+            margin: 12px 0;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(203, 166, 247, 0.2);
         }
 
         .falta-item {
-            padding: clamp(8px, 2vw, 15px);
-            margin: 8px 0;
-            background: rgba(26, 11, 46, 0.6);
-            border-radius: 10px;
+            background: rgba(26, 16, 53, 0.6);
             border-left: 4px solid;
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
-        }
-
-        /* Grid de Registros Responsivo */
-        .registros-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .registro-card {
-            background: linear-gradient(145deg, var(--bg-dark), var(--bg-medium));
-            border-radius: 20px;
             padding: 15px;
-            border: 2px solid var(--primary);
+            margin: 10px 0;
+            border-radius: 15px;
         }
 
-        /* Footer Responsivo */
+        .falta-item.justificada {
+            border-left-color: var(--gold);
+        }
+
+        .falta-item.nao-justificada {
+            border-left-color: var(--danger);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(203, 166, 247, 0.15);
+            border: 1px solid;
+        }
+
+        .badge.aceita {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .badge.rejeitada {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Footer */
         .footer {
             max-width: 1400px;
-            margin: 20px auto 0;
-            padding: clamp(12px, 3vw, 25px);
+            margin: 40px auto 0;
+            padding: 25px 20px;
             text-align: center;
-            color: var(--text-secondary);
-            border-top: 2px dashed var(--primary);
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-glow);
+            font-size: 0.9rem;
+            position: relative;
         }
 
         .footer .nome {
-            font-size: clamp(1rem, 3vw, 1.3rem);
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
         }
 
-        /* Status Conexão Responsivo */
+        /* Status Conexão */
         .status-conexao {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            padding: clamp(5px, 1.5vw, 10px) clamp(8px, 2vw, 20px);
+            top: 15px;
+            right: 15px;
+            padding: 8px 18px;
             border-radius: 40px;
-            font-size: clamp(0.6rem, 2vw, 0.9rem);
+            font-size: 0.8rem;
+            background: rgba(26, 16, 53, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid;
             z-index: 3000;
-            background: rgba(26, 11, 46, 0.95);
-            border: 2px solid;
-            white-space: nowrap;
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
 
-        /* Utilitários Responsivos */
-        .flex-responsive {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .status-online {
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 15px rgba(165, 214, 165, 0.3);
         }
 
-        @media (min-width: 640px) {
-            .flex-responsive {
-                flex-direction: row;
-                align-items: center;
-            }
+        /* Scrollbar Personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        .grid-3-responsive {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
         }
 
-        @media (min-width: 640px) {
-            .grid-3-responsive {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
         }
 
-        .text-responsive {
-            font-size: clamp(0.7rem, 2.5vw, 1rem);
-        }
-
-        .hide-mobile {
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .hide-mobile {
-                display: initial;
-            }
-        }
-
-        .show-mobile {
-            display: initial;
-        }
-
-        @media (min-width: 768px) {
-            .show-mobile {
-                display: none;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
         }
     </style>
 </head>
@@ -573,7 +741,7 @@
 
     <div class="container">
         <h1>✦ SISTEMA DE FALTAS ✦</h1>
-        <div class="subtitulo">Ordem Internacional das Filhas de Jó<br>Bethel 04 Flor de Liz • Ponta Porã/MS</div>
+        <div class="subtitulo">Ordem Internacional das Filhas de Jó • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
 
         <!-- Informações da Gestão Atual -->
         <div class="gestao-info" id="gestaoInfo">
@@ -593,7 +761,7 @@
 
         <!-- Seletor de Gestão -->
         <div class="seletor-gestao">
-            <h3>📅 SELECIONAR GESTÃO</h3>
+            <h3>✦ SELECIONAR GESTÃO ✦</h3>
             <div class="grid-gestoes" id="gridGestoes"></div>
         </div>
 
@@ -609,14 +777,15 @@
         <div class="grid-imagens" id="gridFilhas"></div>
 
         <!-- Pesquisa -->
-        <div class="pesquisa-box">
-            <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Nome completo da filha...">
+        <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
+            <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Nome completo da filha..." 
+                   style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
             <button class="botao" onclick="pesquisarFilhaCompleta()">PESQUISAR</button>
             <button class="botao perigo" onclick="limparPesquisa()">LIMPAR</button>
         </div>
 
         <!-- Resultado da Pesquisa -->
-        <div id="resultadoPesquisa" class="resultado-pesquisa"></div>
+        <div id="resultadoPesquisa" style="display: none;"></div>
 
         <!-- Cards de Estatísticas -->
         <div id="cardsGerais" class="cards"></div>
@@ -627,7 +796,7 @@
         <!-- Tabelas -->
         <div class="tabelas">
             <div>
-                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-size: clamp(0.9rem, 3vw, 1.2rem);">👑 FILHAS DA ORDEM</h3>
+                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">👑 FILHAS DA ORDEM</h3>
                 <div class="table-container">
                     <table id="tabelaFilhas">
                         <thead>
@@ -638,7 +807,7 @@
                 </div>
             </div>
             <div>
-                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-size: clamp(0.9rem, 3vw, 1.2rem);">⚡ CONSELHO GUARDIÃO</h3>
+                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">⚡ CONSELHO GUARDIÃO</h3>
                 <div class="table-container">
                     <table id="tabelaConselho">
                         <thead>
@@ -650,6 +819,7 @@
             </div>
         </div>
 
+        <!-- MODAIS (mantidos os mesmos) -->
         <!-- MODAL: Nova Ritualística -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
@@ -660,10 +830,10 @@
                 
                 <div style="margin-bottom: 20px;">
                     <label style="color: var(--primary-light);">📅 Data:</label>
-                    <input type="date" id="novaData" style="width: 100%; margin-top: 8px; background: rgba(26,11,46,0.9); border: 2px solid var(--primary); border-radius: 15px; padding: 12px; color: white;">
+                    <input type="date" id="novaData" style="width: 100%; margin-top: 8px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
                 </div>
 
-                <div class="flex-responsive" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                     <button class="botao" onclick="mudarAba('filhas')" style="flex:1;" id="abaFilhasBtn">👑 FILHAS</button>
                     <button class="botao" onclick="mudarAba('conselho')" style="flex:1;" id="abaConselhoBtn">⚡ CONSELHO</button>
                 </div>
@@ -673,9 +843,9 @@
                     <div class="progresso" id="progressoConselho">⏳ Conselho: 0/0</div>
                 </div>
 
-                <div class="flex-responsive" style="margin-bottom: 20px;">
-                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #2e7d32;">✓ Todos Presentes</button>
-                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #b34141;">✗ Todos Ausentes</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #2e7d32;">✓ Presentes</button>
+                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #b34141;">✗ Ausentes</button>
                 </div>
 
                 <div id="containerFilhas" style="max-height: 400px; overflow-y: auto;"></div>
@@ -693,11 +863,11 @@
                     <button class="fechar" onclick="fecharModal('novaGestao')">✕</button>
                 </div>
 
-                <div class="flex-responsive" style="gap: 15px;">
-                    <input type="number" id="novaGestaoAno" value="2026" placeholder="Ano" style="background: rgba(26,11,46,0.9); border: 2px solid var(--primary); border-radius: 15px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)" style="background: rgba(26,11,46,0.9); border: 2px solid var(--primary); border-radius: 15px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha" style="background: rgba(26,11,46,0.9); border: 2px solid var(--primary); border-radius: 15px; padding: 12px; color: white;">
-                    <textarea id="novaGestaoObs" rows="2" placeholder="Observações..." style="background: rgba(26,11,46,0.9); border: 2px solid var(--primary); border-radius: 15px; padding: 12px; color: white;"></textarea>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="number" id="novaGestaoAno" value="2026" placeholder="Ano" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <textarea id="novaGestaoObs" rows="2" placeholder="Observações..." style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;"></textarea>
                     <button class="botao" onclick="criarNovaGestao()">✅ CRIAR GESTÃO</button>
                 </div>
             </div>
@@ -711,7 +881,7 @@
                     <button class="fechar" onclick="fecharModal('membros')">✕</button>
                 </div>
 
-                <div class="flex-responsive" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                     <button class="botao" onclick="carregarMembros('filhas')" style="flex:1;">FILHAS</button>
                     <button class="botao" onclick="carregarMembros('conselho')" style="flex:1;">CONSELHO</button>
                 </div>
@@ -729,13 +899,13 @@
                 </div>
 
                 <div class="datas" id="abasGestao" style="justify-content: flex-start;"></div>
-                <div id="listaRegistros" class="registros-grid"></div>
+                <div id="listaRegistros" class="registros-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 15px;"></div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <div class="nome">✦ Dominique Bernazzolli ✦</div>
+        <div class="nome">✦ Dominique Bernazzolli Black ✦</div>
         <div class="data-hora" id="dataHoraFooter"></div>
         <div class="assinatura">"Vida Antes da Morte"</div>
     </div>
@@ -783,117 +953,123 @@
             { id: '2026_27', ano: 2026, numero: '27ª', rainha: 'Beatriz Lorenzoni', ativa: true }
         ];
 
-        const rituaisIniciais = {
-            '2026-02-21': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Kauana Soares", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Larissa Guerreiro", presente: true },
-                    { nome: "Luiza Santos Duarte", presente: true },
-                    { nome: "Erika Careaga", presente: true },
-                    { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                    { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                    { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
-                    { nome: "Danieli Girão Lacerda", presente: true },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Sheila Silva", presente: true },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
-            },
-            '2026-02-28': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Erika Careaga", presente: true },
-                    { nome: "Isabela Carbonaro", presente: true },
-                    { nome: "Jenifer Cristina Lopes", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
-                    { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
-                    { nome: "Larissa Guerreiro", presente: false, justificada: true, aceita: true },
-                    { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                    { nome: "Analia Arevalos", presente: false, justificada: true, aceita: true }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                    { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: true },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
-            },
-            '2026-03-07': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Kauana Soares", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Larissa Guerreiro", presente: true },
-                    { nome: "Isabela Carbonaro", presente: true },
-                    { nome: "Analia Arevalos", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
-                    { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
-                    { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Danieli Girão Lacerda", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                    { nome: "Sheila Silva", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
+        // Rituais organizados por gestão (CORRIGIDO)
+        const rituaisPorGestaoIniciais = {
+            '2026_27': {
+                informacoes: { ano: 2026, numero: '27ª', rainha: 'Beatriz Lorenzoni' },
+                rituais: {
+                    '2026-02-21': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Kauana Soares", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Larissa Guerreiro", presente: true },
+                            { nome: "Luiza Santos Duarte", presente: true },
+                            { nome: "Erika Careaga", presente: true },
+                            { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
+                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
+                            { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
+                            { nome: "Danieli Girão Lacerda", presente: true },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Sheila Silva", presente: true },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    },
+                    '2026-02-28': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Erika Careaga", presente: true },
+                            { nome: "Isabela Carbonaro", presente: true },
+                            { nome: "Jenifer Cristina Lopes", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
+                            { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
+                            { nome: "Larissa Guerreiro", presente: false, justificada: true, aceita: true },
+                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
+                            { nome: "Analia Arevalos", presente: false, justificada: true, aceita: true }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
+                            { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: true },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    },
+                    '2026-03-07': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Kauana Soares", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Larissa Guerreiro", presente: true },
+                            { nome: "Isabela Carbonaro", presente: true },
+                            { nome: "Analia Arevalos", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
+                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
+                            { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Danieli Girão Lacerda", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
+                            { nome: "Sheila Silva", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    }
+                }
             }
         };
 
@@ -907,20 +1083,8 @@
         if (!localStorage.getItem('gestoes')) {
             localStorage.setItem('gestoes', JSON.stringify(gestoesIniciais));
         }
-        
-        // Inicializar rituais por gestão
         if (!localStorage.getItem('rituaisPorGestao')) {
-            const rituaisPorGestao = {
-                '2026_27': {
-                    informacoes: {
-                        ano: 2026,
-                        numero: '27ª',
-                        rainha: 'Beatriz Lorenzoni'
-                    },
-                    rituais: rituaisIniciais
-                }
-            };
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
+            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestaoIniciais));
         }
 
         let gestaoAtual = '2026_27';
@@ -936,7 +1100,7 @@
                 <div class="gestao-card ${g.ativa ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
                     <div class="gestao-ano">${g.ano}</div>
                     <div class="gestao-numero">${g.numero}</div>
-                    <div class="gestao-rainha">${g.rainha}</div>
+                    <div class="gestao-rainha">${g.rainha.split(' ')[0]}</div>
                 </div>
             `).join('');
 
@@ -968,15 +1132,168 @@
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
             grid.innerHTML = filhas.map((f, i) => {
-                const nomeEscapado = f.nome.replace(/'/g, "\\'");
+                // Escapar caracteres especiais para o onclick
+                const nomeEscapado = encodeURIComponent(f.nome);
                 return `
-                    <div class="item-imagem" onclick="pesquisarFilhaEspecifica('${nomeEscapado}')">
+                    <div class="item-imagem" onclick="pesquisarFilhaPorNome('${nomeEscapado}')">
                         <div class="icone">${icones[i % icones.length]}</div>
                         <div class="nome">${f.nome}</div>
                         <div class="cargo">${f.cargo}</div>
                     </div>
                 `;
             }).join('');
+        }
+
+        // ========== FUNÇÃO CORRIGIDA DE PESQUISA ==========
+        window.pesquisarFilhaPorNome = function(nomeCodificado) {
+            const nomeDecodificado = decodeURIComponent(nomeCodificado);
+            document.getElementById('pesquisaNomeCompleto').value = nomeDecodificado;
+            pesquisarFilhaCompleta();
+        }
+
+        window.pesquisarFilhaCompleta = function() {
+            const nomeBusca = document.getElementById('pesquisaNomeCompleto').value.trim();
+            
+            if (!nomeBusca) {
+                alert('Digite o nome da filha');
+                return;
+            }
+
+            // Buscar a filha na lista
+            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
+            const filhaEncontrada = filhas.find(f => 
+                f.nome.toLowerCase().trim() === nomeBusca.toLowerCase().trim()
+            );
+            
+            if (!filhaEncontrada) {
+                alert(`Filha "${nomeBusca}" não encontrada`);
+                return;
+            }
+
+            // Esconder cards e mostrar resultado
+            document.getElementById('cardsGerais').style.display = 'none';
+            document.getElementById('resultadoPesquisa').style.display = 'block';
+
+            // Buscar TODAS as faltas em todas as gestões
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            const todasFaltas = [];
+
+            // Percorrer todas as gestões
+            Object.keys(rituaisPorGestao).forEach(idGestao => {
+                const gestao = gestoes.find(g => g.id === idGestao);
+                const rituaisGestao = rituaisPorGestao[idGestao]?.rituais || {};
+                
+                // Percorrer todas as datas desta gestão
+                Object.keys(rituaisGestao).forEach(data => {
+                    const ritual = rituaisGestao[data];
+                    // Procurar a filha nas filhas desta data
+                    const falta = ritual.filhas?.find(f => f.nome === filhaEncontrada.nome);
+                    
+                    if (falta && !falta.presente) {
+                        todasFaltas.push({
+                            data: data,
+                            gestao: gestao ? `${gestao.ano} - ${gestao.numero}` : idGestao,
+                            rainha: gestao ? gestao.rainha : 'Desconhecida',
+                            justificada: falta.justificada || false,
+                            aceita: falta.aceita || false
+                        });
+                    }
+                });
+            });
+
+            // Ordenar por data (mais recente primeiro)
+            todasFaltas.sort((a, b) => b.data.localeCompare(a.data));
+
+            // Calcular estatísticas
+            const totalFaltas = todasFaltas.length;
+            const justificadas = todasFaltas.filter(f => f.justificada).length;
+            const naoJustificadas = todasFaltas.filter(f => !f.justificada).length;
+            const aceitas = todasFaltas.filter(f => f.aceita).length;
+            const rejeitadas = todasFaltas.filter(f => !f.aceita).length;
+
+            // Criar HTML do resultado
+            let faltasHTML = '';
+            if (todasFaltas.length > 0) {
+                faltasHTML = todasFaltas.map(f => `
+                    <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="falta-data">${f.data.split('-').reverse().join('/')}</span>
+                            <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">
+                                ${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}
+                            </span>
+                        </div>
+                        <div style="margin: 5px 0; color: var(--text-muted); font-size: 0.85rem;">
+                            ${f.gestao} • ${f.rainha.split(' ')[0]}
+                        </div>
+                        <div style="font-size: 0.85rem;">
+                            ${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                faltasHTML = '<p style="color: var(--text-muted); text-align: center;">Nenhuma falta registrada</p>';
+            }
+
+            const resultadoHTML = `
+                <div class="info-detalhada">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem;">👑 ${filhaEncontrada.nome}</h2>
+                        <button class="botao" onclick="voltarCardsGerais()">← Voltar</button>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <span style="background: rgba(203,166,247,0.2); padding: 8px 25px; border-radius: 40px; border: 1px solid var(--primary);">
+                            ${filhaEncontrada.cargo}
+                        </span>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>📊 ESTATÍSTICAS</h3>
+                            <div class="estatistica-item">
+                                <span>Total de Faltas:</span>
+                                <span class="estatistica-valor">${totalFaltas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Justificadas:</span>
+                                <span style="color: var(--gold);">${justificadas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Não Justificadas:</span>
+                                <span style="color: var(--danger);">${naoJustificadas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Aceitas:</span>
+                                <span style="color: var(--success);">${aceitas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Rejeitadas:</span>
+                                <span style="color: var(--danger);">${rejeitadas}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h3>📅 HISTÓRICO DE FALTAS</h3>
+                            <div class="lista-faltas" style="max-height: 350px; overflow-y: auto;">
+                                ${faltasHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
+        }
+
+        window.voltarCardsGerais = function() {
+            document.getElementById('cardsGerais').style.display = 'grid';
+            document.getElementById('resultadoPesquisa').style.display = 'none';
+            document.getElementById('pesquisaNomeCompleto').value = '';
+        }
+
+        window.limparPesquisa = function() {
+            voltarCardsGerais();
         }
 
         function atualizarCardsGerais() {
@@ -1008,7 +1325,7 @@
             const container = document.getElementById('listaDatas');
             
             if (datas.length === 0) {
-                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 15px;">Nenhuma ritualística</div>';
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 15px;">Nenhuma ritualística</div>';
                 return;
             }
             
@@ -1035,7 +1352,7 @@
                 const r = dados.filhas?.find(x => x.nome === f.nome) || { presente: false };
                 return `<tr>
                     <td>${f.nome.split(' ')[0]}</td>
-                    <td>${f.cargo.substring(0, 15)}${f.cargo.length > 15 ? '...' : ''}</td>
+                    <td>${f.cargo}</td>
                     <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
                     <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
                     <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
@@ -1046,7 +1363,7 @@
                 const r = dados.conselho?.find(x => x.nome === c.nome) || { presente: false };
                 return `<tr>
                     <td>${c.nome.split(' ')[0]}</td>
-                    <td>${c.cargo.substring(0, 15)}${c.cargo.length > 15 ? '...' : ''}</td>
+                    <td>${c.cargo}</td>
                     <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
                     <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
                     <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
@@ -1054,92 +1371,60 @@
             }).join('');
         }
 
-        // ========== PESQUISA ==========
-        window.pesquisarFilhaCompleta = function() {
-            const nomeBusca = document.getElementById('pesquisaNomeCompleto').value.trim().toLowerCase();
-            if (!nomeBusca) return alert('Digite o nome da filha');
-
-            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
-            const filha = filhas.find(f => f.nome.toLowerCase() === nomeBusca);
+        window.criarNovaGestao = function() {
+            const ano = document.getElementById('novaGestaoAno').value;
+            const numero = document.getElementById('novaGestaoNumero').value;
+            const rainha = document.getElementById('novaGestaoRainha').value;
             
-            if (!filha) return alert('Filha não encontrada');
+            if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
 
-            document.getElementById('cardsGerais').style.display = 'none';
-            document.getElementById('resultadoPesquisa').style.display = 'block';
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            gestoes.forEach(g => g.ativa = false);
+            
+            const novaGestao = {
+                id: `${ano}_${gestoes.length + 1}`,
+                ano: parseInt(ano),
+                numero,
+                rainha,
+                ativa: true
+            };
+
+            gestoes.push(novaGestao);
+            localStorage.setItem('gestoes', JSON.stringify(gestoes));
 
             const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            const faltas = [];
+            rituaisPorGestao[novaGestao.id] = {
+                informacoes: { ano: parseInt(ano), numero, rainha },
+                rituais: {}
+            };
+            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
 
-            Object.entries(rituaisPorGestao).forEach(([gId, gData]) => {
-                const gestao = gestoes.find(g => g.id === gId);
-                if (gestao && gData.rituais) {
-                    Object.entries(gData.rituais).forEach(([data, registro]) => {
-                        const falta = registro.filhas?.find(f => f.nome === filha.nome);
-                        if (falta && !falta.presente) {
-                            faltas.push({
-                                data: data,
-                                gestao: `${gestao.ano}`,
-                                ...falta
-                            });
-                        }
-                    });
-                }
-            });
-
-            faltas.sort((a, b) => b.data.localeCompare(a.data));
-
-            document.getElementById('resultadoPesquisa').innerHTML = `
-                <div class="info-detalhada">
-                    <div class="flex-responsive" style="justify-content: space-between;">
-                        <h2 style="font-size: clamp(1.2rem, 4vw, 2rem);">${filha.nome}</h2>
-                        <button class="botao" onclick="voltarCardsGerais()">Voltar</button>
-                    </div>
-                    <div style="text-align: center; margin: 15px 0;">
-                        <span style="background: rgba(180,130,255,0.2); padding: 5px 15px; border-radius: 40px;">${filha.cargo}</span>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <h3>📊 Estatísticas</h3>
-                            <div class="estatistica-item"><span>Total de Faltas:</span> <span class="estatistica-valor">${faltas.length}</span></div>
-                            <div class="estatistica-item"><span>Justificadas:</span> <span style="color: #ffe17a;">${faltas.filter(f => f.justificada).length}</span></div>
-                            <div class="estatistica-item"><span>Aceitas:</span> <span style="color: #a5ffaf;">${faltas.filter(f => f.aceita).length}</span></div>
-                        </div>
-                        <div class="info-card">
-                            <h3>📅 Faltas</h3>
-                            <div class="lista-faltas">
-                                ${faltas.length ? faltas.map(f => `
-                                    <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
-                                        <div>${f.data.split('-').reverse().join('/')} - ${f.gestao}</div>
-                                        <div style="display: flex; gap: 5px; margin-top: 5px;">
-                                            <span class="badge ${f.justificada ? 'aceita' : 'rejeitada'}">${f.justificada ? 'Just.' : 'Não Just.'}</span>
-                                            <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? 'Aceita' : 'Rej.'}</span>
-                                        </div>
-                                    </div>
-                                `).join('') : '<p style="color: var(--text-secondary);">Nenhuma falta</p>'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            gestaoAtual = novaGestao.id;
+            carregarGestoes();
+            fecharModal('novaGestao');
+            atualizarTudo();
         }
 
-        window.pesquisarFilhaEspecifica = function(nome) {
-            document.getElementById('pesquisaNomeCompleto').value = nome;
-            pesquisarFilhaCompleta();
+        // ========== FUNÇÕES DOS MODAIS ==========
+        window.mostrarModal = function(tipo) {
+            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
+            if (tipo === 'nova') carregarAmbasAbas();
+            if (tipo === 'membros') carregarMembros('filhas');
+            if (tipo === 'registros') carregarRegistros();
         }
 
-        window.voltarCardsGerais = function() {
-            document.getElementById('cardsGerais').style.display = 'grid';
-            document.getElementById('resultadoPesquisa').style.display = 'none';
-            document.getElementById('pesquisaNomeCompleto').value = '';
+        window.fecharModal = function(tipo) {
+            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none';
         }
 
-        window.limparPesquisa = function() {
-            voltarCardsGerais();
+        window.mudarAba = function(aba) {
+            abaAtual = aba;
+            document.getElementById('abaFilhasBtn').style.opacity = aba === 'filhas' ? '1' : '0.7';
+            document.getElementById('abaConselhoBtn').style.opacity = aba === 'conselho' ? '1' : '0.7';
+            document.getElementById('containerFilhas').style.display = aba === 'filhas' ? 'block' : 'none';
+            document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
         }
 
-        // ========== MODAL NOVA RITUALÍSTICA ==========
         window.carregarAmbasAbas = function() {
             carregarMembrosModal('filhas', 'containerFilhas');
             carregarMembrosModal('conselho', 'containerConselho');
@@ -1155,7 +1440,7 @@
                 return `
                     <div class="membro-item" data-nome="${m.nome}">
                         <div><strong>${m.nome}</strong> - ${m.cargo}</div>
-                        <div class="grid-3-responsive" style="margin-top: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px;">
                             <select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')">
                                 <option value="presente">✓ Presente</option>
                                 <option value="ausente">✗ Ausente</option>
@@ -1198,7 +1483,6 @@
                 const el = document.getElementById(`progresso${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
                 if (el) {
                     el.innerHTML = marcados === total ? `✅ ${tipo}: ${marcados}/${total}` : `⏳ ${tipo}: ${marcados}/${total}`;
-                    el.className = marcados === total ? 'progresso completo' : 'progresso';
                 }
             });
 
@@ -1246,42 +1530,7 @@
 
             fecharModal('nova');
             atualizarTudo();
-            alert('✅ Salvo!');
-        }
-
-        // ========== NOVA GESTÃO ==========
-        window.criarNovaGestao = function() {
-            const ano = document.getElementById('novaGestaoAno').value;
-            const numero = document.getElementById('novaGestaoNumero').value;
-            const rainha = document.getElementById('novaGestaoRainha').value;
-            
-            if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
-
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            gestoes.forEach(g => g.ativa = false);
-            
-            const novaGestao = {
-                id: `${ano}_${gestoes.length + 1}`,
-                ano: parseInt(ano),
-                numero,
-                rainha,
-                ativa: true
-            };
-
-            gestoes.push(novaGestao);
-            localStorage.setItem('gestoes', JSON.stringify(gestoes));
-
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            rituaisPorGestao[novaGestao.id] = {
-                informacoes: { ano: parseInt(ano), numero, rainha },
-                rituais: {}
-            };
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
-
-            gestaoAtual = novaGestao.id;
-            carregarGestoes();
-            fecharModal('novaGestao');
-            atualizarTudo();
+            alert('✅ Ritualística salva!');
         }
 
         // ========== GERENCIAR MEMBROS ==========
@@ -1291,11 +1540,11 @@
             
             container.innerHTML = lista.map((m, i) => `
                 <div class="membro-item">
-                    <div class="flex-responsive" style="gap: 8px;">
-                        <input type="text" value="${m.nome}" id="nome-${i}" style="flex:2; background: rgba(26,11,46,0.9); border: 1px solid var(--primary); border-radius: 10px; padding: 8px; color: white;">
-                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="flex:2; background: rgba(26,11,46,0.9); border: 1px solid var(--primary); border-radius: 10px; padding: 8px; color: white;">
-                        <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 8px 12px;">💾</button>
-                        <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 8px 12px;">🗑️</button>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" value="${m.nome}" id="nome-${i}" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                        <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">💾</button>
+                        <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">🗑️</button>
                     </div>
                 </div>
             `).join('');
@@ -1346,19 +1595,19 @@
 
             const gestaoData = rituaisPorGestao[gestaoAtual];
             if (!gestaoData?.rituais || Object.keys(gestaoData.rituais).length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 30px;">Nenhum registro</p>';
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro</p>';
                 return;
             }
 
             container.innerHTML = Object.entries(gestaoData.rituais).sort().reverse().map(([data, info]) => `
-                <div class="registro-card">
+                <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
                     <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
-                    <div class="gestao-tag">${gestaoData.informacoes.ano} • ${gestaoData.informacoes.rainha.split(' ')[0]}</div>
-                    <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+                    <div style="text-align: center; color: var(--gold); margin: 10px 0;">${gestaoData.informacoes.ano} • ${gestaoData.informacoes.rainha.split(' ')[0]}</div>
+                    <div style="display: flex; justify-content: space-around; margin: 15px 0;">
                         <div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div>
                         <div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div>
                     </div>
-                    <div class="flex-responsive" style="gap: 5px;">
+                    <div style="display: flex; gap: 8px;">
                         <button class="botao" onclick="mudarData('${data}'); fecharModal('registros')" style="flex:1; padding: 8px;">Ver</button>
                         <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">Deletar</button>
                     </div>
@@ -1389,26 +1638,6 @@
                 dataSelecionada = Object.keys(rituais)[0] || '';
                 atualizarTudo();
             }
-        }
-
-        // ========== UTILITÁRIOS ==========
-        window.mostrarModal = function(tipo) {
-            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
-            if (tipo === 'nova') carregarAmbasAbas();
-            if (tipo === 'membros') carregarMembros('filhas');
-            if (tipo === 'registros') carregarRegistros();
-        }
-
-        window.fecharModal = function(tipo) {
-            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none';
-        }
-
-        window.mudarAba = function(aba) {
-            abaAtual = aba;
-            document.getElementById('abaFilhasBtn').style.opacity = aba === 'filhas' ? '1' : '0.7';
-            document.getElementById('abaConselhoBtn').style.opacity = aba === 'conselho' ? '1' : '0.7';
-            document.getElementById('containerFilhas').style.display = aba === 'filhas' ? 'block' : 'none';
-            document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
         }
 
         function atualizarDataHoraFooter() {
