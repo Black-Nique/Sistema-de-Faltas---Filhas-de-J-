@@ -339,9 +339,35 @@
             margin-top: 5px;
             font-style: italic;
         }
+
+        /* Status de conexão */
+        .status-conexao {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.8em;
+            z-index: 2000;
+            background: rgba(26, 11, 46, 0.9);
+            border: 1px solid;
+        }
+        
+        .status-online {
+            border-color: #4caf50;
+            color: #a5ffaf;
+        }
+        
+        .status-offline {
+            border-color: #ff4757;
+            color: #ffb3b3;
+        }
     </style>
 </head>
 <body>
+    <!-- Status de conexão -->
+    <div id="statusConexao" class="status-conexao status-online">🟢 Conectado à nuvem</div>
+
     <div class="container">
         <h1>✦ SISTEMA DE FALTAS ✦</h1>
         <div class="subtitulo">Ordem Internacional das Filhas de Jó - Bethel 04 Ponta Porã/MS • Rainha Beatriz Lorenzoni</div>
@@ -401,7 +427,7 @@
             </div>
         </div>
 
-        <!-- MODAL: Nova Ritualística (AGORA COM AS DUAS ABAS) -->
+        <!-- MODAL: Nova Ritualística -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header">
@@ -421,7 +447,7 @@
                 </div>
 
                 <!-- Barra de progresso -->
-                <div id="progressoContainer" style="display: none;">
+                <div id="progressoContainer">
                     <div class="progresso" id="progressoFilhas">
                         ⏳ Filhas: 0/0 membros marcados
                     </div>
@@ -442,7 +468,7 @@
                 <!-- Container para Conselho -->
                 <div id="containerConselho" style="max-height: 500px; overflow-y: auto; display: none;"></div>
 
-                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 30px;" id="botaoSalvar">✦ SALVAR RITUALÍSTICA COMPLETA ✦</button>
+                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 30px;" id="botaoSalvar">✦ SALVAR NA NUVEM ✦</button>
             </div>
         </div>
 
@@ -482,6 +508,88 @@
         <div class="data-hora" id="dataHoraFooter"></div>
         <div class="assinatura">"Vida Antes da Morte... @dominique_cbb"</div>
     </div>
+
+    <!-- FIREBASE - Configuração com seus dados -->
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        // SUAS CONFIGURAÇÕES DO FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSkSzwoLBCQHd_84J0LTdVSQGmUvgrQhU",
+            authDomain: "sistema-de-faltas-b04-pp-ms.firebaseapp.com",
+            projectId: "sistema-de-faltas-b04-pp-ms",
+            storageBucket: "sistema-de-faltas-b04-pp-ms.firebasestorage.app",
+            messagingSenderId: "191746228461",
+            appId: "1:191746228461:web:ae9a1da546e7f61ebdcce4",
+            measurementId: "G-SVSNB555J1"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+        
+        // Disponibilizar para o escopo global
+        window.database = database;
+        window.firebaseRef = ref;
+        window.firebaseSet = set;
+        window.firebaseOnValue = onValue;
+        window.firebaseRemove = remove;
+
+        // Indicador de conexão
+        const statusDiv = document.getElementById('statusConexao');
+        const connectedRef = ref(database, '.info/connected');
+        
+        onValue(connectedRef, (snap) => {
+            if (snap.val() === true) {
+                statusDiv.innerHTML = '🟢 Conectado à nuvem';
+                statusDiv.className = 'status-conexao status-online';
+            } else {
+                statusDiv.innerHTML = '🔴 Modo offline - dados locais';
+                statusDiv.className = 'status-conexao status-offline';
+            }
+        });
+
+        // Função para sincronizar dados do Firebase para o localStorage
+        function syncFromFirebase(path, callback) {
+            const dataRef = ref(database, path);
+            onValue(dataRef, (snapshot) => {
+                const dados = snapshot.val();
+                if (dados) {
+                    localStorage.setItem(path, JSON.stringify(dados));
+                    if (callback) callback(dados);
+                }
+            });
+        }
+
+        // Sincronizar todos os dados
+        syncFromFirebase('filhas', () => {
+            if (typeof atualizarGridFilhas === 'function') atualizarGridFilhas();
+        });
+        
+        syncFromFirebase('conselho');
+        syncFromFirebase('rituais', () => {
+            if (typeof atualizarTudo === 'function') atualizarTudo();
+        });
+
+        // Função para salvar no Firebase
+        window.salvarNoFirebase = async function(path, dados) {
+            try {
+                const dataRef = ref(database, path);
+                await set(dataRef, dados);
+                console.log(`✅ Dados salvos em ${path}`);
+                return true;
+            } catch (error) {
+                console.error('Erro ao salvar no Firebase:', error);
+                return false;
+            }
+        };
+
+        console.log('🔥 Firebase conectado com sucesso!');
+    </script>
 
     <script>
         // ========== DADOS INICIAIS ==========
@@ -563,15 +671,23 @@
         };
 
         // ========== INICIALIZAÇÃO ==========
-        if (!localStorage.getItem('filhas')) {
-            localStorage.setItem('filhas', JSON.stringify(filhasIniciais));
+        // Só usa dados iniciais se não houver nada no localStorage
+        async function inicializarDados() {
+            if (!localStorage.getItem('filhas')) {
+                localStorage.setItem('filhas', JSON.stringify(filhasIniciais));
+                if (window.salvarNoFirebase) await window.salvarNoFirebase('filhas', filhasIniciais);
+            }
+            if (!localStorage.getItem('conselho')) {
+                localStorage.setItem('conselho', JSON.stringify(conselhoIniciais));
+                if (window.salvarNoFirebase) await window.salvarNoFirebase('conselho', conselhoIniciais);
+            }
+            if (!localStorage.getItem('rituais')) {
+                localStorage.setItem('rituais', JSON.stringify(rituaisIniciais));
+                if (window.salvarNoFirebase) await window.salvarNoFirebase('rituais', rituaisIniciais);
+            }
         }
-        if (!localStorage.getItem('conselho')) {
-            localStorage.setItem('conselho', JSON.stringify(conselhoIniciais));
-        }
-        if (!localStorage.getItem('rituais')) {
-            localStorage.setItem('rituais', JSON.stringify(rituaisIniciais));
-        }
+
+        inicializarDados();
 
         let dataSelecionada = '2026-02-28';
         let abaAtual = 'filhas';
@@ -585,7 +701,7 @@
 
         // Grid de imagens
         function atualizarGridFilhas() {
-            const filhas = JSON.parse(localStorage.getItem('filhas'));
+            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
             const grid = document.getElementById('gridFilhas');
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
@@ -601,7 +717,7 @@
         // Pesquisar por nome
         window.pesquisarNome = function(termo) {
             document.getElementById('pesquisaNome').value = termo;
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
             
             let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
             
@@ -629,7 +745,7 @@
             const data = document.getElementById('pesquisaData').value;
             if (!data) return alert('Selecione uma data');
             
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
             if (rituais[data]) {
                 dataSelecionada = data;
                 atualizarListaDatas();
@@ -641,10 +757,15 @@
 
         // Lista de datas
         function atualizarListaDatas() {
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
             const datas = Object.keys(rituais).sort().reverse();
             const container = document.getElementById('listaDatas');
             
+            if (datas.length === 0) {
+                container.innerHTML = '<p style="color: #cbb3ff;">Nenhuma data registrada</p>';
+                return;
+            }
+
             container.innerHTML = datas.map(data => `
                 <button class="data-botao ${data === dataSelecionada ? 'ativo' : ''}" onclick="mudarData('${data}')">
                     ${data.split('-').reverse().join('/')}
@@ -660,10 +781,10 @@
 
         // Carregar tabelas
         function carregarTabelas() {
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
             const dados = rituais[dataSelecionada] || { filhas: [], conselho: [] };
-            const filhas = JSON.parse(localStorage.getItem('filhas'));
-            const conselho = JSON.parse(localStorage.getItem('conselho'));
+            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
+            const conselho = JSON.parse(localStorage.getItem('conselho')) || [];
 
             // Tabela Filhas
             document.getElementById('corpoFilhas').innerHTML = filhas.map(f => {
@@ -694,305 +815,14 @@
             }).join('');
         }
 
-        // ========== NOVA RITUALÍSTICA (COM AS DUAS ABAS) ==========
+        // ========== NOVA RITUALÍSTICA ==========
         window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') {
                 carregarAmbasAbas();
-                document.getElementById('progressoContainer').style.display = 'block';
             }
             if (tipo === 'membros') carregarMembros('filhas');
             if (tipo === 'registros') carregarRegistros();
         }
 
-        window.fecharModal = function(tipo) {
-            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none';
-        }
-
-        // Mudar entre abas
-        window.mudarAba = function(aba) {
-            abaAtual = aba;
-            
-            // Atualizar classes das abas
-            document.getElementById('abaFilhas').className = aba === 'filhas' ? 'aba ativa' : 'aba';
-            document.getElementById('abaConselho').className = aba === 'conselho' ? 'aba ativa' : 'aba';
-            
-            // Mostrar/esconder containers
-            document.getElementById('containerFilhas').style.display = aba === 'filhas' ? 'block' : 'none';
-            document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
-        }
-
-        // Carregar ambas as abas
-        function carregarAmbasAbas() {
-            carregarMembrosModal('filhas', 'containerFilhas');
-            carregarMembrosModal('conselho', 'containerConselho');
-            atualizarProgresso();
-        }
-
-        // Carregar membros no modal
-        function carregarMembrosModal(tipo, containerId) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
-            const container = document.getElementById(containerId);
-            
-            container.innerHTML = lista.map(m => {
-                const id = m.nome.replace(/\s/g, '') + tipo;
-                return `
-                    <div class="membro-item" data-tipo="${tipo}" data-nome="${m.nome}">
-                        <div style="margin-bottom: 10px;"><strong>${m.nome}</strong> - ${m.cargo}</div>
-                        <div class="grid-3">
-                            <select class="presenca-${tipo}" id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')">
-                                <option value="presente">✓ Presente</option>
-                                <option value="ausente">✗ Ausente</option>
-                            </select>
-                            <select class="just-${tipo}" id="just-${id}" disabled>
-                                <option value="nao">Não Justificada</option>
-                                <option value="sim">Justificada</option>
-                            </select>
-                            <select class="aceite-${tipo}" id="aceite-${id}" disabled>
-                                <option value="nao">Rejeitada</option>
-                                <option value="sim">Aceita</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.mudarPresencaModal = function(id, tipo) {
-            const pres = document.getElementById(`pres-${id}`).value;
-            document.getElementById(`just-${id}`).disabled = pres === 'presente';
-            document.getElementById(`aceite-${id}`).disabled = pres === 'presente';
-            atualizarProgresso();
-        }
-
-        // Marcar todos da aba atual
-        window.marcarTodosAtual = function(status) {
-            const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
-            const selects = document.querySelectorAll(`#${container} select[id^="pres-"]`);
-            
-            selects.forEach(select => {
-                select.value = status;
-                const id = select.id.replace('pres-', '');
-                mudarPresencaModal(id, abaAtual);
-            });
-        }
-
-        // Atualizar barra de progresso
-        function atualizarProgresso() {
-            // Filhas
-            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
-            const totalFilhas = selectsFilhas.length;
-            const marcadasFilhas = Array.from(selectsFilhas).filter(s => s.value !== 'ausente' && s.value !== 'presente' ? 0 : 1).length;
-            
-            document.getElementById('progressoFilhas').innerHTML = 
-                marcadasFilhas === totalFilhas 
-                    ? `✅ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados` 
-                    : `⏳ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados`;
-            
-            document.getElementById('progressoFilhas').className = 
-                marcadasFilhas === totalFilhas ? 'progresso completo' : 'progresso';
-
-            // Conselho
-            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
-            const totalConselho = selectsConselho.length;
-            const marcadasConselho = Array.from(selectsConselho).filter(s => s.value !== 'ausente' && s.value !== 'presente' ? 0 : 1).length;
-            
-            document.getElementById('progressoConselho').innerHTML = 
-                marcadasConselho === totalConselho 
-                    ? `✅ Conselho: ${marcadasConselho}/${totalConselho} membros marcados` 
-                    : `⏳ Conselho: ${marcadasConselho}/${totalConselho} membros marcados`;
-            
-            document.getElementById('progressoConselho').className = 
-                marcadasConselho === totalConselho ? 'progresso completo' : 'progresso';
-
-            // Habilitar/desabilitar botão salvar
-            const botaoSalvar = document.getElementById('botaoSalvar');
-            if (marcadasFilhas === totalFilhas && marcadasConselho === totalConselho) {
-                botaoSalvar.disabled = false;
-                botaoSalvar.style.opacity = '1';
-            } else {
-                botaoSalvar.disabled = true;
-                botaoSalvar.style.opacity = '0.5';
-            }
-        }
-
-        // Salvar ritualística completa
-        window.salvarRitualisticaCompleta = function() {
-            const data = document.getElementById('novaData').value;
-            
-            if (!data) return alert('❌ Selecione uma data');
-
-            // Verificar se todos foram marcados
-            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
-            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
-            
-            if (Array.from(selectsFilhas).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
-                return alert('❌ Marque todas as Filhas como Presente ou Ausente');
-            }
-            
-            if (Array.from(selectsConselho).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
-                return alert('❌ Marque todo o Conselho como Presente ou Ausente');
-            }
-
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
-            if (!rituais[data]) rituais[data] = { filhas: [], conselho: [] };
-
-            // Coletar dados das Filhas
-            const registrosFilhas = [];
-            document.querySelectorAll('#containerFilhas .membro-item').forEach(item => {
-                const nome = item.dataset.nome;
-                const id = nome.replace(/\s/g, '') + 'filhas';
-                const presente = document.getElementById(`pres-${id}`).value === 'presente';
-                
-                registrosFilhas.push({
-                    nome: nome,
-                    presente: presente,
-                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
-                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
-                });
-            });
-
-            // Coletar dados do Conselho
-            const registrosConselho = [];
-            document.querySelectorAll('#containerConselho .membro-item').forEach(item => {
-                const nome = item.dataset.nome;
-                const id = nome.replace(/\s/g, '') + 'conselho';
-                const presente = document.getElementById(`pres-${id}`).value === 'presente';
-                
-                registrosConselho.push({
-                    nome: nome,
-                    presente: presente,
-                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
-                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
-                });
-            });
-
-            rituais[data] = {
-                filhas: registrosFilhas,
-                conselho: registrosConselho
-            };
-
-            localStorage.setItem('rituais', JSON.stringify(rituais));
-
-            fecharModal('nova');
-            atualizarTudo();
-            alert('✅ Ritualística completa salva com sucesso!');
-        }
-
-        // ========== GERENCIAR MEMBROS ==========
-        window.carregarMembros = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
-            const container = document.getElementById('listaMembrosGerenciar');
-            
-            container.innerHTML = lista.map((m, i) => `
-                <div class="membro-item">
-                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 10px;">
-                        <input type="text" value="${m.nome}" id="nome-${i}" style="width: 100%;">
-                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="width: 100%;">
-                        <div style="display: flex; gap: 5px;">
-                            <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 5px 10px;">💾</button>
-                            <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 5px 10px;">🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML += `
-                <button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 20px;">+ ADICIONAR</button>
-            `;
-        }
-
-        window.salvarMembro = function(index, tipo) {
-            const nome = document.getElementById(`nome-${index}`).value;
-            const cargo = document.getElementById(`cargo-${index}`).value;
-            if (!nome || !cargo) return alert('Preencha todos os campos');
-
-            const lista = JSON.parse(localStorage.getItem(tipo));
-            lista[index] = { nome, cargo };
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
-        }
-
-        window.deletarMembro = function(index, tipo) {
-            if (!confirm('Deletar este membro?')) return;
-            const lista = JSON.parse(localStorage.getItem(tipo));
-            lista.splice(index, 1);
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
-        }
-
-        window.adicionarMembro = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
-            lista.push({ nome: 'Novo Membro', cargo: 'Novo Cargo' });
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
-        }
-
-        // ========== VER REGISTROS ==========
-        function carregarRegistros() {
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
-            const container = document.getElementById('listaRegistros');
-            
-            if (Object.keys(rituais).length === 0) {
-                container.innerHTML = '<p style="color: #cbb3ff; text-align: center;">Nenhum registro</p>';
-                return;
-            }
-
-            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
-                const totalF = info.filhas?.length || 0;
-                const presF = info.filhas?.filter(f => f.presente).length || 0;
-                const totalC = info.conselho?.length || 0;
-                const presC = info.conselho?.filter(c => c.presente).length || 0;
-                
-                return `
-                    <div class="registro-card">
-                        <h3 style="text-align: center; margin-bottom: 10px;">${data.split('-').reverse().join('/')}</h3>
-                        <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
-                            <div>👑 ${presF}/${totalF}</div>
-                            <div>⚡ ${presC}/${totalC}</div>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="botao" onclick="mudarData('${data}'); fecharModal('registros')" style="flex:1;">📅 Ver</button>
-                            <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1;">🗑️ Deletar</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.deletarRegistro = function(data) {
-            if (!confirm(`Deletar registro de ${data}?`)) return;
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
-            delete rituais[data];
-            localStorage.setItem('rituais', JSON.stringify(rituais));
-            carregarRegistros();
-            if (dataSelecionada === data) {
-                dataSelecionada = Object.keys(rituais)[0] || '2026-02-28';
-                atualizarTudo();
-            }
-        }
-
-        // Evento de pesquisa
-        document.getElementById('pesquisaNome').addEventListener('input', function(e) {
-            if (e.target.value) pesquisarNome(e.target.value);
-        });
-
-     
-        // Inicializar
-        atualizarTudo();
-        
-        // Atualizar a cada segundo
-        setInterval(atualizarDataHoraFooter, 1000);
-        
-        // Data padrão (próximo sábado)
-        const hoje = new Date();
-        const sabado = new Date(hoje);
-        sabado.setDate(hoje.getDate() + ((6 - hoje.getDay() + 7) % 7));
-        document.getElementById('novaData').value = sabado.toISOString().split('T')[0];
-        document.getElementById('pesquisaData').value = sabado.toISOString().split('T')[0];
-    </script>
-</body>
-</html>
+        window.fechar
