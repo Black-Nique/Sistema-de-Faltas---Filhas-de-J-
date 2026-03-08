@@ -85,7 +85,7 @@
             flex-wrap: wrap;
         }
 
-        input, select {
+        input, select, textarea {
             background: rgba(45, 27, 69, 0.8);
             border: 1px solid #b388ff;
             border-radius: 30px;
@@ -96,7 +96,12 @@
             min-width: 250px;
         }
 
-        input:focus {
+        textarea {
+            border-radius: 15px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
             border-color: #e1beff;
             box-shadow: 0 0 20px #b388ff;
         }
@@ -114,6 +119,13 @@
             padding: 20px;
             text-align: center;
             border: 1px solid #b388ff;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px #b388ff;
         }
 
         .card .numero {
@@ -362,6 +374,125 @@
             border-color: #ff4757;
             color: #ffb3b3;
         }
+
+        .info-detalhada {
+            background: rgba(26, 11, 46, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #b388ff;
+        }
+
+        .info-detalhada h2 {
+            color: #e5ceff;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(45, 27, 69, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #b388ff;
+        }
+
+        .info-card h3 {
+            color: #cbb3ff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #b388ff;
+            padding-bottom: 10px;
+        }
+
+        .estatistica-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+
+        .estatistica-valor {
+            font-weight: bold;
+            color: #b388ff;
+        }
+
+        .lista-faltas {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .falta-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(26, 11, 46, 0.4);
+            border-radius: 10px;
+            border-left: 3px solid;
+        }
+
+        .falta-item.justificada {
+            border-left-color: #ffe17a;
+        }
+
+        .falta-item.nao-justificada {
+            border-left-color: #ff4757;
+        }
+
+        .falta-data {
+            font-size: 0.9em;
+            color: #cbb3ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .badge.aceita {
+            background: rgba(76, 175, 80, 0.3);
+            color: #a5ffaf;
+            border: 1px solid #4caf50;
+        }
+
+        .badge.rejeitada {
+            background: rgba(255, 71, 87, 0.3);
+            color: #ffb3b3;
+            border: 1px solid #ff4757;
+        }
+
+        .resultado-pesquisa {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-voltar {
+            background: rgba(45, 27, 69, 0.8);
+            border: 1px solid #b388ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-voltar:hover {
+            background: #b388ff;
+            color: #1a0b2e;
+        }
     </style>
 </head>
 <body>
@@ -379,16 +510,18 @@
 
         <div class="grid-imagens" id="gridFilhas"></div>
 
+        <!-- Área de Pesquisa por Nome Completo -->
         <div class="pesquisa-box">
-            <input type="text" id="pesquisaNome" placeholder="🔮 Pesquisar por primeiro nome...">
+            <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite o nome completo da filha...">
+            <button class="botao" onclick="pesquisarFilhaCompleta()">🔮 PESQUISAR FILHA</button>
+            <button class="botao" onclick="limparPesquisa()">✕ LIMPAR</button>
         </div>
 
-        <div class="pesquisa-box">
-            <input type="date" id="pesquisaData">
-            <button class="botao" onclick="buscarPorData()">📅 BUSCAR DATA</button>
-        </div>
+        <!-- Resultado da Pesquisa Detalhada -->
+        <div id="resultadoPesquisa" class="resultado-pesquisa"></div>
 
-        <div class="cards" id="cardsResultado">
+        <!-- Cards de Estatísticas Gerais (inicialmente visíveis) -->
+        <div id="cardsGerais" class="cards">
             <div class="card"><div class="numero">0</div>Total de Faltas</div>
             <div class="card"><div class="numero">0</div>Justificadas</div>
             <div class="card"><div class="numero">0</div>Não Justificadas</div>
@@ -579,7 +712,7 @@
                     { nome: "Luiza Santos Duarte", presente: true },
                     { nome: "Erika Careaga", presente: true },
                     // FALTAS DAS FILHAS - 21/02
-                    { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true }, // Falecimento de familiar
+                    { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
                     { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
                     { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
                     { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
@@ -588,8 +721,7 @@
                 conselho: [
                     { nome: "Ingrid M. Barros", presente: true },
                     { nome: "Lilian Fernanda Oliveira", presente: true },
-                    // FALTAS DO CONSELHO - 21/02
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true }, // Falecimento de familiar
+                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
                     { nome: "Danieli Girão Lacerda", presente: true },
                     { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
                     { nome: "Erika Viviana Guerrero Ramires", presente: true },
@@ -599,7 +731,7 @@
                 ]
             },
 
-            // SEGUNDA RITUALÍSTICA - 28/02/2026 (conforme sua chamada)
+            // SEGUNDA RITUALÍSTICA - 28/02/2026
             '2026-02-28': {
                 filhas: [
                     { nome: "Beatriz Lorenzoni", presente: true },
@@ -616,7 +748,6 @@
                     { nome: "Erika Careaga", presente: true },
                     { nome: "Isabela Carbonaro", presente: true },
                     { nome: "Jenifer Cristina Lopes", presente: true },
-                    // FALTAS DAS FILHAS - 28/02
                     { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
                     { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
                     { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
@@ -629,7 +760,6 @@
                 conselho: [
                     { nome: "Ingrid M. Barros", presente: true },
                     { nome: "Lilian Fernanda Oliveira", presente: true },
-                    // FALTAS DO CONSELHO - 28/02
                     { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
                     { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
                     { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
@@ -640,7 +770,7 @@
                 ]
             },
 
-            // TERCEIRA RITUALÍSTICA - Data da planilha (10 faltas, 4 justificadas)
+            // TERCEIRA RITUALÍSTICA - 07/03/2026
             '2026-03-07': {
                 filhas: [
                     { nome: "Beatriz Lorenzoni", presente: true },
@@ -659,7 +789,6 @@
                     { nome: "Larissa Guerreiro", presente: true },
                     { nome: "Isabela Carbonaro", presente: true },
                     { nome: "Analia Arevalos", presente: true },
-                    // FALTAS DAS FILHAS (6 faltas)
                     { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
                     { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
                     { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
@@ -673,7 +802,6 @@
                     { nome: "Lilian Fernanda Oliveira", presente: true },
                     { nome: "Erika Viviana Guerrero Ramires", presente: true },
                     { nome: "Sheila Silva", presente: true },
-                    // FALTAS DO CONSELHO (4 faltas)
                     { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
                     { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
                     { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
@@ -701,6 +829,7 @@
             atualizarGridFilhas();
             atualizarListaDatas();
             carregarTabelas();
+            atualizarCardsGerais();
         }
 
         function atualizarGridFilhas() {
@@ -709,12 +838,36 @@
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
             grid.innerHTML = filhas.map((f, i) => `
-                <div class="item-imagem" onclick="pesquisarNome('${f.nome.split(' ')[0]}')">
+                <div class="item-imagem" onclick="pesquisarFilhaEspecifica('${f.nome}')">
                     <div class="icone">${icones[i % icones.length]}</div>
                     <div>${f.nome}</div>
                     <div style="font-size: 0.8em; color: #cbb3ff;">${f.cargo}</div>
                 </div>
             `).join('');
+        }
+
+        function atualizarCardsGerais() {
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            
+            let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
+            
+            Object.values(rituais).forEach(data => {
+                [...(data.filhas || []), ...(data.conselho || [])].forEach(r => {
+                    if (!r.presente) {
+                        total++;
+                        if (r.justificada) just++; else naoJust++;
+                        if (r.aceita) aceitas++; else rejeitadas++;
+                    }
+                });
+            });
+
+            document.getElementById('cardsGerais').innerHTML = `
+                <div class="card"><div class="numero">${total}</div>Total de Faltas</div>
+                <div class="card"><div class="numero">${just}</div>Justificadas</div>
+                <div class="card"><div class="numero">${naoJust}</div>Não Justificadas</div>
+                <div class="card"><div class="numero">${aceitas}</div>Aceitas</div>
+                <div class="card"><div class="numero">${rejeitadas}</div>Rejeitadas</div>
+            `;
         }
 
         function atualizarListaDatas() {
@@ -764,7 +917,161 @@
             }).join('');
         }
 
-        // Pesquisar por nome
+        // ========== NOVA FUNÇÃO: PESQUISAR FILHA POR NOME COMPLETO ==========
+        window.pesquisarFilhaCompleta = function() {
+            const nomeBusca = document.getElementById('pesquisaNomeCompleto').value.trim();
+            
+            if (!nomeBusca) {
+                alert('Por favor, digite o nome completo da filha');
+                return;
+            }
+
+            // Verificar se é uma filha (não membro do conselho)
+            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
+            const filhaEncontrada = filhas.find(f => f.nome.toLowerCase() === nomeBusca.toLowerCase());
+            
+            if (!filhaEncontrada) {
+                alert('Filha não encontrada. Verifique o nome digitado.');
+                return;
+            }
+
+            // Esconder cards gerais e mostrar resultado da pesquisa
+            document.getElementById('cardsGerais').style.display = 'none';
+            document.getElementById('resultadoPesquisa').style.display = 'block';
+            
+            // Buscar todas as faltas da filha
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const faltas = [];
+            
+            Object.entries(rituais).forEach(([data, registro]) => {
+                const falta = registro.filhas?.find(f => f.nome === filhaEncontrada.nome);
+                if (falta && !falta.presente) {
+                    faltas.push({
+                        data: data,
+                        ...falta
+                    });
+                }
+            });
+
+            // Ordenar faltas por data (mais recente primeiro)
+            faltas.sort((a, b) => b.data.localeCompare(a.data));
+
+            // Calcular estatísticas
+            const totalFaltas = faltas.length;
+            const justificadas = faltas.filter(f => f.justificada).length;
+            const naoJustificadas = faltas.filter(f => !f.justificada).length;
+            const aceitas = faltas.filter(f => f.aceita).length;
+            const rejeitadas = faltas.filter(f => !f.aceita).length;
+
+            // Criar HTML com as informações detalhadas
+            const resultadoHTML = `
+                <div class="info-detalhada">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>👑 ${filhaEncontrada.nome}</h2>
+                        <button class="btn-voltar" onclick="voltarCardsGerais()">← Voltar</button>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="font-size: 1.5em; color: #e5ceff;">${filhaEncontrada.cargo}</div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>📊 ESTATÍSTICAS GERAIS</h3>
+                            <div class="estatistica-item">
+                                <span>Total de Faltas:</span>
+                                <span class="estatistica-valor">${totalFaltas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Justificadas:</span>
+                                <span class="estatistica-valor" style="color: #ffe17a;">${justificadas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Não Justificadas:</span>
+                                <span class="estatistica-valor" style="color: #ffb3b3;">${naoJustificadas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Aceitas pelo Conselho:</span>
+                                <span class="estatistica-valor" style="color: #a5ffaf;">${aceitas}</span>
+                            </div>
+                            <div class="estatistica-item">
+                                <span>Rejeitadas:</span>
+                                <span class="estatistica-valor" style="color: #ffb3b3;">${rejeitadas}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h3>📅 FALTAS POR RITUALÍSTICA</h3>
+                            <div class="lista-faltas">
+                                ${faltas.length > 0 ? faltas.map(f => `
+                                    <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
+                                        <div class="falta-data">${f.data.split('-').reverse().join('/')}</div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                                            <span>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</span>
+                                            <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">
+                                                ${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p style="color: #cbb3ff; text-align: center;">Nenhuma falta registrada</p>'}
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h3>📈 ANÁLISE DE FREQUÊNCIA</h3>
+                            <div style="margin: 20px 0;">
+                                <div style="margin-bottom: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                        <span>Frequência:</span>
+                                        <span>${totalFaltas > 0 ? Math.round((justificadas/totalFaltas)*100) : 0}%</span>
+                                    </div>
+                                    <div style="width: 100%; height: 10px; background: rgba(180,130,255,0.2); border-radius: 5px; overflow: hidden;">
+                                        <div style="width: ${totalFaltas > 0 ? (justificadas/totalFaltas)*100 : 0}%; height: 100%; background: #ffe17a;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                        <span>Aprovação:</span>
+                                        <span>${totalFaltas > 0 ? Math.round((aceitas/totalFaltas)*100) : 0}%</span>
+                                    </div>
+                                    <div style="width: 100%; height: 10px; background: rgba(180,130,255,0.2); border-radius: 5px; overflow: hidden;">
+                                        <div style="width: ${totalFaltas > 0 ? (aceitas/totalFaltas)*100 : 0}%; height: 100%; background: #a5ffaf;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 30px;">
+                                <h4 style="color: #cbb3ff; margin-bottom: 10px;">📍 OBSERVAÇÕES</h4>
+                                <textarea rows="3" style="width: 100%; background: rgba(26,11,46,0.6); border: 1px solid #b388ff; border-radius: 10px; padding: 10px; color: white;" placeholder="Adicionar observações sobre esta filha..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
+        }
+
+        // Função para pesquisar filha específica ao clicar no card
+        window.pesquisarFilhaEspecifica = function(nome) {
+            document.getElementById('pesquisaNomeCompleto').value = nome;
+            pesquisarFilhaCompleta();
+        }
+
+        // Função para voltar aos cards gerais
+        window.voltarCardsGerais = function() {
+            document.getElementById('cardsGerais').style.display = 'grid';
+            document.getElementById('resultadoPesquisa').style.display = 'none';
+            document.getElementById('pesquisaNomeCompleto').value = '';
+        }
+
+        // Função para limpar pesquisa
+        window.limparPesquisa = function() {
+            document.getElementById('pesquisaNomeCompleto').value = '';
+            voltarCardsGerais();
+        }
+
+        // Pesquisar por nome (função original mantida para compatibilidade)
         window.pesquisarNome = function(termo) {
             document.getElementById('pesquisaNome').value = termo;
             const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
@@ -781,7 +1088,7 @@
                 });
             });
 
-            document.getElementById('cardsResultado').innerHTML = `
+            document.getElementById('cardsGerais').innerHTML = `
                 <div class="card"><div class="numero">${total}</div>Total de Faltas</div>
                 <div class="card"><div class="numero">${just}</div>Justificadas</div>
                 <div class="card"><div class="numero">${naoJust}</div>Não Justificadas</div>
@@ -1100,9 +1407,16 @@
         document.getElementById('novaData').value = sabado.toISOString().split('T')[0];
         document.getElementById('pesquisaData').value = sabado.toISOString().split('T')[0];
 
-        // Evento de pesquisa
+        // Evento de pesquisa por nome (para pesquisa em tempo real)
         document.getElementById('pesquisaNome').addEventListener('input', function(e) {
             if (e.target.value) pesquisarNome(e.target.value);
+        });
+
+        // Evento para pesquisar ao pressionar Enter no campo de nome completo
+        document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                pesquisarFilhaCompleta();
+            }
         });
     </script>
 </body>
