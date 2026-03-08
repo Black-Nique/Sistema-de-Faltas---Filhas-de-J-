@@ -419,7 +419,7 @@
             </div>
         </div>
 
-        <!-- MODAIS (igual ao código anterior) -->
+        <!-- MODAL: Nova Ritualística -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header">
@@ -454,8 +454,34 @@
             </div>
         </div>
 
-        <div id="modalMembros" class="modal">[conteúdo igual]</div>
-        <div id="modalRegistros" class="modal">[conteúdo igual]</div>
+        <!-- MODAL: Gerenciar Membros -->
+        <div id="modalMembros" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>👑 GERENCIAR MEMBROS</h2>
+                    <button class="fechar" onclick="fecharModal('membros')">✕</button>
+                </div>
+
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                    <button class="botao" onclick="carregarMembros('filhas')">FILHAS</button>
+                    <button class="botao" onclick="carregarMembros('conselho')">CONSELHO</button>
+                </div>
+
+                <div id="listaMembrosGerenciar"></div>
+            </div>
+        </div>
+
+        <!-- MODAL: Ver Registros -->
+        <div id="modalRegistros" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>📜 REGISTROS SALVOS</h2>
+                    <button class="fechar" onclick="fecharModal('registros')">✕</button>
+                </div>
+
+                <div id="listaRegistros" class="registros-grid"></div>
+            </div>
+        </div>
     </div>
 
     <div class="footer">
@@ -670,7 +696,7 @@
         let dataSelecionada = '2026-02-28';
         let abaAtual = 'filhas';
 
-        // ========== FUNÇÕES (igual ao código anterior) ==========
+        // ========== FUNÇÕES PRINCIPAIS ==========
         function atualizarTudo() {
             atualizarGridFilhas();
             atualizarListaDatas();
@@ -779,9 +805,267 @@
             }
         }
 
-        // Funções do modal (manter as mesmas do código anterior)
+        // ========== FUNÇÕES DO MODAL NOVA RITUALÍSTICA ==========
+        window.carregarAmbasAbas = function() {
+            carregarMembrosModal('filhas', 'containerFilhas');
+            carregarMembrosModal('conselho', 'containerConselho');
+            atualizarProgresso();
+        }
+
+        function carregarMembrosModal(tipo, containerId) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            const container = document.getElementById(containerId);
+            
+            container.innerHTML = lista.map(m => {
+                const id = m.nome.replace(/\s/g, '') + tipo;
+                return `
+                    <div class="membro-item" data-tipo="${tipo}" data-nome="${m.nome}">
+                        <div style="margin-bottom: 10px;"><strong>${m.nome}</strong> - ${m.cargo}</div>
+                        <div class="grid-3">
+                            <select class="presenca-${tipo}" id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')">
+                                <option value="presente">✓ Presente</option>
+                                <option value="ausente">✗ Ausente</option>
+                            </select>
+                            <select class="just-${tipo}" id="just-${id}" disabled>
+                                <option value="nao">Não Justificada</option>
+                                <option value="sim">Justificada</option>
+                            </select>
+                            <select class="aceite-${tipo}" id="aceite-${id}" disabled>
+                                <option value="nao">Rejeitada</option>
+                                <option value="sim">Aceita</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.mudarPresencaModal = function(id, tipo) {
+            const pres = document.getElementById(`pres-${id}`).value;
+            document.getElementById(`just-${id}`).disabled = pres === 'presente';
+            document.getElementById(`aceite-${id}`).disabled = pres === 'presente';
+            atualizarProgresso();
+        }
+
+        window.marcarTodosAtual = function(status) {
+            const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
+            const selects = document.querySelectorAll(`#${container} select[id^="pres-"]`);
+            
+            selects.forEach(select => {
+                select.value = status;
+                const id = select.id.replace('pres-', '');
+                mudarPresencaModal(id, abaAtual);
+            });
+        }
+
+        function atualizarProgresso() {
+            // Filhas
+            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
+            const totalFilhas = selectsFilhas.length;
+            const marcadasFilhas = Array.from(selectsFilhas).filter(s => s.value === 'presente' || s.value === 'ausente').length;
+            
+            document.getElementById('progressoFilhas').innerHTML = 
+                marcadasFilhas === totalFilhas 
+                    ? `✅ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados` 
+                    : `⏳ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados`;
+            
+            document.getElementById('progressoFilhas').className = 
+                marcadasFilhas === totalFilhas ? 'progresso completo' : 'progresso';
+
+            // Conselho
+            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
+            const totalConselho = selectsConselho.length;
+            const marcadasConselho = Array.from(selectsConselho).filter(s => s.value === 'presente' || s.value === 'ausente').length;
+            
+            document.getElementById('progressoConselho').innerHTML = 
+                marcadasConselho === totalConselho 
+                    ? `✅ Conselho: ${marcadasConselho}/${totalConselho} membros marcados` 
+                    : `⏳ Conselho: ${marcadasConselho}/${totalConselho} membros marcados`;
+            
+            document.getElementById('progressoConselho').className = 
+                marcadasConselho === totalConselho ? 'progresso completo' : 'progresso';
+
+            // Habilitar/desabilitar botão salvar
+            const botaoSalvar = document.getElementById('botaoSalvar');
+            if (marcadasFilhas === totalFilhas && marcadasConselho === totalConselho) {
+                botaoSalvar.disabled = false;
+                botaoSalvar.style.opacity = '1';
+            } else {
+                botaoSalvar.disabled = true;
+                botaoSalvar.style.opacity = '0.5';
+            }
+        }
+
+        window.salvarRitualisticaCompleta = function() {
+            const data = document.getElementById('novaData').value;
+            
+            if (!data) return alert('❌ Selecione uma data');
+
+            // Verificar se todos foram marcados
+            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
+            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
+            
+            if (Array.from(selectsFilhas).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
+                return alert('❌ Marque todas as Filhas como Presente ou Ausente');
+            }
+            
+            if (Array.from(selectsConselho).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
+                return alert('❌ Marque todo o Conselho como Presente ou Ausente');
+            }
+
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            if (!rituais[data]) rituais[data] = { filhas: [], conselho: [] };
+
+            // Coletar dados das Filhas
+            const registrosFilhas = [];
+            document.querySelectorAll('#containerFilhas .membro-item').forEach(item => {
+                const nome = item.dataset.nome;
+                const id = nome.replace(/\s/g, '') + 'filhas';
+                const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                
+                registrosFilhas.push({
+                    nome: nome,
+                    presente: presente,
+                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
+                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                });
+            });
+
+            // Coletar dados do Conselho
+            const registrosConselho = [];
+            document.querySelectorAll('#containerConselho .membro-item').forEach(item => {
+                const nome = item.dataset.nome;
+                const id = nome.replace(/\s/g, '') + 'conselho';
+                const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                
+                registrosConselho.push({
+                    nome: nome,
+                    presente: presente,
+                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
+                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                });
+            });
+
+            rituais[data] = {
+                filhas: registrosFilhas,
+                conselho: registrosConselho
+            };
+
+            localStorage.setItem('rituais', JSON.stringify(rituais));
+
+            fecharModal('nova');
+            atualizarTudo();
+            alert('✅ Ritualística completa salva com sucesso!');
+        }
+
+        // ========== FUNÇÕES DO MODAL GERENCIAR MEMBROS ==========
+        window.carregarMembros = function(tipo) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            const container = document.getElementById('listaMembrosGerenciar');
+            
+            container.innerHTML = lista.map((m, i) => `
+                <div class="membro-item">
+                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 10px;">
+                        <input type="text" value="${m.nome}" id="nome-${i}" style="width: 100%; background: rgba(45,27,69,0.8); border: 1px solid #b388ff; border-radius: 10px; padding: 8px; color: white;">
+                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="width: 100%; background: rgba(45,27,69,0.8); border: 1px solid #b388ff; border-radius: 10px; padding: 8px; color: white;">
+                        <div style="display: flex; gap: 5px;">
+                            <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 5px 10px; font-size: 0.9em;">💾</button>
+                            <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 5px 10px; font-size: 0.9em;">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML += `
+                <button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 20px;">+ ADICIONAR NOVO MEMBRO</button>
+            `;
+        }
+
+        window.salvarMembro = function(index, tipo) {
+            const nome = document.getElementById(`nome-${index}`).value;
+            const cargo = document.getElementById(`cargo-${index}`).value;
+            if (!nome || !cargo) return alert('Preencha todos os campos');
+
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista[index] = { nome, cargo };
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        window.deletarMembro = function(index, tipo) {
+            if (!confirm('Deletar este membro?')) return;
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista.splice(index, 1);
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        window.adicionarMembro = function(tipo) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista.push({ nome: 'Novo Membro', cargo: 'Novo Cargo' });
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        // ========== FUNÇÕES DO MODAL VER REGISTROS ==========
+        function carregarRegistros() {
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const container = document.getElementById('listaRegistros');
+            
+            if (Object.keys(rituais).length === 0) {
+                container.innerHTML = '<p style="color: #cbb3ff; text-align: center; grid-column: 1/-1;">Nenhum registro encontrado</p>';
+                return;
+            }
+
+            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
+                const totalF = info.filhas?.length || 0;
+                const presF = info.filhas?.filter(f => f.presente).length || 0;
+                const totalC = info.conselho?.length || 0;
+                const presC = info.conselho?.filter(c => c.presente).length || 0;
+                
+                return `
+                    <div class="registro-card">
+                        <h3 style="text-align: center; margin-bottom: 10px; color: #e5ceff;">${data.split('-').reverse().join('/')}</h3>
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
+                            <div>👑 ${presF}/${totalF}</div>
+                            <div>⚡ ${presC}/${totalC}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="botao" onclick="mudarData('${data}'); fecharModal('registros')" style="flex:1; padding: 8px;">📅 Ver</button>
+                            <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">🗑️ Deletar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.deletarRegistro = function(data) {
+            if (!confirm(`Deletar registro de ${data}?`)) return;
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            delete rituais[data];
+            localStorage.setItem('rituais', JSON.stringify(rituais));
+            carregarRegistros();
+            if (dataSelecionada === data) {
+                dataSelecionada = Object.keys(rituais)[0] || '2026-02-28';
+                atualizarTudo();
+            }
+        }
+
+        // ========== FUNÇÕES DOS MODAIS (GERAL) ==========
         window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
+            if (tipo === 'nova') {
+                carregarAmbasAbas();
+            }
+            if (tipo === 'membros') {
+                carregarMembros('filhas');
+            }
+            if (tipo === 'registros') {
+                carregarRegistros();
+            }
         }
 
         window.fecharModal = function(tipo) {
@@ -799,7 +1083,7 @@
         // Atualizar data/hora no footer
         function atualizarDataHoraFooter() {
             const agora = new Date();
-            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
             const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
             
             const dataStr = `${dias[agora.getDay()]}, ${agora.getDate()} de ${meses[agora.getMonth()]} de ${agora.getFullYear()} • ${agora.getHours().toString().padStart(2,'0')}:${agora.getMinutes().toString().padStart(2,'0')}:${agora.getSeconds().toString().padStart(2,'0')}`;
