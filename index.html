@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Faltas - Ordem Estrelar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0b2e, #2d1b45, #3a2355);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(26, 11, 46, 0.9);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(180, 130, 255, 0.5);
+            border: 1px solid #b388ff;
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #f3e8ff, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #cbb3ff;
+            margin-bottom: 30px;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .botao {
+            background: linear-gradient(135deg, #8a6de9, #b388ff);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid #e1beff;
+        }
+
+        .botao:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px #b388ff;
+        }
+
+        .botao.perigo {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+        }
+
+        .pesquisa-box {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            background: rgba(45, 27, 69, 0.8);
+            border: 1px solid #b388ff;
+            border-radius: 30px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 1em;
+            outline: none;
+            min-width: 250px;
+        }
+
+        input:focus {
+            border-color: #e1beff;
+            box-shadow: 0 0 20px #b388ff;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(26, 11, 46, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #b388ff;
+        }
+
+        .card .numero {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f3e8ff, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .grid-imagens {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .item-imagem {
+            background: rgba(45, 27, 69, 0.6);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #b388ff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .item-imagem:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px #b388ff;
+        }
+
+        .icone {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .datas {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .data-botao {
+            background: rgba(45, 27, 69, 0.8);
+            border: 1px solid #b388ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .data-botao.ativo {
+            background: #b388ff;
+            color: #1a0b2e;
+        }
+
+        .tabelas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .tabelas {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(91, 54, 155, 0.6);
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #b388ff;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(180, 130, 255, 0.2);
+        }
+
+        .presente { color: #a5ffaf; }
+        .ausente { color: #ffb3b3; }
+        .justificado { color: #ffe17a; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-conteudo {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #2d1b45;
+            border-radius: 30px;
+            padding: 30px;
+            border: 2px solid #b388ff;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .fechar {
+            background: none;
+            border: none;
+            color: #ffb3b3;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .membro-item {
+            background: #1a0b2e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #b388ff;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        select {
+            width: 100%;
+        }
+
+        .registros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .registro-card {
+            background: #1a0b2e;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #b388ff;
+        }
+
+        .abas {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #b388ff;
+            padding-bottom: 10px;
+        }
+
+        .aba {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .aba.ativa {
+            background: #b388ff;
+            color: #1a0b2e;
+        }
+
+        .progresso {
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(180, 130, 255, 0.2);
+            border-radius: 30px;
+        }
+
+        .progresso.completo {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4caf50;
+        }
+
+        /* Footer */
+        .footer {
+            max-width: 1400px;
+            margin: 20px auto 0;
+            padding: 20px;
+            text-align: center;
+            color: #cbb3ff;
+            border-top: 1px dashed #b388ff;
+            font-size: 0.9em;
+            background: rgba(26, 11, 46, 0.5);
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .footer .nome {
+            font-weight: bold;
+            background: linear-gradient(135deg, #f3e8ff, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.1em;
+        }
+
+        .footer .data-hora {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #a98cd4;
+        }
+
+        .footer .assinatura {
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✦ SISTEMA DE FALTAS ✦</h1>
+        <div class="subtitulo">Ordem Internacional das Filhas de Jó - Bethel 04 Ponta Porã/MS • Rainha Beatriz Lorenzoni</div>
+
+        <!-- Botões principais -->
+        <div class="botoes">
+            <button class="botao" onclick="mostrarModal('nova')">✦ NOVA RITUALÍSTICA</button>
+            <button class="botao" onclick="mostrarModal('membros')">👑 GERENCIAR MEMBROS</button>
+            <button class="botao" onclick="mostrarModal('registros')">📜 VER REGISTROS</button>
+        </div>
+
+        <!-- Grid de imagens das filhas -->
+        <div class="grid-imagens" id="gridFilhas"></div>
+
+        <!-- Pesquisa por nome -->
+        <div class="pesquisa-box">
+            <input type="text" id="pesquisaNome" placeholder="🔮 Pesquisar por primeiro nome...">
+        </div>
+
+        <!-- Pesquisa por data -->
+        <div class="pesquisa-box">
+            <input type="date" id="pesquisaData">
+            <button class="botao" onclick="buscarPorData()">📅 BUSCAR DATA</button>
+        </div>
+
+        <!-- Cards de resultado -->
+        <div class="cards" id="cardsResultado">
+            <div class="card"><div class="numero">0</div>Total de Faltas</div>
+            <div class="card"><div class="numero">0</div>Justificadas</div>
+            <div class="card"><div class="numero">0</div>Não Justificadas</div>
+            <div class="card"><div class="numero">0</div>Aceitas</div>
+            <div class="card"><div class="numero">0</div>Rejeitadas</div>
+        </div>
+
+        <!-- Datas disponíveis -->
+        <div class="datas" id="listaDatas"></div>
+
+        <!-- Tabelas -->
+        <div class="tabelas">
+            <div>
+                <h3 style="text-align: center; color: #e5ceff; margin-bottom: 20px;">FILHAS DA ORDEM</h3>
+                <table id="tabelaFilhas">
+                    <thead>
+                        <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
+                    </thead>
+                    <tbody id="corpoFilhas"></tbody>
+                </table>
+            </div>
+            <div>
+                <h3 style="text-align: center; color: #e5ceff; margin-bottom: 20px;">CONSELHO GUARDIÃO</h3>
+                <table id="tabelaConselho">
+                    <thead>
+                        <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
+                    </thead>
+                    <tbody id="corpoConselho"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL: Nova Ritualística (AGORA COM AS DUAS ABAS) -->
+        <div id="modalNova" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>✦ NOVA RITUALÍSTICA ✦</h2>
+                    <button class="fechar" onclick="fecharModal('nova')">✕</button>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>📅 Data:</label>
+                    <input type="date" id="novaData" style="width: 100%; margin-top: 10px;">
+                </div>
+
+                <!-- Abas para Filhas e Conselho -->
+                <div class="abas">
+                    <div class="aba ativa" id="abaFilhas" onclick="mudarAba('filhas')">👑 FILHAS</div>
+                    <div class="aba" id="abaConselho" onclick="mudarAba('conselho')">⚡ CONSELHO</div>
+                </div>
+
+                <!-- Barra de progresso -->
+                <div id="progressoContainer" style="display: none;">
+                    <div class="progresso" id="progressoFilhas">
+                        ⏳ Filhas: 0/0 membros marcados
+                    </div>
+                    <div class="progresso" id="progressoConselho">
+                        ⏳ Conselho: 0/0 membros marcados
+                    </div>
+                </div>
+
+                <!-- Botões de ação rápida -->
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #4caf50;">✓ Todos Presentes</button>
+                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #ff4757;">✗ Todos Ausentes</button>
+                </div>
+
+                <!-- Container para Filhas -->
+                <div id="containerFilhas" style="max-height: 500px; overflow-y: auto;"></div>
+                
+                <!-- Container para Conselho -->
+                <div id="containerConselho" style="max-height: 500px; overflow-y: auto; display: none;"></div>
+
+                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 30px;" id="botaoSalvar">✦ SALVAR RITUALÍSTICA COMPLETA ✦</button>
+            </div>
+        </div>
+
+        <!-- MODAL: Gerenciar Membros -->
+        <div id="modalMembros" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>👑 GERENCIAR MEMBROS</h2>
+                    <button class="fechar" onclick="fecharModal('membros')">✕</button>
+                </div>
+
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 30px;">
+                    <button class="botao" onclick="carregarMembros('filhas')">FILHAS</button>
+                    <button class="botao" onclick="carregarMembros('conselho')">CONSELHO</button>
+                </div>
+
+                <div id="listaMembrosGerenciar"></div>
+            </div>
+        </div>
+
+        <!-- MODAL: Ver Registros -->
+        <div id="modalRegistros" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>📜 REGISTROS SALVOS</h2>
+                    <button class="fechar" onclick="fecharModal('registros')">✕</button>
+                </div>
+
+                <div id="listaRegistros" class="registros-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="nome">✦ Dominique Bernazzolli Black ✦</div>
+        <div class="data-hora" id="dataHoraFooter"></div>
+        <div class="assinatura">"Vida Antes da Morte... @dominique_cbb"</div>
+    </div>
+
+    <script>
+        // ========== DADOS INICIAIS ==========
+        const filhasIniciais = [
+            { nome: "Beatriz Lorenzoni", cargo: "Honorável Rainha" },
+            { nome: "Rafaela Belo", cargo: "Primeira Princesa" },
+            { nome: "Júlia Robles", cargo: "Segunda Princesa" },
+            { nome: "Pietra Sorbara", cargo: "Guia" },
+            { nome: "Guiuliana Montana", cargo: "Dirigente de Cerimônias" },
+            { nome: "Dominique Bernazzolli", cargo: "Secretária" },
+            { nome: "Agatha Galeano", cargo: "Tesoureira" },
+            { nome: "Kelly Thalia", cargo: "Capelã" },
+            { nome: "Guianina Montana", cargo: "Bibliotecária" },
+            { nome: "Ana Escanaichi", cargo: "Musicista" },
+            { nome: "Ana Maria Oliveira", cargo: "Primeira Mensageira" },
+            { nome: "Kauana Soares", cargo: "Segunda Mensageira" },
+            { nome: "Rhyanae Otano", cargo: "Terceira Mensageira" },
+            { nome: "Kasia Izabelly", cargo: "Quarta Mensageira" },
+            { nome: "Larissa Guerreiro", cargo: "Quinta Mensageira" },
+            { nome: "Luiza Santos", cargo: "Guarda Interna" },
+            { nome: "Erika Careaga", cargo: "Guarda Externa" },
+            { nome: "Isabela Carbonaro", cargo: "Primeira Zeladora" },
+            { nome: "Maria Alice Dolci", cargo: "Segunda Zeladora" },
+            { nome: "Stefani Kunrath", cargo: "Coral do Bethel" },
+            { nome: "Jenifer Cristina Lopes", cargo: "Coral do Bethel" },
+            { nome: "Analia Arevalos", cargo: "Coral do Bethel" }
+        ];
+
+        const conselhoIniciais = [
+            { nome: "Ingrid M. Barros", cargo: "Guardiã do Bethel" },
+            { nome: "Ernane Simões Carbonaro", cargo: "Guardião Associado" },
+            { nome: "Danieli Girão Lacerda", cargo: "Guardiã Tesoureira" },
+            { nome: "Alanis Nascimento", cargo: "Zeladora de Paramentos" },
+            { nome: "Lilian Fernanda Oliveira", cargo: "Apicultora do Bethel" },
+            { nome: "Erika Viviana Guerrero Ramires", cargo: "Guardiã Secretária" },
+            { nome: "Adine Amaral", cargo: "Guardiã Diretora de Música" },
+            { nome: "Sheila Silva", cargo: "Guardiã Diretora de Épocas" },
+            { nome: "Natalina Bonatto Sobara", cargo: "Promotora de Sociabilidade" }
+        ];
+
+        const rituaisIniciais = {
+            '2026-02-28': {
+                filhas: [
+                    { nome: "Beatriz Lorenzoni", presente: true },
+                    { nome: "Rafaela Belo", presente: true },
+                    { nome: "Júlia Robles", presente: true },
+                    { nome: "Pietra Sorbara", presente: true },
+                    { nome: "Guiuliana Montana", presente: true },
+                    { nome: "Dominique Bernazzolli", presente: true },
+                    { nome: "Agatha Galeano", presente: true },
+                    { nome: "Kelly Thalia", presente: false, justificada: true, aceita: true },
+                    { nome: "Guianina Montana", presente: true },
+                    { nome: "Ana Escanaichi", presente: false, justificada: false, aceita: false },
+                    { nome: "Ana Maria Oliveira", presente: true },
+                    { nome: "Kauana Soares", presente: false, justificada: true, aceita: false },
+                    { nome: "Rhyanae Otano", presente: true },
+                    { nome: "Kasia Izabelly", presente: true },
+                    { nome: "Larissa Guerreiro", presente: false, justificada: false, aceita: false },
+                    { nome: "Luiza Santos", presente: false, justificada: true, aceita: true },
+                    { nome: "Erika Careaga", presente: true },
+                    { nome: "Isabela Carbonaro", presente: true },
+                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                    { nome: "Stefani Kunrath", presente: false, justificada: true, aceita: true },
+                    { nome: "Jenifer Cristina Lopes", presente: true },
+                    { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
+                ],
+                conselho: [
+                    { nome: "Ingrid M. Barros", presente: true },
+                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
+                    { nome: "Danieli Girão Lacerda", presente: false, justificada: true, aceita: true },
+                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                    { nome: "Lilian Fernanda Oliveira", presente: true },
+                    { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: false },
+                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                    { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
+                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                ]
+            }
+        };
+
+        // ========== INICIALIZAÇÃO ==========
+        if (!localStorage.getItem('filhas')) {
+            localStorage.setItem('filhas', JSON.stringify(filhasIniciais));
+        }
+        if (!localStorage.getItem('conselho')) {
+            localStorage.setItem('conselho', JSON.stringify(conselhoIniciais));
+        }
+        if (!localStorage.getItem('rituais')) {
+            localStorage.setItem('rituais', JSON.stringify(rituaisIniciais));
+        }
+
+        let dataSelecionada = '2026-02-28';
+        let abaAtual = 'filhas';
+
+        // ========== FUNÇÕES PRINCIPAIS ==========
+        function atualizarTudo() {
+            atualizarGridFilhas();
+            atualizarListaDatas();
+            carregarTabelas();
+        }
+
+        // Grid de imagens
+        function atualizarGridFilhas() {
+            const filhas = JSON.parse(localStorage.getItem('filhas'));
+            const grid = document.getElementById('gridFilhas');
+            const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
+            
+            grid.innerHTML = filhas.map((f, i) => `
+                <div class="item-imagem" onclick="pesquisarNome('${f.nome.split(' ')[0]}')">
+                    <div class="icone">${icones[i % icones.length]}</div>
+                    <div>${f.nome}</div>
+                    <div style="font-size: 0.8em; color: #cbb3ff;">${f.cargo}</div>
+                </div>
+            `).join('');
+        }
+
+        // Pesquisar por nome
+        window.pesquisarNome = function(termo) {
+            document.getElementById('pesquisaNome').value = termo;
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            
+            let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
+            
+            Object.values(rituais).forEach(data => {
+                [...(data.filhas || []), ...(data.conselho || [])].forEach(r => {
+                    if (r.nome.toLowerCase().startsWith(termo.toLowerCase()) && !r.presente) {
+                        total++;
+                        if (r.justificada) just++; else naoJust++;
+                        if (r.aceita) aceitas++; else rejeitadas++;
+                    }
+                });
+            });
+
+            document.getElementById('cardsResultado').innerHTML = `
+                <div class="card"><div class="numero">${total}</div>Total de Faltas</div>
+                <div class="card"><div class="numero">${just}</div>Justificadas</div>
+                <div class="card"><div class="numero">${naoJust}</div>Não Justificadas</div>
+                <div class="card"><div class="numero">${aceitas}</div>Aceitas</div>
+                <div class="card"><div class="numero">${rejeitadas}</div>Rejeitadas</div>
+            `;
+        }
+
+        // Buscar por data
+        window.buscarPorData = function() {
+            const data = document.getElementById('pesquisaData').value;
+            if (!data) return alert('Selecione uma data');
+            
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            if (rituais[data]) {
+                dataSelecionada = data;
+                atualizarListaDatas();
+                carregarTabelas();
+            } else {
+                alert('Nenhum registro para esta data');
+            }
+        }
+
+        // Lista de datas
+        function atualizarListaDatas() {
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const datas = Object.keys(rituais).sort().reverse();
+            const container = document.getElementById('listaDatas');
+            
+            container.innerHTML = datas.map(data => `
+                <button class="data-botao ${data === dataSelecionada ? 'ativo' : ''}" onclick="mudarData('${data}')">
+                    ${data.split('-').reverse().join('/')}
+                </button>
+            `).join('');
+        }
+
+        window.mudarData = function(data) {
+            dataSelecionada = data;
+            atualizarListaDatas();
+            carregarTabelas();
+        }
+
+        // Carregar tabelas
+        function carregarTabelas() {
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            const dados = rituais[dataSelecionada] || { filhas: [], conselho: [] };
+            const filhas = JSON.parse(localStorage.getItem('filhas'));
+            const conselho = JSON.parse(localStorage.getItem('conselho'));
+
+            // Tabela Filhas
+            document.getElementById('corpoFilhas').innerHTML = filhas.map(f => {
+                const r = dados.filhas?.find(x => x.nome === f.nome) || { presente: false };
+                return `
+                    <tr>
+                        <td>${f.nome}</td>
+                        <td>${f.cargo}</td>
+                        <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓ Presente' : '✗ Ausente'}</td>
+                        <td class="${r.justificada ? 'justificado' : ''}">${r.presente ? '—' : (r.justificada ? 'Justificada' : 'Não')}</td>
+                        <td>${r.presente ? '—' : (r.aceita ? '✓ Aceita' : '✗ Rejeitada')}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Tabela Conselho
+            document.getElementById('corpoConselho').innerHTML = conselho.map(c => {
+                const r = dados.conselho?.find(x => x.nome === c.nome) || { presente: false };
+                return `
+                    <tr>
+                        <td>${c.nome}</td>
+                        <td>${c.cargo}</td>
+                        <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓ Presente' : '✗ Ausente'}</td>
+                        <td class="${r.justificada ? 'justificado' : ''}">${r.presente ? '—' : (r.justificada ? 'Justificada' : 'Não')}</td>
+                        <td>${r.presente ? '—' : (r.aceita ? '✓ Aceita' : '✗ Rejeitada')}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ========== NOVA RITUALÍSTICA (COM AS DUAS ABAS) ==========
+        window.mostrarModal = function(tipo) {
+            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
+            if (tipo === 'nova') {
+                carregarAmbasAbas();
+                document.getElementById('progressoContainer').style.display = 'block';
+            }
+            if (tipo === 'membros') carregarMembros('filhas');
+            if (tipo === 'registros') carregarRegistros();
+        }
+
+        window.fecharModal = function(tipo) {
+            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none';
+        }
+
+        // Mudar entre abas
+        window.mudarAba = function(aba) {
+            abaAtual = aba;
+            
+            // Atualizar classes das abas
+            document.getElementById('abaFilhas').className = aba === 'filhas' ? 'aba ativa' : 'aba';
+            document.getElementById('abaConselho').className = aba === 'conselho' ? 'aba ativa' : 'aba';
+            
+            // Mostrar/esconder containers
+            document.getElementById('containerFilhas').style.display = aba === 'filhas' ? 'block' : 'none';
+            document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
+        }
+
+        // Carregar ambas as abas
+        function carregarAmbasAbas() {
+            carregarMembrosModal('filhas', 'containerFilhas');
+            carregarMembrosModal('conselho', 'containerConselho');
+            atualizarProgresso();
+        }
+
+        // Carregar membros no modal
+        function carregarMembrosModal(tipo, containerId) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            const container = document.getElementById(containerId);
+            
+            container.innerHTML = lista.map(m => {
+                const id = m.nome.replace(/\s/g, '') + tipo;
+                return `
+                    <div class="membro-item" data-tipo="${tipo}" data-nome="${m.nome}">
+                        <div style="margin-bottom: 10px;"><strong>${m.nome}</strong> - ${m.cargo}</div>
+                        <div class="grid-3">
+                            <select class="presenca-${tipo}" id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')">
+                                <option value="presente">✓ Presente</option>
+                                <option value="ausente">✗ Ausente</option>
+                            </select>
+                            <select class="just-${tipo}" id="just-${id}" disabled>
+                                <option value="nao">Não Justificada</option>
+                                <option value="sim">Justificada</option>
+                            </select>
+                            <select class="aceite-${tipo}" id="aceite-${id}" disabled>
+                                <option value="nao">Rejeitada</option>
+                                <option value="sim">Aceita</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.mudarPresencaModal = function(id, tipo) {
+            const pres = document.getElementById(`pres-${id}`).value;
+            document.getElementById(`just-${id}`).disabled = pres === 'presente';
+            document.getElementById(`aceite-${id}`).disabled = pres === 'presente';
+            atualizarProgresso();
+        }
+
+        // Marcar todos da aba atual
+        window.marcarTodosAtual = function(status) {
+            const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
+            const selects = document.querySelectorAll(`#${container} select[id^="pres-"]`);
+            
+            selects.forEach(select => {
+                select.value = status;
+                const id = select.id.replace('pres-', '');
+                mudarPresencaModal(id, abaAtual);
+            });
+        }
+
+        // Atualizar barra de progresso
+        function atualizarProgresso() {
+            // Filhas
+            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
+            const totalFilhas = selectsFilhas.length;
+            const marcadasFilhas = Array.from(selectsFilhas).filter(s => s.value !== 'ausente' && s.value !== 'presente' ? 0 : 1).length;
+            
+            document.getElementById('progressoFilhas').innerHTML = 
+                marcadasFilhas === totalFilhas 
+                    ? `✅ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados` 
+                    : `⏳ Filhas: ${marcadasFilhas}/${totalFilhas} membros marcados`;
+            
+            document.getElementById('progressoFilhas').className = 
+                marcadasFilhas === totalFilhas ? 'progresso completo' : 'progresso';
+
+            // Conselho
+            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
+            const totalConselho = selectsConselho.length;
+            const marcadasConselho = Array.from(selectsConselho).filter(s => s.value !== 'ausente' && s.value !== 'presente' ? 0 : 1).length;
+            
+            document.getElementById('progressoConselho').innerHTML = 
+                marcadasConselho === totalConselho 
+                    ? `✅ Conselho: ${marcadasConselho}/${totalConselho} membros marcados` 
+                    : `⏳ Conselho: ${marcadasConselho}/${totalConselho} membros marcados`;
+            
+            document.getElementById('progressoConselho').className = 
+                marcadasConselho === totalConselho ? 'progresso completo' : 'progresso';
+
+            // Habilitar/desabilitar botão salvar
+            const botaoSalvar = document.getElementById('botaoSalvar');
+            if (marcadasFilhas === totalFilhas && marcadasConselho === totalConselho) {
+                botaoSalvar.disabled = false;
+                botaoSalvar.style.opacity = '1';
+            } else {
+                botaoSalvar.disabled = true;
+                botaoSalvar.style.opacity = '0.5';
+            }
+        }
+
+        // Salvar ritualística completa
+        window.salvarRitualisticaCompleta = function() {
+            const data = document.getElementById('novaData').value;
+            
+            if (!data) return alert('❌ Selecione uma data');
+
+            // Verificar se todos foram marcados
+            const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
+            const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
+            
+            if (Array.from(selectsFilhas).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
+                return alert('❌ Marque todas as Filhas como Presente ou Ausente');
+            }
+            
+            if (Array.from(selectsConselho).some(s => s.value !== 'presente' && s.value !== 'ausente')) {
+                return alert('❌ Marque todo o Conselho como Presente ou Ausente');
+            }
+
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            if (!rituais[data]) rituais[data] = { filhas: [], conselho: [] };
+
+            // Coletar dados das Filhas
+            const registrosFilhas = [];
+            document.querySelectorAll('#containerFilhas .membro-item').forEach(item => {
+                const nome = item.dataset.nome;
+                const id = nome.replace(/\s/g, '') + 'filhas';
+                const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                
+                registrosFilhas.push({
+                    nome: nome,
+                    presente: presente,
+                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
+                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                });
+            });
+
+            // Coletar dados do Conselho
+            const registrosConselho = [];
+            document.querySelectorAll('#containerConselho .membro-item').forEach(item => {
+                const nome = item.dataset.nome;
+                const id = nome.replace(/\s/g, '') + 'conselho';
+                const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                
+                registrosConselho.push({
+                    nome: nome,
+                    presente: presente,
+                    justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
+                    aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                });
+            });
+
+            rituais[data] = {
+                filhas: registrosFilhas,
+                conselho: registrosConselho
+            };
+
+            localStorage.setItem('rituais', JSON.stringify(rituais));
+
+            fecharModal('nova');
+            atualizarTudo();
+            alert('✅ Ritualística completa salva com sucesso!');
+        }
+
+        // ========== GERENCIAR MEMBROS ==========
+        window.carregarMembros = function(tipo) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            const container = document.getElementById('listaMembrosGerenciar');
+            
+            container.innerHTML = lista.map((m, i) => `
+                <div class="membro-item">
+                    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 10px;">
+                        <input type="text" value="${m.nome}" id="nome-${i}" style="width: 100%;">
+                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="width: 100%;">
+                        <div style="display: flex; gap: 5px;">
+                            <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 5px 10px;">💾</button>
+                            <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 5px 10px;">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML += `
+                <button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 20px;">+ ADICIONAR</button>
+            `;
+        }
+
+        window.salvarMembro = function(index, tipo) {
+            const nome = document.getElementById(`nome-${index}`).value;
+            const cargo = document.getElementById(`cargo-${index}`).value;
+            if (!nome || !cargo) return alert('Preencha todos os campos');
+
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista[index] = { nome, cargo };
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        window.deletarMembro = function(index, tipo) {
+            if (!confirm('Deletar este membro?')) return;
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista.splice(index, 1);
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        window.adicionarMembro = function(tipo) {
+            const lista = JSON.parse(localStorage.getItem(tipo));
+            lista.push({ nome: 'Novo Membro', cargo: 'Novo Cargo' });
+            localStorage.setItem(tipo, JSON.stringify(lista));
+            carregarMembros(tipo);
+            if (tipo === 'filhas') atualizarGridFilhas();
+        }
+
+        // ========== VER REGISTROS ==========
+        function carregarRegistros() {
+            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const container = document.getElementById('listaRegistros');
+            
+            if (Object.keys(rituais).length === 0) {
+                container.innerHTML = '<p style="color: #cbb3ff; text-align: center;">Nenhum registro</p>';
+                return;
+            }
+
+            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
+                const totalF = info.filhas?.length || 0;
+                const presF = info.filhas?.filter(f => f.presente).length || 0;
+                const totalC = info.conselho?.length || 0;
+                const presC = info.conselho?.filter(c => c.presente).length || 0;
+                
+                return `
+                    <div class="registro-card">
+                        <h3 style="text-align: center; margin-bottom: 10px;">${data.split('-').reverse().join('/')}</h3>
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
+                            <div>👑 ${presF}/${totalF}</div>
+                            <div>⚡ ${presC}/${totalC}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="botao" onclick="mudarData('${data}'); fecharModal('registros')" style="flex:1;">📅 Ver</button>
+                            <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1;">🗑️ Deletar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.deletarRegistro = function(data) {
+            if (!confirm(`Deletar registro de ${data}?`)) return;
+            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            delete rituais[data];
+            localStorage.setItem('rituais', JSON.stringify(rituais));
+            carregarRegistros();
+            if (dataSelecionada === data) {
+                dataSelecionada = Object.keys(rituais)[0] || '2026-02-28';
+                atualizarTudo();
+            }
+        }
+
+        // Evento de pesquisa
+        document.getElementById('pesquisaNome').addEventListener('input', function(e) {
+            if (e.target.value) pesquisarNome(e.target.value);
+        });
+
+     
+        // Inicializar
+        atualizarTudo();
+        
+        // Atualizar a cada segundo
+        setInterval(atualizarDataHoraFooter, 1000);
+        
+        // Data padrão (próximo sábado)
+        const hoje = new Date();
+        const sabado = new Date(hoje);
+        sabado.setDate(hoje.getDate() + ((6 - hoje.getDay() + 7) % 7));
+        document.getElementById('novaData').value = sabado.toISOString().split('T')[0];
+        document.getElementById('pesquisaData').value = sabado.toISOString().split('T')[0];
+    </script>
+</body>
+</html>
