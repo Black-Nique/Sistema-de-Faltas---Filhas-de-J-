@@ -48,6 +48,104 @@
             font-size: 1.1em;
         }
 
+        .gestao-info {
+            background: linear-gradient(135deg, rgba(180, 130, 255, 0.2), rgba(138, 109, 233, 0.2));
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #b388ff;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .gestao-item {
+            background: rgba(26, 11, 46, 0.6);
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #b388ff;
+        }
+
+        .gestao-item .label {
+            font-size: 0.9em;
+            color: #cbb3ff;
+            margin-bottom: 5px;
+        }
+
+        .gestao-item .valor {
+            font-size: 1.3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f3e8ff, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .seletor-gestao {
+            background: rgba(45, 27, 69, 0.8);
+            border: 2px solid #b388ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .seletor-gestao h3 {
+            color: #e5ceff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .grid-gestoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .gestao-card {
+            background: rgba(26, 11, 46, 0.6);
+            border: 1px solid #b388ff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .gestao-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px #b388ff;
+        }
+
+        .gestao-card.ativa {
+            background: linear-gradient(135deg, #8a6de9, #b388ff);
+            border: 2px solid white;
+        }
+
+        .gestao-card.ativa .valor {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .gestao-ano {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e5ceff;
+        }
+
+        .gestao-numero {
+            font-size: 0.9em;
+            color: #cbb3ff;
+            margin: 5px 0;
+        }
+
+        .gestao-rainha {
+            font-size: 0.9em;
+            color: #b388ff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .botoes {
             display: flex;
             gap: 15px;
@@ -75,6 +173,10 @@
 
         .botao.perigo {
             background: linear-gradient(135deg, #ff6b6b, #ff4757);
+        }
+
+        .botao-success {
+            background: linear-gradient(135deg, #4caf50, #45a049);
         }
 
         .pesquisa-box {
@@ -277,7 +379,7 @@
 
         .registros-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
 
@@ -288,12 +390,27 @@
             border: 1px solid #b388ff;
         }
 
+        .registro-card.gestao-destaque {
+            border: 2px solid #e5ceff;
+            background: linear-gradient(135deg, #1a0b2e, #2d1b45);
+        }
+
+        .gestao-tag {
+            background: rgba(180, 130, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin: 5px 0;
+            text-align: center;
+        }
+
         .abas {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             border-bottom: 2px solid #b388ff;
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .aba {
@@ -493,6 +610,33 @@
             background: #b388ff;
             color: #1a0b2e;
         }
+
+        .estatisticas-gestao {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .estatistica-card {
+            background: rgba(180, 130, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #b388ff;
+        }
+
+        .estatistica-card .numero {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e5ceff;
+        }
+
+        .estatistica-card .rotulo {
+            font-size: 0.85em;
+            color: #cbb3ff;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -500,12 +644,35 @@
 
     <div class="container">
         <h1>✦ SISTEMA DE FALTAS ✦</h1>
-        <div class="subtitulo">Ordem Internacional das Filhas de Jó - Bethel 04 Flor de Liz • Ponta Porã/MS<br>Vigésima Sétima Gestão • Rainha Beatriz Lorenzoni</div>
+        <div class="subtitulo">Ordem Internacional das Filhas de Jó - Bethel 04 Flor de Liz • Ponta Porã/MS</div>
+
+        <!-- Informações da Gestão Atual -->
+        <div class="gestao-info" id="gestaoInfo">
+            <div class="gestao-item">
+                <div class="label">ANO</div>
+                <div class="valor" id="anoAtual">2026</div>
+            </div>
+            <div class="gestao-item">
+                <div class="label">GESTÃO</div>
+                <div class="valor" id="gestaoNumero">27ª</div>
+            </div>
+            <div class="gestao-item">
+                <div class="label">RAINHA</div>
+                <div class="valor" id="rainhaAtual">Beatriz Lorenzoni</div>
+            </div>
+        </div>
+
+        <!-- Seletor de Gestão -->
+        <div class="seletor-gestao">
+            <h3>📅 SELECIONAR GESTÃO</h3>
+            <div class="grid-gestoes" id="gridGestoes"></div>
+        </div>
 
         <div class="botoes">
             <button class="botao" onclick="mostrarModal('nova')">✦ NOVA RITUALÍSTICA</button>
             <button class="botao" onclick="mostrarModal('membros')">👑 GERENCIAR MEMBROS</button>
             <button class="botao" onclick="mostrarModal('registros')">📜 VER REGISTROS</button>
+            <button class="botao botao-success" onclick="mostrarModal('novaGestao')">➕ NOVA GESTÃO</button>
         </div>
 
         <div class="grid-imagens" id="gridFilhas"></div>
@@ -583,7 +750,38 @@
                 <div id="containerFilhas" style="max-height: 500px; overflow-y: auto;"></div>
                 <div id="containerConselho" style="max-height: 500px; overflow-y: auto; display: none;"></div>
 
-                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 30px;" id="botaoSalvar">✦ SALVAR NA NUVEM ✦</button>
+                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 30px;" id="botaoSalvar">✦ SALVAR NA GESTÃO ATUAL ✦</button>
+            </div>
+        </div>
+
+        <!-- MODAL: Nova Gestão -->
+        <div id="modalNovaGestao" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header">
+                    <h2>➕ NOVA GESTÃO</h2>
+                    <button class="fechar" onclick="fecharModal('novaGestao')">✕</button>
+                </div>
+
+                <div style="display: grid; gap: 20px;">
+                    <div>
+                        <label>📅 Ano:</label>
+                        <input type="number" id="novaGestaoAno" value="2026" min="2000" max="2100" style="width: 100%; margin-top: 10px;">
+                    </div>
+                    <div>
+                        <label>🔢 Número da Gestão:</label>
+                        <input type="text" id="novaGestaoNumero" placeholder="Ex: 27ª" style="width: 100%; margin-top: 10px;">
+                    </div>
+                    <div>
+                        <label>👑 Nome da Rainha:</label>
+                        <input type="text" id="novaGestaoRainha" placeholder="Nome completo da Rainha" style="width: 100%; margin-top: 10px;">
+                    </div>
+                    <div>
+                        <label>📝 Observações:</label>
+                        <textarea id="novaGestaoObs" rows="3" placeholder="Observações sobre esta gestão..." style="width: 100%; margin-top: 10px;"></textarea>
+                    </div>
+
+                    <button class="botao" onclick="criarNovaGestao()" style="width: 100%; margin-top: 20px;">✅ CRIAR NOVA GESTÃO</button>
+                </div>
             </div>
         </div>
 
@@ -608,8 +806,12 @@
         <div id="modalRegistros" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header">
-                    <h2>📜 REGISTROS SALVOS</h2>
+                    <h2>📜 REGISTROS POR GESTÃO</h2>
                     <button class="fechar" onclick="fecharModal('registros')">✕</button>
+                </div>
+
+                <div class="abas" id="abasGestao">
+                    <!-- Abas serão geradas dinamicamente -->
                 </div>
 
                 <div id="listaRegistros" class="registros-grid"></div>
@@ -648,8 +850,20 @@
     </script>
 
     <script>
-        // ========== DADOS COMPLETOS DAS SUAS PLANILHAS ==========
+        // ========== ESTRUTURA DE DADOS POR GESTÃO ==========
         
+        // Gestões disponíveis
+        const gestoesIniciais = [
+            {
+                id: '2026_27',
+                ano: 2026,
+                numero: '27ª',
+                rainha: 'Beatriz Lorenzoni',
+                ativa: true,
+                observacoes: 'Vigésima Sétima Gestão'
+            }
+        ];
+
         // FILHAS (lista completa com cargos)
         const filhasIniciais = [
             { nome: "Beatriz Lorenzoni", cargo: "Honorável Rainha" },
@@ -689,140 +903,242 @@
             { nome: "Natalina Bonatto Sobara", cargo: "Promotora de Sociabilidade" }
         ];
 
-        // RITUAIS (TODAS AS DATAS COM AS FALTAS DAS SUAS PLANILHAS)
-        const rituaisIniciais = {
-            // PRIMEIRA RITUALÍSTICA - 21/02/2026
-            '2026-02-21': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Kauana Soares", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Larissa Guerreiro", presente: true },
-                    { nome: "Luiza Santos Duarte", presente: true },
-                    { nome: "Erika Careaga", presente: true },
-                    // FALTAS DAS FILHAS - 21/02
-                    { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                    { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                    { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
-                    { nome: "Danieli Girão Lacerda", presente: true },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Sheila Silva", presente: true },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
-            },
-
-            // SEGUNDA RITUALÍSTICA - 28/02/2026
-            '2026-02-28': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Erika Careaga", presente: true },
-                    { nome: "Isabela Carbonaro", presente: true },
-                    { nome: "Jenifer Cristina Lopes", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
-                    { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
-                    { nome: "Larissa Guerreiro", presente: false, justificada: true, aceita: true },
-                    { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                    { nome: "Analia Arevalos", presente: false, justificada: true, aceita: true }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                    { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: true },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
-            },
-
-            // TERCEIRA RITUALÍSTICA - 07/03/2026
-            '2026-03-07': {
-                filhas: [
-                    { nome: "Beatriz Lorenzoni", presente: true },
-                    { nome: "Rafaela Belo", presente: true },
-                    { nome: "Júlia Robles", presente: true },
-                    { nome: "Pietra Sorbara", presente: true },
-                    { nome: "Guiuliana Montana", presente: true },
-                    { nome: "Dominique Bernazzolli", presente: true },
-                    { nome: "Agatha Galeano", presente: true },
-                    { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                    { nome: "Guianina Montana", presente: true },
-                    { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                    { nome: "Ana Maria Oliveira", presente: true },
-                    { nome: "Kauana Soares", presente: true },
-                    { nome: "Kasia Izabelly N. Gomes", presente: true },
-                    { nome: "Larissa Guerreiro", presente: true },
-                    { nome: "Isabela Carbonaro", presente: true },
-                    { nome: "Analia Arevalos", presente: true },
-                    { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
-                    { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
-                    { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
-                    { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                    { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                    { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false }
-                ],
-                conselho: [
-                    { nome: "Ingrid M. Barros", presente: true },
-                    { nome: "Danieli Girão Lacerda", presente: true },
-                    { nome: "Lilian Fernanda Oliveira", presente: true },
-                    { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                    { nome: "Sheila Silva", presente: true },
-                    { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                    { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                    { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                    { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                ]
+        // RITUAIS ORGANIZADOS POR GESTÃO
+        const rituaisPorGestaoIniciais = {
+            '2026_27': {
+                informacoes: {
+                    ano: 2026,
+                    numero: '27ª',
+                    rainha: 'Beatriz Lorenzoni'
+                },
+                rituais: {
+                    // PRIMEIRA RITUALÍSTICA - 21/02/2026
+                    '2026-02-21': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Kauana Soares", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Larissa Guerreiro", presente: true },
+                            { nome: "Luiza Santos Duarte", presente: true },
+                            { nome: "Erika Careaga", presente: true },
+                            { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
+                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
+                            { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
+                            { nome: "Danieli Girão Lacerda", presente: true },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Sheila Silva", presente: true },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    },
+                    // SEGUNDA RITUALÍSTICA - 28/02/2026
+                    '2026-02-28': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Erika Careaga", presente: true },
+                            { nome: "Isabela Carbonaro", presente: true },
+                            { nome: "Jenifer Cristina Lopes", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
+                            { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
+                            { nome: "Larissa Guerreiro", presente: false, justificada: true, aceita: true },
+                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
+                            { nome: "Analia Arevalos", presente: false, justificada: true, aceita: true }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
+                            { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: true },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    },
+                    // TERCEIRA RITUALÍSTICA - 07/03/2026
+                    '2026-03-07': {
+                        filhas: [
+                            { nome: "Beatriz Lorenzoni", presente: true },
+                            { nome: "Rafaela Belo", presente: true },
+                            { nome: "Júlia Robles", presente: true },
+                            { nome: "Pietra Sorbara", presente: true },
+                            { nome: "Guiuliana Montana", presente: true },
+                            { nome: "Dominique Bernazzolli", presente: true },
+                            { nome: "Agatha Galeano", presente: true },
+                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
+                            { nome: "Guianina Montana", presente: true },
+                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
+                            { nome: "Ana Maria Oliveira", presente: true },
+                            { nome: "Kauana Soares", presente: true },
+                            { nome: "Kasia Izabelly N. Gomes", presente: true },
+                            { nome: "Larissa Guerreiro", presente: true },
+                            { nome: "Isabela Carbonaro", presente: true },
+                            { nome: "Analia Arevalos", presente: true },
+                            { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
+                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
+                            { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
+                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
+                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
+                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false }
+                        ],
+                        conselho: [
+                            { nome: "Ingrid M. Barros", presente: true },
+                            { nome: "Danieli Girão Lacerda", presente: true },
+                            { nome: "Lilian Fernanda Oliveira", presente: true },
+                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
+                            { nome: "Sheila Silva", presente: true },
+                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
+                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
+                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
+                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
+                        ]
+                    }
+                }
             }
         };
 
         // ========== INICIALIZAÇÃO ==========
+        if (!localStorage.getItem('gestoes')) {
+            localStorage.setItem('gestoes', JSON.stringify(gestoesIniciais));
+        }
+        
         if (!localStorage.getItem('filhas')) {
             localStorage.setItem('filhas', JSON.stringify(filhasIniciais));
         }
+        
         if (!localStorage.getItem('conselho')) {
             localStorage.setItem('conselho', JSON.stringify(conselhoIniciais));
         }
-        if (!localStorage.getItem('rituais')) {
-            localStorage.setItem('rituais', JSON.stringify(rituaisIniciais));
+        
+        if (!localStorage.getItem('rituaisPorGestao')) {
+            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestaoIniciais));
         }
 
+        let gestaoAtual = '2026_27'; // ID da gestão atual
         let dataSelecionada = '2026-02-28';
         let abaAtual = 'filhas';
+
+        // ========== FUNÇÕES DE GESTÃO ==========
+        function carregarGestoes() {
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            const container = document.getElementById('gridGestoes');
+            
+            container.innerHTML = gestoes.map(g => `
+                <div class="gestao-card ${g.ativa ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
+                    <div class="gestao-ano">${g.ano}</div>
+                    <div class="gestao-numero">${g.numero} Gestão</div>
+                    <div class="gestao-rainha">👑 ${g.rainha}</div>
+                </div>
+            `).join('');
+
+            // Atualizar informações da gestão atual
+            const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual) || gestoes[0];
+            if (gestaoAtualObj) {
+                document.getElementById('anoAtual').textContent = gestaoAtualObj.ano;
+                document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero;
+                document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha;
+            }
+        }
+
+        window.selecionarGestao = function(gestaoId) {
+            // Desativar gestão anterior
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            gestoes.forEach(g => g.ativa = false);
+            
+            // Ativar nova gestão
+            const gestao = gestoes.find(g => g.id === gestaoId);
+            if (gestao) {
+                gestao.ativa = true;
+                gestaoAtual = gestaoId;
+                localStorage.setItem('gestoes', JSON.stringify(gestoes));
+                
+                // Atualizar interface
+                carregarGestoes();
+                atualizarTudo();
+            }
+        }
+
+        window.criarNovaGestao = function() {
+            const ano = document.getElementById('novaGestaoAno').value;
+            const numero = document.getElementById('novaGestaoNumero').value;
+            const rainha = document.getElementById('novaGestaoRainha').value;
+            const observacoes = document.getElementById('novaGestaoObs').value;
+
+            if (!ano || !numero || !rainha) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            
+            // Desativar todas as gestões anteriores
+            gestoes.forEach(g => g.ativa = false);
+            
+            // Criar nova gestão
+            const novaGestao = {
+                id: `${ano}_${gestoes.length + 1}`,
+                ano: parseInt(ano),
+                numero: numero,
+                rainha: rainha,
+                ativa: true,
+                observacoes: observacoes
+            };
+
+            gestoes.push(novaGestao);
+            localStorage.setItem('gestoes', JSON.stringify(gestoes));
+
+            // Criar estrutura para os rituais da nova gestão
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            rituaisPorGestao[novaGestao.id] = {
+                informacoes: {
+                    ano: parseInt(ano),
+                    numero: numero,
+                    rainha: rainha
+                },
+                rituais: {}
+            };
+            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
+
+            gestaoAtual = novaGestao.id;
+            carregarGestoes();
+            fecharModal('novaGestao');
+            atualizarTudo();
+            
+            alert(`✅ Nova gestão criada: ${ano} - ${numero} Gestão (Rainha ${rainha})`);
+        }
 
         // ========== FUNÇÕES PRINCIPAIS ==========
         function atualizarTudo() {
@@ -830,6 +1146,29 @@
             atualizarListaDatas();
             carregarTabelas();
             atualizarCardsGerais();
+        }
+
+        function getRituaisAtuais() {
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            return rituaisPorGestao[gestaoAtual]?.rituais || {};
+        }
+
+        function salvarRituaisAtuais(rituais) {
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            if (!rituaisPorGestao[gestaoAtual]) {
+                const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+                const gestao = gestoes.find(g => g.id === gestaoAtual);
+                rituaisPorGestao[gestaoAtual] = {
+                    informacoes: {
+                        ano: gestao?.ano,
+                        numero: gestao?.numero,
+                        rainha: gestao?.rainha
+                    },
+                    rituais: {}
+                };
+            }
+            rituaisPorGestao[gestaoAtual].rituais = rituais;
+            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
         }
 
         function atualizarGridFilhas() {
@@ -847,7 +1186,7 @@
         }
 
         function atualizarCardsGerais() {
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const rituais = getRituaisAtuais();
             
             let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
             
@@ -871,7 +1210,7 @@
         }
 
         function atualizarListaDatas() {
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const rituais = getRituaisAtuais();
             const datas = Object.keys(rituais).sort().reverse();
             const container = document.getElementById('listaDatas');
             
@@ -889,7 +1228,7 @@
         }
 
         function carregarTabelas() {
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const rituais = getRituaisAtuais();
             const dados = rituais[dataSelecionada] || { filhas: [], conselho: [] };
             const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
             const conselho = JSON.parse(localStorage.getItem('conselho')) || [];
@@ -917,7 +1256,7 @@
             }).join('');
         }
 
-        // ========== NOVA FUNÇÃO: PESQUISAR FILHA POR NOME COMPLETO ==========
+        // ========== FUNÇÃO DE PESQUISA POR NOME COMPLETO ==========
         window.pesquisarFilhaCompleta = function() {
             const nomeBusca = document.getElementById('pesquisaNomeCompleto').value.trim();
             
@@ -926,7 +1265,6 @@
                 return;
             }
 
-            // Verificar se é uma filha (não membro do conselho)
             const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
             const filhaEncontrada = filhas.find(f => f.nome.toLowerCase() === nomeBusca.toLowerCase());
             
@@ -935,35 +1273,40 @@
                 return;
             }
 
-            // Esconder cards gerais e mostrar resultado da pesquisa
             document.getElementById('cardsGerais').style.display = 'none';
             document.getElementById('resultadoPesquisa').style.display = 'block';
             
-            // Buscar todas as faltas da filha
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
-            const faltas = [];
+            // Buscar faltas em TODAS as gestões
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             
-            Object.entries(rituais).forEach(([data, registro]) => {
-                const falta = registro.filhas?.find(f => f.nome === filhaEncontrada.nome);
-                if (falta && !falta.presente) {
-                    faltas.push({
-                        data: data,
-                        ...falta
+            const faltasPorGestao = [];
+            
+            Object.entries(rituaisPorGestao).forEach(([gestaoId, gestaoData]) => {
+                const gestao = gestoes.find(g => g.id === gestaoId);
+                if (gestao && gestaoData.rituais) {
+                    Object.entries(gestaoData.rituais).forEach(([data, registro]) => {
+                        const falta = registro.filhas?.find(f => f.nome === filhaEncontrada.nome);
+                        if (falta && !falta.presente) {
+                            faltasPorGestao.push({
+                                gestao: `${gestao.ano} - ${gestao.numero} Gestão`,
+                                rainha: gestao.rainha,
+                                data: data,
+                                ...falta
+                            });
+                        }
                     });
                 }
             });
 
-            // Ordenar faltas por data (mais recente primeiro)
-            faltas.sort((a, b) => b.data.localeCompare(a.data));
+            faltasPorGestao.sort((a, b) => b.data.localeCompare(a.data));
 
-            // Calcular estatísticas
-            const totalFaltas = faltas.length;
-            const justificadas = faltas.filter(f => f.justificada).length;
-            const naoJustificadas = faltas.filter(f => !f.justificada).length;
-            const aceitas = faltas.filter(f => f.aceita).length;
-            const rejeitadas = faltas.filter(f => !f.aceita).length;
+            const totalFaltas = faltasPorGestao.length;
+            const justificadas = faltasPorGestao.filter(f => f.justificada).length;
+            const naoJustificadas = faltasPorGestao.filter(f => !f.justificada).length;
+            const aceitas = faltasPorGestao.filter(f => f.aceita).length;
+            const rejeitadas = faltasPorGestao.filter(f => !f.aceita).length;
 
-            // Criar HTML com as informações detalhadas
             const resultadoHTML = `
                 <div class="info-detalhada">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -991,7 +1334,7 @@
                                 <span class="estatistica-valor" style="color: #ffb3b3;">${naoJustificadas}</span>
                             </div>
                             <div class="estatistica-item">
-                                <span>Aceitas pelo Conselho:</span>
+                                <span>Aceitas:</span>
                                 <span class="estatistica-valor" style="color: #a5ffaf;">${aceitas}</span>
                             </div>
                             <div class="estatistica-item">
@@ -1001,11 +1344,14 @@
                         </div>
 
                         <div class="info-card">
-                            <h3>📅 FALTAS POR RITUALÍSTICA</h3>
+                            <h3>📅 FALTAS POR GESTÃO</h3>
                             <div class="lista-faltas">
-                                ${faltas.length > 0 ? faltas.map(f => `
+                                ${faltasPorGestao.length > 0 ? faltasPorGestao.map(f => `
                                     <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
                                         <div class="falta-data">${f.data.split('-').reverse().join('/')}</div>
+                                        <div style="font-size: 0.85em; color: #cbb3ff; margin: 3px 0;">
+                                            ${f.gestao} • ${f.rainha}
+                                        </div>
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
                                             <span>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</span>
                                             <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">
@@ -1018,32 +1364,27 @@
                         </div>
 
                         <div class="info-card">
-                            <h3>📈 ANÁLISE DE FREQUÊNCIA</h3>
-                            <div style="margin: 20px 0;">
-                                <div style="margin-bottom: 15px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                        <span>Frequência:</span>
-                                        <span>${totalFaltas > 0 ? Math.round((justificadas/totalFaltas)*100) : 0}%</span>
-                                    </div>
-                                    <div style="width: 100%; height: 10px; background: rgba(180,130,255,0.2); border-radius: 5px; overflow: hidden;">
-                                        <div style="width: ${totalFaltas > 0 ? (justificadas/totalFaltas)*100 : 0}%; height: 100%; background: #ffe17a;"></div>
+                            <h3>📈 ANÁLISE POR GESTÃO</h3>
+                            ${Object.entries(
+                                faltasPorGestao.reduce((acc, falta) => {
+                                    if (!acc[falta.gestao]) {
+                                        acc[falta.gestao] = { total: 0, just: 0, aceitas: 0 };
+                                    }
+                                    acc[falta.gestao].total++;
+                                    if (falta.justificada) acc[falta.gestao].just++;
+                                    if (falta.aceita) acc[falta.gestao].aceitas++;
+                                    return acc;
+                                }, {})
+                            ).map(([gestao, stats]) => `
+                                <div style="margin: 15px 0; padding: 10px; background: rgba(26,11,46,0.4); border-radius: 10px;">
+                                    <div style="font-weight: bold; color: #e5ceff; margin-bottom: 5px;">${gestao}</div>
+                                    <div style="font-size: 0.9em;">
+                                        <div>Faltas: ${stats.total}</div>
+                                        <div>Justificadas: ${stats.just} (${Math.round((stats.just/stats.total)*100)}%)</div>
+                                        <div>Aceitas: ${stats.aceitas} (${Math.round((stats.aceitas/stats.total)*100)}%)</div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                        <span>Aprovação:</span>
-                                        <span>${totalFaltas > 0 ? Math.round((aceitas/totalFaltas)*100) : 0}%</span>
-                                    </div>
-                                    <div style="width: 100%; height: 10px; background: rgba(180,130,255,0.2); border-radius: 5px; overflow: hidden;">
-                                        <div style="width: ${totalFaltas > 0 ? (aceitas/totalFaltas)*100 : 0}%; height: 100%; background: #a5ffaf;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin-top: 30px;">
-                                <h4 style="color: #cbb3ff; margin-bottom: 10px;">📍 OBSERVAÇÕES</h4>
-                                <textarea rows="3" style="width: 100%; background: rgba(26,11,46,0.6); border: 1px solid #b388ff; border-radius: 10px; padding: 10px; color: white;" placeholder="Adicionar observações sobre esta filha..."></textarea>
-                            </div>
+                            `).join('')}
                         </div>
                     </div>
                 </div>
@@ -1052,64 +1393,20 @@
             document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
         }
 
-        // Função para pesquisar filha específica ao clicar no card
         window.pesquisarFilhaEspecifica = function(nome) {
             document.getElementById('pesquisaNomeCompleto').value = nome;
             pesquisarFilhaCompleta();
         }
 
-        // Função para voltar aos cards gerais
         window.voltarCardsGerais = function() {
             document.getElementById('cardsGerais').style.display = 'grid';
             document.getElementById('resultadoPesquisa').style.display = 'none';
             document.getElementById('pesquisaNomeCompleto').value = '';
         }
 
-        // Função para limpar pesquisa
         window.limparPesquisa = function() {
             document.getElementById('pesquisaNomeCompleto').value = '';
             voltarCardsGerais();
-        }
-
-        // Pesquisar por nome (função original mantida para compatibilidade)
-        window.pesquisarNome = function(termo) {
-            document.getElementById('pesquisaNome').value = termo;
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
-            
-            let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
-            
-            Object.values(rituais).forEach(data => {
-                [...(data.filhas || []), ...(data.conselho || [])].forEach(r => {
-                    if (r.nome.toLowerCase().startsWith(termo.toLowerCase()) && !r.presente) {
-                        total++;
-                        if (r.justificada) just++; else naoJust++;
-                        if (r.aceita) aceitas++; else rejeitadas++;
-                    }
-                });
-            });
-
-            document.getElementById('cardsGerais').innerHTML = `
-                <div class="card"><div class="numero">${total}</div>Total de Faltas</div>
-                <div class="card"><div class="numero">${just}</div>Justificadas</div>
-                <div class="card"><div class="numero">${naoJust}</div>Não Justificadas</div>
-                <div class="card"><div class="numero">${aceitas}</div>Aceitas</div>
-                <div class="card"><div class="numero">${rejeitadas}</div>Rejeitadas</div>
-            `;
-        }
-
-        // Buscar por data
-        window.buscarPorData = function() {
-            const data = document.getElementById('pesquisaData').value;
-            if (!data) return alert('Selecione uma data');
-            
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
-            if (rituais[data]) {
-                dataSelecionada = data;
-                atualizarListaDatas();
-                carregarTabelas();
-            } else {
-                alert('Nenhum registro para esta data');
-            }
         }
 
         // ========== FUNÇÕES DO MODAL NOVA RITUALÍSTICA ==========
@@ -1166,7 +1463,6 @@
         }
 
         function atualizarProgresso() {
-            // Filhas
             const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
             const totalFilhas = selectsFilhas.length;
             const marcadasFilhas = Array.from(selectsFilhas).filter(s => s.value === 'presente' || s.value === 'ausente').length;
@@ -1179,7 +1475,6 @@
             document.getElementById('progressoFilhas').className = 
                 marcadasFilhas === totalFilhas ? 'progresso completo' : 'progresso';
 
-            // Conselho
             const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
             const totalConselho = selectsConselho.length;
             const marcadasConselho = Array.from(selectsConselho).filter(s => s.value === 'presente' || s.value === 'ausente').length;
@@ -1192,7 +1487,6 @@
             document.getElementById('progressoConselho').className = 
                 marcadasConselho === totalConselho ? 'progresso completo' : 'progresso';
 
-            // Habilitar/desabilitar botão salvar
             const botaoSalvar = document.getElementById('botaoSalvar');
             if (marcadasFilhas === totalFilhas && marcadasConselho === totalConselho) {
                 botaoSalvar.disabled = false;
@@ -1208,7 +1502,6 @@
             
             if (!data) return alert('❌ Selecione uma data');
 
-            // Verificar se todos foram marcados
             const selectsFilhas = document.querySelectorAll('#containerFilhas select[id^="pres-"]');
             const selectsConselho = document.querySelectorAll('#containerConselho select[id^="pres-"]');
             
@@ -1220,10 +1513,9 @@
                 return alert('❌ Marque todo o Conselho como Presente ou Ausente');
             }
 
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const rituais = getRituaisAtuais();
             if (!rituais[data]) rituais[data] = { filhas: [], conselho: [] };
 
-            // Coletar dados das Filhas
             const registrosFilhas = [];
             document.querySelectorAll('#containerFilhas .membro-item').forEach(item => {
                 const nome = item.dataset.nome;
@@ -1238,7 +1530,6 @@
                 });
             });
 
-            // Coletar dados do Conselho
             const registrosConselho = [];
             document.querySelectorAll('#containerConselho .membro-item').forEach(item => {
                 const nome = item.dataset.nome;
@@ -1258,11 +1549,11 @@
                 conselho: registrosConselho
             };
 
-            localStorage.setItem('rituais', JSON.stringify(rituais));
+            salvarRituaisAtuais(rituais);
 
             fecharModal('nova');
             atualizarTudo();
-            alert('✅ Ritualística completa salva com sucesso!');
+            alert('✅ Ritualística completa salva na gestão atual!');
         }
 
         // ========== FUNÇÕES DO MODAL GERENCIAR MEMBROS ==========
@@ -1319,15 +1610,27 @@
 
         // ========== FUNÇÕES DO MODAL VER REGISTROS ==========
         function carregarRegistros() {
-            const rituais = JSON.parse(localStorage.getItem('rituais')) || {};
+            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             const container = document.getElementById('listaRegistros');
+            const abasContainer = document.getElementById('abasGestao');
             
-            if (Object.keys(rituais).length === 0) {
-                container.innerHTML = '<p style="color: #cbb3ff; text-align: center; grid-column: 1/-1;">Nenhum registro encontrado</p>';
+            // Criar abas para cada gestão
+            abasContainer.innerHTML = gestoes.map(g => `
+                <div class="aba ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">
+                    ${g.ano} - ${g.numero}
+                </div>
+            `).join('');
+
+            // Mostrar registros da gestão atual
+            const gestaoData = rituaisPorGestao[gestaoAtual];
+            
+            if (!gestaoData || Object.keys(gestaoData.rituais || {}).length === 0) {
+                container.innerHTML = '<p style="color: #cbb3ff; text-align: center; grid-column: 1/-1;">Nenhum registro encontrado nesta gestão</p>';
                 return;
             }
 
-            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
+            container.innerHTML = Object.entries(gestaoData.rituais).sort().reverse().map(([data, info]) => {
                 const totalF = info.filhas?.length || 0;
                 const presF = info.filhas?.filter(f => f.presente).length || 0;
                 const totalC = info.conselho?.length || 0;
@@ -1336,7 +1639,11 @@
                 return `
                     <div class="registro-card">
                         <h3 style="text-align: center; margin-bottom: 10px; color: #e5ceff;">${data.split('-').reverse().join('/')}</h3>
-                        <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
+                        <div class="gestao-tag">
+                            ${gestaoData.informacoes.ano} - ${gestaoData.informacoes.numero} Gestão<br>
+                            👑 ${gestaoData.informacoes.rainha}
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin: 15px 0;">
                             <div>👑 ${presF}/${totalF}</div>
                             <div>⚡ ${presC}/${totalC}</div>
                         </div>
@@ -1349,14 +1656,27 @@
             }).join('');
         }
 
+        window.selecionarGestaoRegistros = function(gestaoId) {
+            gestaoAtual = gestaoId;
+            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            gestoes.forEach(g => g.ativa = (g.id === gestaoId));
+            localStorage.setItem('gestoes', JSON.stringify(gestoes));
+            
+            carregarRegistros();
+            carregarGestoes();
+        }
+
         window.deletarRegistro = function(data) {
             if (!confirm(`Deletar registro de ${data}?`)) return;
-            const rituais = JSON.parse(localStorage.getItem('rituais'));
+            
+            const rituais = getRituaisAtuais();
             delete rituais[data];
-            localStorage.setItem('rituais', JSON.stringify(rituais));
+            salvarRituaisAtuais(rituais);
+            
             carregarRegistros();
             if (dataSelecionada === data) {
-                dataSelecionada = Object.keys(rituais)[0] || '2026-02-28';
+                const novasDatas = Object.keys(rituais);
+                dataSelecionada = novasDatas[0] || '';
                 atualizarTudo();
             }
         }
@@ -1398,6 +1718,7 @@
         }
 
         // Inicializar
+        carregarGestoes();
         atualizarTudo();
         setInterval(atualizarDataHoraFooter, 1000);
         
@@ -1407,12 +1728,7 @@
         document.getElementById('novaData').value = sabado.toISOString().split('T')[0];
         document.getElementById('pesquisaData').value = sabado.toISOString().split('T')[0];
 
-        // Evento de pesquisa por nome (para pesquisa em tempo real)
-        document.getElementById('pesquisaNome').addEventListener('input', function(e) {
-            if (e.target.value) pesquisarNome(e.target.value);
-        });
-
-        // Evento para pesquisar ao pressionar Enter no campo de nome completo
+        // Evento para pesquisar ao pressionar Enter
         document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 pesquisarFilhaCompleta();
