@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>✦ Ordem Estrelar - Sistema de Faltas ✦</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>✦ Ordem FDJI - Sistema de Faltas B04✦</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
 
@@ -60,7 +60,7 @@
             z-index: 0;
         }
 
-        .container {
+        .container, .login-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px 16px;
@@ -68,7 +68,143 @@
             z-index: 1;
         }
 
-        /* Tipografia Elegante */
+        /* ========== TELA DE LOGIN ========== */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .login-card {
+            background: linear-gradient(145deg, rgba(42, 27, 74, 0.95), rgba(26, 16, 53, 0.98));
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            padding: clamp(30px, 6vw, 60px) clamp(25px, 5vw, 50px);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 80px rgba(203, 166, 247, 0.3), inset 0 0 40px rgba(255, 217, 102, 0.1);
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            text-align: center;
+        }
+
+        .login-card::before, .login-card::after {
+            content: '✧';
+            position: absolute;
+            font-size: 2.5rem;
+            color: rgba(203, 166, 247, 0.2);
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .login-card::before {
+            top: 20px;
+            left: 30px;
+        }
+
+        .login-card::after {
+            bottom: 20px;
+            right: 30px;
+        }
+
+        .login-card h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 8vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitulo {
+            color: var(--text-secondary);
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            padding: 10px;
+            background: rgba(203, 166, 247, 0.1);
+            border-radius: 40px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            margin-left: 10px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(26, 16, 53, 0.8);
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            padding: 16px 20px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(203, 166, 247, 0.5);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 30px rgba(203, 166, 247, 0.3);
+            text-transform: uppercase;
+            transition: all 0.3s;
+            margin: 20px 0 15px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px var(--primary), 0 0 40px rgba(255, 217, 102, 0.3);
+            border-color: var(--gold);
+        }
+
+        .forgot-password {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            margin-top: 15px;
+        }
+
+        .forgot-password:hover {
+            color: var(--gold);
+        }
+
+        /* ========== CONTEÚDO PRINCIPAL ========== */
+        #conteudoPrincipal {
+            display: none;
+        }
+
         h1 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(2.2rem, 8vw, 4rem);
@@ -111,7 +247,6 @@
             word-break: break-word;
         }
 
-        /* Cards de Gestão Elegantes */
         .gestao-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
@@ -154,7 +289,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Seletor de Gestão */
         .seletor-gestao {
             background: linear-gradient(145deg, rgba(42, 27, 74, 0.6), rgba(26, 16, 53, 0.8));
             border: 1px solid var(--primary);
@@ -240,7 +374,6 @@
             font-style: italic;
         }
 
-        /* Botões Elegantes */
         .botoes {
             display: flex;
             gap: 12px;
@@ -301,7 +434,6 @@
             background: linear-gradient(135deg, #2e7d32, #1e5a21);
         }
 
-        /* Grid de Filhas Elegante */
         .grid-imagens {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
@@ -373,7 +505,6 @@
             border: 1px solid var(--border-glow);
         }
 
-        /* Cards de Estatísticas */
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
@@ -414,7 +545,6 @@
             letter-spacing: 1px;
         }
 
-        /* Lista de Datas */
         .datas {
             display: flex;
             gap: 8px;
@@ -448,7 +578,6 @@
             box-shadow: 0 0 20px var(--primary);
         }
 
-        /* Tabelas Elegantes */
         .tabelas {
             display: grid;
             grid-template-columns: 1fr;
@@ -466,7 +595,7 @@
             background: rgba(26, 16, 53, 0.6);
             border-radius: 30px;
             border: 1px solid var(--primary);
-            overflow: hidden;
+            overflow-x: auto;
             backdrop-filter: blur(5px);
             box-shadow: var(--shadow);
         }
@@ -509,7 +638,6 @@
             font-weight: 500;
         }
 
-        /* Modal Elegante */
         .modal {
             display: none;
             position: fixed;
@@ -593,7 +721,6 @@
             transform: rotate(90deg);
         }
 
-        /* Info Detalhada */
         .info-detalhada {
             background: linear-gradient(145deg, rgba(203, 166, 247, 0.1), rgba(157, 122, 217, 0.05));
             border-radius: 40px;
@@ -673,7 +800,6 @@
             color: var(--danger);
         }
 
-        /* Footer */
         .footer {
             max-width: 1400px;
             margin: 40px auto 0;
@@ -694,7 +820,6 @@
             margin-bottom: 5px;
         }
 
-        /* Status Conexão */
         .status-conexao {
             position: fixed;
             top: 15px;
@@ -716,7 +841,6 @@
             box-shadow: 0 0 15px rgba(165, 214, 165, 0.3);
         }
 
-        /* Scrollbar Personalizada */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -739,82 +863,106 @@
 <body>
     <div id="statusConexao" class="status-conexao status-online">🟢 Conectado</div>
 
-    <div class="container">
-        <h1>✦ SISTEMA DE FALTAS ✦</h1>
-        <div class="subtitulo">Ordem Internacional das Filhas de Jó • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
-
-        <!-- Informações da Gestão Atual -->
-        <div class="gestao-info" id="gestaoInfo">
-            <div class="gestao-item">
-                <div class="label">ANO</div>
-                <div class="valor" id="anoAtual">2026</div>
+    <!-- TELA DE LOGIN -->
+    <div id="telaLogin" class="login-container">
+        <div class="login-card">
+            <h1>✦ ACESSO ✦</h1>
+            <div class="login-subtitulo">Ordem Internacional das Filhas de Jó</div>
+            
+            <div class="input-group">
+                <label>USUÁRIO</label>
+                <input type="text" id="usuario" placeholder="Digite seu usuário" value="admin">
             </div>
-            <div class="gestao-item">
-                <div class="label">GESTÃO</div>
-                <div class="valor" id="gestaoNumero">27ª</div>
+
+            <div class="input-group">
+                <label>SENHA</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" value="123">
             </div>
-            <div class="gestao-item">
-                <div class="label">RAINHA</div>
-                <div class="valor" id="rainhaAtual">Beatriz Lorenzoni</div>
-            </div>
+
+            <button class="login-btn" onclick="fazerLogin()">ENTRAR</button>
+            <a href="#" class="forgot-password" onclick="alert('Procure a secretária para recuperar sua senha.'); return false;">Esqueceu a senha?</a>
         </div>
+    </div>
 
-        <!-- Seletor de Gestão -->
-        <div class="seletor-gestao">
-            <h3>✦ SELECIONAR GESTÃO ✦</h3>
-            <div class="grid-gestoes" id="gridGestoes"></div>
-        </div>
+    <!-- CONTEÚDO PRINCIPAL (SISTEMA) -->
+    <div id="conteudoPrincipal">
+        <div class="container">
+            <h1>✦ SISTEMA DE FALTAS ✦</h1>
+            <div class="subtitulo">Ordem Internacional das Filhas de Jó • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
 
-        <!-- Botões Principais -->
-        <div class="botoes">
-            <button class="botao" onclick="mostrarModal('nova')">✦ NOVA</button>
-            <button class="botao" onclick="mostrarModal('membros')">👑 MEMBROS</button>
-            <button class="botao" onclick="mostrarModal('registros')">📜 REGISTROS</button>
-            <button class="botao success" onclick="mostrarModal('novaGestao')">➕ GESTÃO</button>
-        </div>
-
-        <!-- Grid de Filhas -->
-        <div class="grid-imagens" id="gridFilhas"></div>
-
-        <!-- Pesquisa -->
-        <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
-            <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..." 
-                   style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
-            <button class="botao" onclick="pesquisarFilha()">PESQUISAR</button>
-            <button class="botao perigo" onclick="limparPesquisa()">LIMPAR</button>
-        </div>
-
-        <!-- Resultado da Pesquisa -->
-        <div id="resultadoPesquisa" style="display: none;"></div>
-
-        <!-- Cards de Estatísticas -->
-        <div id="cardsGerais" class="cards"></div>
-
-        <!-- Lista de Datas -->
-        <div class="datas" id="listaDatas"></div>
-
-        <!-- Tabelas -->
-        <div class="tabelas">
-            <div>
-                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">👑 FILHAS DA ORDEM</h3>
-                <div class="table-container">
-                    <table id="tabelaFilhas">
-                        <thead>
-                            <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
-                        </thead>
-                        <tbody id="corpoFilhas"></tbody>
-                    </table>
+            <!-- Informações da Gestão Atual -->
+            <div class="gestao-info" id="gestaoInfo">
+                <div class="gestao-item">
+                    <div class="label">ANO</div>
+                    <div class="valor" id="anoAtual">---</div>
+                </div>
+                <div class="gestao-item">
+                    <div class="label">GESTÃO</div>
+                    <div class="valor" id="gestaoNumero">---</div>
+                </div>
+                <div class="gestao-item">
+                    <div class="label">RAINHA</div>
+                    <div class="valor" id="rainhaAtual">---</div>
                 </div>
             </div>
-            <div>
-                <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">⚡ CONSELHO GUARDIÃO</h3>
-                <div class="table-container">
-                    <table id="tabelaConselho">
-                        <thead>
-                            <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
-                        </thead>
-                        <tbody id="corpoConselho"></tbody>
-                    </table>
+
+            <!-- Seletor de Gestão -->
+            <div class="seletor-gestao">
+                <h3>✦ SELECIONAR GESTÃO ✦</h3>
+                <div class="grid-gestoes" id="gridGestoes"></div>
+            </div>
+
+            <!-- Botões Principais -->
+            <div class="botoes">
+                <button class="botao" onclick="mostrarModal('nova')">✦ NOVA</button>
+                <button class="botao" onclick="mostrarModal('membros')">👑 MEMBROS</button>
+                <button class="botao" onclick="mostrarModal('registros')">📜 REGISTROS</button>
+                <button class="botao success" onclick="mostrarModal('novaGestao')">➕ GESTÃO</button>
+            </div>
+
+            <!-- Grid de Filhas -->
+            <div class="grid-imagens" id="gridFilhas"></div>
+
+            <!-- Pesquisa -->
+            <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
+                <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..." 
+                       style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
+                <button class="botao" onclick="pesquisarFilha()">PESQUISAR</button>
+                <button class="botao perigo" onclick="limparPesquisa()">LIMPAR</button>
+            </div>
+
+            <!-- Resultado da Pesquisa -->
+            <div id="resultadoPesquisa" style="display: none;"></div>
+
+            <!-- Cards de Estatísticas -->
+            <div id="cardsGerais" class="cards"></div>
+
+            <!-- Lista de Datas -->
+            <div class="datas" id="listaDatas"></div>
+
+            <!-- Tabelas -->
+            <div class="tabelas">
+                <div>
+                    <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">👑 FILHAS DA ORDEM</h3>
+                    <div class="table-container">
+                        <table id="tabelaFilhas">
+                            <thead>
+                                <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
+                            </thead>
+                            <tbody id="corpoFilhas"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">⚡ CONSELHO GUARDIÃO</h3>
+                    <div class="table-container">
+                        <table id="tabelaConselho">
+                            <thead>
+                                <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
+                            </thead>
+                            <tbody id="corpoConselho"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -898,7 +1046,18 @@
                 </div>
 
                 <div class="datas" id="abasGestao" style="justify-content: flex-start;"></div>
-                <div id="listaRegistros" class="registros-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 15px;"></div>
+                <div id="listaRegistros" class="registros-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 15px; margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMODAL: Detalhes das Faltas -->
+        <div id="modalDetalhesFaltas" class="modal">
+            <div class="modal-conteudo" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h2 id="detalhesTitulo">📅 Detalhes das Faltas</h2>
+                    <button class="fechar" onclick="fecharModal('detalhesFaltas')">✕</button>
+                </div>
+                <div id="conteudoDetalhesFaltas" style="max-height: 70vh; overflow-y: auto; padding: 10px;"></div>
             </div>
         </div>
     </div>
@@ -910,225 +1069,96 @@
     </div>
 
     <script>
-        // ========== DADOS INICIAIS CORRIGIDOS ==========
-        const filhasIniciais = [
-            { nome: "Beatriz Lorenzoni", cargo: "Honorável Rainha" },
-            { nome: "Rafaela Belo", cargo: "Primeira Princesa" },
-            { nome: "Júlia Robles", cargo: "Segunda Princesa" },
-            { nome: "Pietra Sorbara", cargo: "Guia" },
-            { nome: "Guiuliana Montana", cargo: "Dirigente de Cerimônias" },
-            { nome: "Dominique Bernazzolli", cargo: "Secretária" },
-            { nome: "Agatha Galeano", cargo: "Tesoureira" },
-            { nome: "Kelly Thalia Batista de Oliveira", cargo: "Capelã" },
-            { nome: "Guianina Montana", cargo: "Bibliotecária" },
-            { nome: "Ana Luiza Blanco Escanaichi", cargo: "Musicista" },
-            { nome: "Ana Maria Oliveira", cargo: "Primeira Mensageira" },
-            { nome: "Kauana Soares", cargo: "Segunda Mensageira" },
-            { nome: "Rhyanae Valentine Otano", cargo: "Terceira Mensageira" },
-            { nome: "Kasia Izabelly N. Gomes", cargo: "Quarta Mensageira" },
-            { nome: "Larissa Guerreiro", cargo: "Quinta Mensageira" },
-            { nome: "Luiza Santos Duarte", cargo: "Guarda Interna" },
-            { nome: "Erika Careaga", cargo: "Guarda Externa" },
-            { nome: "Isabela Carbonaro", cargo: "Primeira Zeladora" },
-            { nome: "Maria Alice Dolci", cargo: "Segunda Zeladora" },
-            { nome: "Stefani Kunrath", cargo: "Coral do Bethel" },
-            { nome: "Jenifer Cristina Lopes", cargo: "Coral do Bethel" },
-            { nome: "Analia Arevalos", cargo: "Coral do Bethel" }
-        ];
-
-        const conselhoIniciais = [
-            { nome: "Ingrid M. Barros", cargo: "Guardiã do Bethel" },
-            { nome: "Ernane Simões Carbonaro", cargo: "Guardião Associado" },
-            { nome: "Danieli Girão Lacerda", cargo: "Guardiã Tesoureira" },
-            { nome: "Alanis Nascimento", cargo: "Zeladora de Paramentos" },
-            { nome: "Lilian Fernanda Oliveira", cargo: "Apicultora do Bethel" },
-            { nome: "Erika Viviana Guerrero Ramires", cargo: "Guardiã Secretária" },
-            { nome: "Adine Amaral", cargo: "Guardiã Diretora de Música" },
-            { nome: "Sheila Silva", cargo: "Guardiã Diretora de Épocas" },
-            { nome: "Natalina Bonatto Sobara", cargo: "Promotora de Sociabilidade" }
-        ];
-
-        const gestoesIniciais = [
-            { id: '2026_27', ano: 2026, numero: '27ª', rainha: 'Beatriz Lorenzoni', ativa: true }
-        ];
-
-        // RITUAIS COMPLETOS COM AS FALTAS
-        const rituaisPorGestaoIniciais = {
-            '2026_27': {
-                informacoes: { ano: 2026, numero: '27ª', rainha: 'Beatriz Lorenzoni' },
-                rituais: {
-                    // 21/02/2026
-                    '2026-02-21': {
-                        filhas: [
-                            { nome: "Beatriz Lorenzoni", presente: true },
-                            { nome: "Rafaela Belo", presente: true },
-                            { nome: "Júlia Robles", presente: true },
-                            { nome: "Pietra Sorbara", presente: true },
-                            { nome: "Guiuliana Montana", presente: true },
-                            { nome: "Dominique Bernazzolli", presente: true },
-                            { nome: "Agatha Galeano", presente: true },
-                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                            { nome: "Guianina Montana", presente: true },
-                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                            { nome: "Ana Maria Oliveira", presente: true },
-                            { nome: "Kauana Soares", presente: true },
-                            { nome: "Rhyanae Valentine Otano", presente: true },
-                            { nome: "Kasia Izabelly N. Gomes", presente: true },
-                            { nome: "Larissa Guerreiro", presente: true },
-                            { nome: "Luiza Santos Duarte", presente: true },
-                            { nome: "Erika Careaga", presente: true },
-                            { nome: "Isabela Carbonaro", presente: false, justificada: true, aceita: true },
-                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                            { nome: "Analia Arevalos", presente: false, justificada: false, aceita: false }
-                        ],
-                        conselho: [
-                            { nome: "Ingrid M. Barros", presente: true },
-                            { nome: "Lilian Fernanda Oliveira", presente: true },
-                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: true, aceita: true },
-                            { nome: "Danieli Girão Lacerda", presente: true },
-                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                            { nome: "Sheila Silva", presente: true },
-                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                        ]
-                    },
-                    // 28/02/2026
-                    '2026-02-28': {
-                        filhas: [
-                            { nome: "Beatriz Lorenzoni", presente: true },
-                            { nome: "Rafaela Belo", presente: true },
-                            { nome: "Júlia Robles", presente: true },
-                            { nome: "Pietra Sorbara", presente: true },
-                            { nome: "Guiuliana Montana", presente: true },
-                            { nome: "Dominique Bernazzolli", presente: true },
-                            { nome: "Agatha Galeano", presente: true },
-                            { nome: "Guianina Montana", presente: true },
-                            { nome: "Ana Maria Oliveira", presente: true },
-                            { nome: "Rhyanae Valentine Otano", presente: true },
-                            { nome: "Kasia Izabelly N. Gomes", presente: true },
-                            { nome: "Erika Careaga", presente: true },
-                            { nome: "Isabela Carbonaro", presente: true },
-                            { nome: "Jenifer Cristina Lopes", presente: true },
-                            { nome: "Kelly Thalia Batista de Oliveira", presente: false, justificada: false, aceita: false },
-                            { nome: "Ana Luiza Blanco Escanaichi", presente: false, justificada: true, aceita: true },
-                            { nome: "Kauana Soares", presente: false, justificada: false, aceita: false },
-                            { nome: "Larissa Guerreiro", presente: false, justificada: true, aceita: true },
-                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: true },
-                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false },
-                            { nome: "Analia Arevalos", presente: false, justificada: true, aceita: true }
-                        ],
-                        conselho: [
-                            { nome: "Ingrid M. Barros", presente: true },
-                            { nome: "Lilian Fernanda Oliveira", presente: true },
-                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                            { nome: "Danieli Girão Lacerda", presente: false, justificada: false, aceita: false },
-                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                            { nome: "Erika Viviana Guerrero Ramires", presente: false, justificada: true, aceita: true },
-                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                            { nome: "Sheila Silva", presente: false, justificada: true, aceita: true },
-                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                        ]
-                    },
-                    // 07/03/2026
-                    '2026-03-07': {
-                        filhas: [
-                            { nome: "Beatriz Lorenzoni", presente: true },
-                            { nome: "Rafaela Belo", presente: true },
-                            { nome: "Júlia Robles", presente: true },
-                            { nome: "Pietra Sorbara", presente: true },
-                            { nome: "Guiuliana Montana", presente: true },
-                            { nome: "Dominique Bernazzolli", presente: true },
-                            { nome: "Agatha Galeano", presente: true },
-                            { nome: "Kelly Thalia Batista de Oliveira", presente: true },
-                            { nome: "Guianina Montana", presente: true },
-                            { nome: "Ana Luiza Blanco Escanaichi", presente: true },
-                            { nome: "Ana Maria Oliveira", presente: true },
-                            { nome: "Kauana Soares", presente: true },
-                            { nome: "Kasia Izabelly N. Gomes", presente: true },
-                            { nome: "Larissa Guerreiro", presente: true },
-                            { nome: "Isabela Carbonaro", presente: true },
-                            { nome: "Analia Arevalos", presente: true },
-                            { nome: "Rhyanae Valentine Otano", presente: false, justificada: true, aceita: true },
-                            { nome: "Luiza Santos Duarte", presente: false, justificada: true, aceita: false },
-                            { nome: "Erika Careaga", presente: false, justificada: true, aceita: true },
-                            { nome: "Maria Alice Dolci", presente: false, justificada: false, aceita: false },
-                            { nome: "Jenifer Cristina Lopes", presente: false, justificada: true, aceita: true },
-                            { nome: "Stefani Kunrath", presente: false, justificada: false, aceita: false }
-                        ],
-                        conselho: [
-                            { nome: "Ingrid M. Barros", presente: true },
-                            { nome: "Danieli Girão Lacerda", presente: true },
-                            { nome: "Lilian Fernanda Oliveira", presente: true },
-                            { nome: "Erika Viviana Guerrero Ramires", presente: true },
-                            { nome: "Sheila Silva", presente: true },
-                            { nome: "Ernane Simões Carbonaro", presente: false, justificada: false, aceita: false },
-                            { nome: "Alanis Nascimento", presente: false, justificada: false, aceita: false },
-                            { nome: "Adine Amaral", presente: false, justificada: false, aceita: false },
-                            { nome: "Natalina Bonatto Sobara", presente: false, justificada: false, aceita: false }
-                        ]
-                    }
-                }
-            }
-        };
-
-        // ========== INICIALIZAÇÃO ==========
+        // ========== LIMPAR TODOS OS DADOS INICIAIS ==========
+        // Agora o sistema começa completamente vazio!
         if (!localStorage.getItem('filhas')) {
-            localStorage.setItem('filhas', JSON.stringify(filhasIniciais));
+            localStorage.setItem('filhas', JSON.stringify([])); // Começa vazio
         }
         if (!localStorage.getItem('conselho')) {
-            localStorage.setItem('conselho', JSON.stringify(conselhoIniciais));
+            localStorage.setItem('conselho', JSON.stringify([])); // Começa vazio
         }
         if (!localStorage.getItem('gestoes')) {
-            localStorage.setItem('gestoes', JSON.stringify(gestoesIniciais));
+            localStorage.setItem('gestoes', JSON.stringify([])); // Começa vazio
         }
         if (!localStorage.getItem('rituaisPorGestao')) {
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestaoIniciais));
+            localStorage.setItem('rituaisPorGestao', JSON.stringify({})); // Começa vazio
         }
 
-        let gestaoAtual = '2026_27';
-        let dataSelecionada = '2026-02-28';
+        let gestaoAtual = null;
+        let dataSelecionada = null;
         let abaAtual = 'filhas';
 
-        // ========== FUNÇÕES PRINCIPAIS ==========
+        // ========== FUNÇÕES DE LOGIN ==========
+        window.fazerLogin = function() {
+            const usuario = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
+            
+            // Simulação de login (você pode ajustar a validação)
+            if (usuario === 'admin' && senha === '123') {
+                document.getElementById('telaLogin').style.display = 'none';
+                document.getElementById('conteudoPrincipal').style.display = 'block';
+                inicializarSistema();
+            } else {
+                alert('Usuário ou senha incorretos! Tente admin/123');
+            }
+        }
+
+        // ========== INICIALIZAÇÃO ==========
+        function inicializarSistema() {
+            carregarGestoes();
+            atualizarTudo();
+            setInterval(atualizarDataHoraFooter, 1000);
+            document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
+            document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', e => {
+                if (e.key === 'Enter') pesquisarFilha();
+            });
+        }
+
         function carregarGestoes() {
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             const container = document.getElementById('gridGestoes');
             
+            if (gestoes.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhuma gestão cadastrada. Crie uma nova gestão!</div>';
+                return;
+            }
+
+            // Se não há gestão atual definida ou a gestão atual não existe mais, pegar a primeira
+            if (!gestaoAtual || !gestoes.find(g => g.id === gestaoAtual)) {
+                gestaoAtual = gestoes[0]?.id || null;
+            }
+
             container.innerHTML = gestoes.map(g => `
-                <div class="gestao-card ${g.ativa ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
+                <div class="gestao-card ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
                     <div class="gestao-ano">${g.ano}</div>
                     <div class="gestao-numero">${g.numero}</div>
-                    <div class="gestao-rainha">${g.rainha.split(' ')[0]}</div>
+                    <div class="gestao-rainha">${g.rainha ? g.rainha.split(' ')[0] : '---'}</div>
                 </div>
             `).join('');
 
-            const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual) || gestoes[0];
+            const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual);
             if (gestaoAtualObj) {
-                document.getElementById('anoAtual').textContent = gestaoAtualObj.ano;
-                document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero;
-                document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha;
+                document.getElementById('anoAtual').textContent = gestaoAtualObj.ano || '---';
+                document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero || '---';
+                document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha || '---';
             }
         }
 
         window.selecionarGestao = function(gestaoId) {
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            gestoes.forEach(g => g.ativa = (g.id === gestaoId));
-            localStorage.setItem('gestoes', JSON.stringify(gestoes));
             gestaoAtual = gestaoId;
             carregarGestoes();
             atualizarTudo();
         }
 
         function getRituaisAtuais() {
+            if (!gestaoAtual) return {};
             const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
             return rituaisPorGestao[gestaoAtual]?.rituais || {};
         }
 
         function getPrimeirosDoisNomes(nomeCompleto) {
+            if (!nomeCompleto) return '';
             const partes = nomeCompleto.trim().split(' ');
             return partes.slice(0, 2).join(' ').toLowerCase();
         }
@@ -1138,20 +1168,23 @@
             const grid = document.getElementById('gridFilhas');
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
+            if (filhas.length === 0) {
+                grid.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Nenhuma filha cadastrada. Vá em "MEMBROS" para adicionar.</div>';
+                return;
+            }
+
             grid.innerHTML = filhas.map((f, i) => {
-                // Usar os 2 primeiros nomes para pesquisa
                 const doisNomes = getPrimeirosDoisNomes(f.nome);
                 return `
                     <div class="item-imagem" onclick="pesquisarPorDoisNomes('${doisNomes}')">
                         <div class="icone">${icones[i % icones.length]}</div>
-                        <div class="nome">${f.nome}</div>
-                        <div class="cargo">${f.cargo}</div>
+                        <div class="nome">${f.nome || '---'}</div>
+                        <div class="cargo">${f.cargo || '---'}</div>
                     </div>
                 `;
             }).join('');
         }
 
-        // ========== FUNÇÃO DE PESQUISA CORRIGIDA ==========
         window.pesquisarPorDoisNomes = function(doisNomes) {
             document.getElementById('pesquisaNomeCompleto').value = doisNomes;
             pesquisarFilha();
@@ -1165,11 +1198,10 @@
                 return;
             }
 
-            // Buscar a filha comparando com os 2 primeiros nomes
             const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
             const filhaEncontrada = filhas.find(f => {
                 const doisNomes = getPrimeirosDoisNomes(f.nome);
-                return doisNomes === termoBusca || f.nome.toLowerCase().includes(termoBusca);
+                return doisNomes === termoBusca || (f.nome && f.nome.toLowerCase().includes(termoBusca));
             });
             
             if (!filhaEncontrada) {
@@ -1177,23 +1209,18 @@
                 return;
             }
 
-            // Esconder cards e mostrar resultado
             document.getElementById('cardsGerais').style.display = 'none';
             document.getElementById('resultadoPesquisa').style.display = 'block';
 
-            // Buscar TODAS as faltas em todas as gestões
             const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             const todasFaltas = [];
 
-            // Percorrer todas as gestões
             Object.entries(rituaisPorGestao).forEach(([idGestao, gestaoData]) => {
                 const gestao = gestoes.find(g => g.id === idGestao);
                 const rituais = gestaoData.rituais || {};
                 
-                // Percorrer todas as datas
                 Object.entries(rituais).forEach(([data, ritual]) => {
-                    // Procurar a filha no array de filhas
                     const falta = ritual.filhas?.find(f => f.nome === filhaEncontrada.nome);
                     
                     if (falta && !falta.presente) {
@@ -1208,17 +1235,14 @@
                 });
             });
 
-            // Ordenar por data (mais recente primeiro)
             todasFaltas.sort((a, b) => b.data.localeCompare(a.data));
 
-            // Calcular estatísticas
             const totalFaltas = todasFaltas.length;
             const justificadas = todasFaltas.filter(f => f.justificada).length;
             const naoJustificadas = todasFaltas.filter(f => !f.justificada).length;
             const aceitas = todasFaltas.filter(f => f.aceita).length;
             const rejeitadas = todasFaltas.filter(f => !f.aceita).length;
 
-            // Criar HTML do resultado
             let faltasHTML = '';
             if (todasFaltas.length > 0) {
                 faltasHTML = todasFaltas.map(f => `
@@ -1230,7 +1254,7 @@
                             </span>
                         </div>
                         <div style="margin: 5px 0; color: var(--text-muted); font-size: 0.85rem;">
-                            ${f.gestao} • ${f.rainha.split(' ')[0]}
+                            ${f.gestao} • ${f.rainha ? f.rainha.split(' ')[0] : '---'}
                         </div>
                         <div style="font-size: 0.85rem;">
                             ${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}
@@ -1244,13 +1268,13 @@
             const resultadoHTML = `
                 <div class="info-detalhada">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem;">👑 ${filhaEncontrada.nome}</h2>
+                        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem;">👑 ${filhaEncontrada.nome || '---'}</h2>
                         <button class="botao" onclick="voltarCardsGerais()">← Voltar</button>
                     </div>
                     
                     <div style="text-align: center; margin-bottom: 30px;">
                         <span style="background: rgba(203,166,247,0.2); padding: 8px 25px; border-radius: 40px; border: 1px solid var(--primary);">
-                            ${filhaEncontrada.cargo}
+                            ${filhaEncontrada.cargo || '---'}
                         </span>
                     </div>
 
@@ -1303,6 +1327,11 @@
         }
 
         function atualizarCardsGerais() {
+            if (!gestaoAtual) {
+                document.getElementById('cardsGerais').innerHTML = '';
+                return;
+            }
+
             const rituais = getRituaisAtuais();
             let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
             
@@ -1326,6 +1355,11 @@
         }
 
         function atualizarListaDatas() {
+            if (!gestaoAtual) {
+                document.getElementById('listaDatas').innerHTML = '';
+                return;
+            }
+
             const rituais = getRituaisAtuais();
             const datas = Object.keys(rituais).sort().reverse();
             const container = document.getElementById('listaDatas');
@@ -1335,6 +1369,10 @@
                 return;
             }
             
+            if (!dataSelecionada || !datas.includes(dataSelecionada)) {
+                dataSelecionada = datas[0];
+            }
+
             container.innerHTML = datas.map(data => `
                 <button class="data-botao ${data === dataSelecionada ? 'ativo' : ''}" onclick="mudarData('${data}')">
                     ${data.split('-').reverse().join('/').substring(0,5)}
@@ -1349,6 +1387,12 @@
         }
 
         function carregarTabelas() {
+            if (!gestaoAtual || !dataSelecionada) {
+                document.getElementById('corpoFilhas').innerHTML = '';
+                document.getElementById('corpoConselho').innerHTML = '';
+                return;
+            }
+
             const rituais = getRituaisAtuais();
             const dados = rituais[dataSelecionada] || { filhas: [], conselho: [] };
             const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
@@ -1357,8 +1401,8 @@
             document.getElementById('corpoFilhas').innerHTML = filhas.map(f => {
                 const r = dados.filhas?.find(x => x.nome === f.nome) || { presente: false };
                 return `<tr>
-                    <td>${f.nome}</td>
-                    <td>${f.cargo}</td>
+                    <td>${f.nome || '---'}</td>
+                    <td>${f.cargo || '---'}</td>
                     <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
                     <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
                     <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
@@ -1368,8 +1412,8 @@
             document.getElementById('corpoConselho').innerHTML = conselho.map(c => {
                 const r = dados.conselho?.find(x => x.nome === c.nome) || { presente: false };
                 return `<tr>
-                    <td>${c.nome}</td>
-                    <td>${c.cargo}</td>
+                    <td>${c.nome || '---'}</td>
+                    <td>${c.cargo || '---'}</td>
                     <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
                     <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
                     <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
@@ -1385,10 +1429,9 @@
             if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
 
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            gestoes.forEach(g => g.ativa = false);
             
             const novaGestao = {
-                id: `${ano}_${gestoes.length + 1}`,
+                id: `${ano}_${Date.now()}`,
                 ano: parseInt(ano),
                 numero,
                 rainha,
@@ -1411,7 +1454,6 @@
             atualizarTudo();
         }
 
-        // ========== FUNÇÕES DOS MODAIS ==========
         window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') carregarAmbasAbas();
@@ -1438,24 +1480,29 @@
         }
 
         function carregarMembrosModal(tipo, containerId) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
+            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
             const container = document.getElementById(containerId);
             
+            if (lista.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
+                return;
+            }
+
             container.innerHTML = lista.map(m => {
-                const id = m.nome.replace(/\s/g, '') + tipo;
+                const id = (m.nome || 'membro').replace(/\s/g, '') + tipo;
                 return `
-                    <div class="membro-item" data-nome="${m.nome}">
-                        <div><strong>${m.nome}</strong> - ${m.cargo}</div>
+                    <div class="membro-item" data-nome="${m.nome || ''}" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
+                        <div><strong>${m.nome || '---'}</strong> - ${m.cargo || '---'}</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px;">
-                            <select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')">
+                            <select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
                                 <option value="presente">✓ Presente</option>
                                 <option value="ausente">✗ Ausente</option>
                             </select>
-                            <select id="just-${id}" disabled>
+                            <select id="just-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
                                 <option value="nao">Não Just.</option>
                                 <option value="sim">Just.</option>
                             </select>
-                            <select id="aceite-${id}" disabled>
+                            <select id="aceite-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
                                 <option value="nao">Rej.</option>
                                 <option value="sim">Aceita</option>
                             </select>
@@ -1503,6 +1550,11 @@
         }
 
         window.salvarRitualisticaCompleta = function() {
+            if (!gestaoAtual) {
+                alert('Selecione uma gestão primeiro!');
+                return;
+            }
+
             const data = document.getElementById('novaData').value;
             if (!data) return alert('Selecione uma data');
 
@@ -1510,22 +1562,24 @@
             rituais[data] = {
                 filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => {
                     const nome = item.dataset.nome;
-                    const id = nome.replace(/\s/g, '') + 'filhas';
-                    const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                    const id = (nome || 'membro').replace(/\s/g, '') + 'filhas';
+                    const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
                     return {
-                        nome, presente,
-                        justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
-                        aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                        nome,
+                        presente,
+                        justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
+                        aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
                     };
                 }),
                 conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => {
                     const nome = item.dataset.nome;
-                    const id = nome.replace(/\s/g, '') + 'conselho';
-                    const presente = document.getElementById(`pres-${id}`).value === 'presente';
+                    const id = (nome || 'membro').replace(/\s/g, '') + 'conselho';
+                    const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
                     return {
-                        nome, presente,
-                        justificada: presente ? false : document.getElementById(`just-${id}`).value === 'sim',
-                        aceita: presente ? false : document.getElementById(`aceite-${id}`).value === 'sim'
+                        nome,
+                        presente,
+                        justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
+                        aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
                     };
                 })
             };
@@ -1539,23 +1593,26 @@
             alert('✅ Ritualística salva!');
         }
 
-        // ========== GERENCIAR MEMBROS ==========
         window.carregarMembros = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
+            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
             const container = document.getElementById('listaMembrosGerenciar');
             
-            container.innerHTML = lista.map((m, i) => `
-                <div class="membro-item">
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <input type="text" value="${m.nome}" id="nome-${i}" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                        <input type="text" value="${m.cargo}" id="cargo-${i}" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                        <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">💾</button>
-                        <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">🗑️</button>
+            if (lista.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
+            } else {
+                container.innerHTML = lista.map((m, i) => `
+                    <div class="membro-item" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <input type="text" value="${m.nome || ''}" id="nome-${i}" placeholder="Nome" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                            <input type="text" value="${m.cargo || ''}" id="cargo-${i}" placeholder="Cargo" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                            <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">💾</button>
+                            <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">🗑️</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
-            container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar</button>`;
+            container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
         }
 
         window.salvarMembro = function(index, tipo) {
@@ -1563,7 +1620,7 @@
             const cargo = document.getElementById(`cargo-${index}`).value;
             if (!nome || !cargo) return alert('Preencha todos os campos');
 
-            const lista = JSON.parse(localStorage.getItem(tipo));
+            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
             lista[index] = { nome, cargo };
             localStorage.setItem(tipo, JSON.stringify(lista));
             carregarMembros(tipo);
@@ -1572,7 +1629,7 @@
 
         window.deletarMembro = function(index, tipo) {
             if (!confirm('Deletar?')) return;
-            const lista = JSON.parse(localStorage.getItem(tipo));
+            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
             lista.splice(index, 1);
             localStorage.setItem(tipo, JSON.stringify(lista));
             carregarMembros(tipo);
@@ -1580,58 +1637,124 @@
         }
 
         window.adicionarMembro = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo));
+            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
             lista.push({ nome: 'Novo Membro', cargo: 'Novo Cargo' });
             localStorage.setItem(tipo, JSON.stringify(lista));
             carregarMembros(tipo);
             if (tipo === 'filhas') atualizarGridFilhas();
         }
 
-        // ========== REGISTROS ==========
         function carregarRegistros() {
+            if (!gestaoAtual) {
+                document.getElementById('listaRegistros').innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Selecione uma gestão primeiro</p>';
+                return;
+            }
+
             const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
             const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             const container = document.getElementById('listaRegistros');
             
             document.getElementById('abasGestao').innerHTML = gestoes.map(g => `
                 <button class="data-botao ${g.id === gestaoAtual ? 'ativo' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">
-                    ${g.ano}
+                    ${g.ano} - ${g.numero}
                 </button>
             `).join('');
 
             const gestaoData = rituaisPorGestao[gestaoAtual];
             if (!gestaoData?.rituais || Object.keys(gestaoData.rituais).length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro</p>';
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro nesta gestão</p>';
                 return;
             }
 
-            container.innerHTML = Object.entries(gestaoData.rituais).sort().reverse().map(([data, info]) => `
-                <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
-                    <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
-                    <div style="text-align: center; color: var(--gold); margin: 10px 0;">${gestaoData.informacoes.ano} • ${gestaoData.informacoes.rainha.split(' ')[0]}</div>
-                    <div style="display: flex; justify-content: space-around; margin: 15px 0;">
-                        <div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div>
-                        <div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div>
+            container.innerHTML = Object.entries(gestaoData.rituais).sort().reverse().map(([data, info]) => {
+                const totalFaltasFilhas = info.filhas?.filter(f => !f.presente).length || 0;
+                const totalFaltasConselho = info.conselho?.filter(c => !c.presente).length || 0;
+                const totalFaltas = totalFaltasFilhas + totalFaltasConselho;
+                
+                return `
+                    <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
+                        <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
+                        <div style="text-align: center; color: var(--gold); margin: 10px 0;">${gestaoData.informacoes.ano} • ${gestaoData.informacoes.rainha ? gestaoData.informacoes.rainha.split(' ')[0] : '---'}</div>
+                        <div style="display: flex; justify-content: space-around; margin: 15px 0;">
+                            <div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div>
+                            <div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div>
+                            <div style="color: var(--danger);">❌ ${totalFaltas}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="botao" onclick="verDetalhesFaltas('${data}')" style="flex:1; padding: 8px;">Ver Faltas</button>
+                            <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">Deletar</button>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="botao" onclick="mudarData('${data}'); fecharModal('registros')" style="flex:1; padding: 8px;">Ver</button>
-                        <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">Deletar</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        window.verDetalhesFaltas = function(data) {
+            const rituais = getRituaisAtuais();
+            const info = rituais[data];
+            
+            if (!info) return;
+
+            const filhasFaltas = info.filhas?.filter(f => !f.presente) || [];
+            const conselhoFaltas = info.conselho?.filter(c => !c.presente) || [];
+            
+            let html = '<div style="display: grid; gap: 20px;">';
+            
+            if (filhasFaltas.length > 0) {
+                html += '<div><h3 style="color: var(--primary-light); margin-bottom: 15px;">👑 Filhas Ausentes</h3>';
+                filhasFaltas.forEach(f => {
+                    html += `
+                        <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}" style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong>${f.nome}</strong>
+                                <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span>
+                            </div>
+                            <div style="margin-top: 5px; color: var(--text-muted);">
+                                Justificativa: ${f.justificada ? '✅ Sim' : '❌ Não'}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            if (conselhoFaltas.length > 0) {
+                html += '<div><h3 style="color: var(--primary-light); margin-bottom: 15px;">⚡ Conselho Ausente</h3>';
+                conselhoFaltas.forEach(c => {
+                    html += `
+                        <div class="falta-item ${c.justificada ? 'justificada' : 'nao-justificada'}" style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong>${c.nome}</strong>
+                                <span class="badge ${c.aceita ? 'aceita' : 'rejeitada'}">${c.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span>
+                            </div>
+                            <div style="margin-top: 5px; color: var(--text-muted);">
+                                Justificativa: ${c.justificada ? '✅ Sim' : '❌ Não'}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            if (filhasFaltas.length === 0 && conselhoFaltas.length === 0) {
+                html = '<p style="color: var(--success); text-align: center; font-size: 1.2rem;">✨ Todos os membros estavam presentes! ✨</p>';
+            }
+
+            html += '</div>';
+
+            document.getElementById('detalhesTitulo').innerHTML = `📅 Faltas - ${data.split('-').reverse().join('/')}`;
+            document.getElementById('conteudoDetalhesFaltas').innerHTML = html;
+            document.getElementById('modalDetalhesFaltas').style.display = 'block';
         }
 
         window.selecionarGestaoRegistros = function(gestaoId) {
             gestaoAtual = gestaoId;
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            gestoes.forEach(g => g.ativa = (g.id === gestaoId));
-            localStorage.setItem('gestoes', JSON.stringify(gestoes));
             carregarRegistros();
             carregarGestoes();
         }
 
         window.deletarRegistro = function(data) {
-            if (!confirm(`Deletar ${data}?`)) return;
+            if (!confirm(`Deletar registro de ${data}?`)) return;
             const rituais = getRituaisAtuais();
             delete rituais[data];
             
@@ -1641,7 +1764,7 @@
             
             carregarRegistros();
             if (dataSelecionada === data) {
-                dataSelecionada = Object.keys(rituais)[0] || '';
+                dataSelecionada = Object.keys(rituais)[0] || null;
                 atualizarTudo();
             }
         }
@@ -1653,21 +1776,18 @@
         }
 
         function atualizarTudo() {
+            if (!gestaoAtual) return;
             atualizarGridFilhas();
             atualizarListaDatas();
             carregarTabelas();
             atualizarCardsGerais();
         }
 
-        // Inicialização
-        carregarGestoes();
-        atualizarTudo();
-        setInterval(atualizarDataHoraFooter, 1000);
-        
-        document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
-        document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', e => {
-            if (e.key === 'Enter') pesquisarFilha();
-        });
+        // Verifica se já está logado (para desenvolvimento)
+        window.onload = function() {
+            // Comentar a linha abaixo se quiser sempre ver a tela de login
+            // fazerLogin();
+        }
     </script>
 </body>
 </html>
