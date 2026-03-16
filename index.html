@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -59,12 +60,13 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at 20% 30%, rgba(203, 166, 247, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 70%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 80% 70%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
 
-        .container, .login-container {
+        .container,
+        .login-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px 16px;
@@ -94,7 +96,8 @@
             text-align: center;
         }
 
-        .login-card::before, .login-card::after {
+        .login-card::before,
+        .login-card::after {
             content: '✧';
             position: absolute;
             font-size: 2.5rem;
@@ -223,7 +226,8 @@
             text-transform: uppercase;
         }
 
-        h1::before, h1::after {
+        h1::before,
+        h1::after {
             content: '✧';
             font-size: 1.2em;
             margin: 0 15px;
@@ -338,7 +342,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -600,12 +604,13 @@
             background: rgba(203, 166, 247, 0.1);
         }
 
-        .presente { 
-            color: var(--success); 
+        .presente {
+            color: var(--success);
             font-weight: 500;
         }
-        .ausente { 
-            color: var(--danger); 
+
+        .ausente {
+            color: var(--danger);
             font-weight: 500;
         }
 
@@ -854,10 +859,13 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="statusConexao" class="status-conexao status-online">🟢 Conectado</div>
     <div id="loading" class="loading" style="display: none;">
@@ -869,7 +877,7 @@
         <div class="login-card">
             <h1>✦ ACESSO ✦</h1>
             <div class="login-subtitulo">Ordem Internacional das Filhas de Jó</div>
-            
+
             <div class="input-group">
                 <label>USUÁRIO (email)</label>
                 <input type="email" id="usuario" placeholder="Digite seu email" value="admin@fdji.com">
@@ -925,9 +933,10 @@
             <div class="grid-imagens" id="gridFilhas"></div>
 
             <!-- Pesquisa -->
-            <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
-                <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..." 
-                       style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
+            <div class="pesquisa-box"
+                style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
+                <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..."
+                    style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
                 <button class="botao" onclick="pesquisarFilha()">PESQUISAR</button>
                 <button class="botao perigo" onclick="limparPesquisa()">LIMPAR</button>
             </div>
@@ -946,15 +955,18 @@
                     <h2>✦ NOVA RITUALÍSTICA</h2>
                     <button class="fechar" onclick="fecharModal('nova')">✕</button>
                 </div>
-                
+
                 <div style="margin-bottom: 20px;">
                     <label style="color: var(--primary-light);">📅 Data:</label>
-                    <input type="date" id="novaData" style="width: 100%; margin-top: 8px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <input type="date" id="novaData"
+                        style="width: 100%; margin-top: 8px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="botao" onclick="mudarAba('filhas')" style="flex:1;" id="abaFilhasBtn">👑 FILHAS</button>
-                    <button class="botao" onclick="mudarAba('conselho')" style="flex:1;" id="abaConselhoBtn">⚡ CONSELHO</button>
+                    <button class="botao" onclick="mudarAba('filhas')" style="flex:1;" id="abaFilhasBtn">👑
+                        FILHAS</button>
+                    <button class="botao" onclick="mudarAba('conselho')" style="flex:1;" id="abaConselhoBtn">⚡
+                        CONSELHO</button>
                 </div>
 
                 <div id="progressoContainer">
@@ -963,14 +975,17 @@
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #2e7d32;">✓ Presentes</button>
-                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #b34141;">✗ Ausentes</button>
+                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #2e7d32;">✓
+                        Presentes</button>
+                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #b34141;">✗
+                        Ausentes</button>
                 </div>
 
                 <div id="containerFilhas" style="max-height: 400px; overflow-y: auto;"></div>
                 <div id="containerConselho" style="max-height: 400px; overflow-y: auto; display: none;"></div>
 
-                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width: 100%; margin-top: 20px; padding: 15px;" id="botaoSalvar">✦ SALVAR ✦</button>
+                <button class="botao" onclick="salvarRitualisticaCompleta()"
+                    style="width: 100%; margin-top: 20px; padding: 15px;" id="botaoSalvar">✦ SALVAR ✦</button>
             </div>
         </div>
 
@@ -983,10 +998,14 @@
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="number" id="novaGestaoAno" value="2026" placeholder="Ano" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <textarea id="novaGestaoObs" rows="2" placeholder="Observações..." style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;"></textarea>
+                    <input type="number" id="novaGestaoAno" value="2026" placeholder="Ano"
+                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)"
+                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha"
+                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
+                    <textarea id="novaGestaoObs" rows="2" placeholder="Observações..."
+                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;"></textarea>
                     <button class="botao" onclick="criarNovaGestao()">✅ CRIAR GESTÃO</button>
                 </div>
             </div>
@@ -1018,7 +1037,9 @@
                 </div>
 
                 <div class="datas" id="abasGestao" style="justify-content: flex-start;"></div>
-                <div id="listaRegistros" class="registros-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 15px; margin-top: 20px;"></div>
+                <div id="listaRegistros" class="registros-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 15px; margin-top: 20px;">
+                </div>
             </div>
         </div>
 
@@ -1035,9 +1056,9 @@
     </div>
 
     <div class="footer">
-        <div class="nome">✦ Sistema de Faltas FDJI ✦</div>
+        <div class="nome">✦ Sistema de Faltas FDJI ✦ Dominique Black - @dominique_cbb</div>
         <div class="data-hora" id="dataHoraFooter"></div>
-        <div class="assinatura">"Vida Antes da Morte"</div>
+        <div class="assinatura">"Vida Antes da Morte" </div>
     </div>
 
     <script>
@@ -1062,29 +1083,31 @@
         let usuarioAtual = null;
 
         // ========== VERIFICAR SE JÁ ESTÁ LOGADO ==========
-        auth.onAuthStateChanged(async (user) => {
+        auauth.onAuthStateChanged(async (user) => {
+            // Esconder o loading em QUALQUER situação
+            document.getElementById('loading').style.display = 'none';
+
             if (user) {
                 usuarioAtual = user;
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPrincipal').style.display = 'block';
-                
+
                 // Criar admin na primeira vez se necessário
                 await criarAdminInicial();
-                
+
                 inicializarSistema();
             } else {
                 document.getElementById('telaLogin').style.display = 'flex';
                 document.getElementById('conteudoPrincipal').style.display = 'none';
             }
         });
-
         // ========== CRIAR ADMIN INICIAL AUTOMATICAMENTE ==========
         async function criarAdminInicial() {
             try {
                 // Verificar se já existe algum usuário
                 const usuariosRef = db.collection('usuarios');
                 const snapshot = await usuariosRef.limit(1).get();
-                
+
                 if (snapshot.empty) {
                     // Criar usuário admin no Authentication
                     try {
@@ -1092,7 +1115,7 @@
                     } catch (error) {
                         console.log('Admin já existe ou erro ao criar:', error);
                     }
-                    
+
                     // Criar documento do admin no Firestore
                     await usuariosRef.doc('admin').set({
                         nome: 'Administrador',
@@ -1107,26 +1130,27 @@
         }
 
         // ========== FUNÇÃO DE LOGIN ==========
-        window.fazerLogin = async function() {
+        window.fazerLogin = async function () {
             const email = document.getElementById('usuario').value;
             const senha = document.getElementById('senha').value;
-            
+
             try {
                 document.getElementById('loading').style.display = 'flex';
                 await auth.signInWithEmailAndPassword(email, senha);
+                // O onAuthStateChanged vai redirecionar e esconder o loading
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 alert('Erro ao fazer login: ' + error.message);
             }
         }
 
-        window.recuperarSenha = async function() {
+        window.recuperarSenha = async function () {
             const email = document.getElementById('usuario').value;
             if (!email) {
                 alert('Digite seu email primeiro!');
                 return;
             }
-            
+
             try {
                 await auth.sendPasswordResetEmail(email);
                 alert('Email de recuperação enviado! Verifique sua caixa de entrada.');
@@ -1153,9 +1177,9 @@
                 const snapshot = await db.collection('gestoes').orderBy('ano', 'desc').get();
                 const gestoes = [];
                 snapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-                
+
                 const container = document.getElementById('gridGestoes');
-                
+
                 if (gestoes.length === 0) {
                     container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhuma gestão cadastrada. Crie uma nova gestão!</div>';
                     return;
@@ -1184,7 +1208,7 @@
             }
         }
 
-        window.selecionarGestao = function(gestaoId) {
+        window.selecionarGestao = function (gestaoId) {
             gestaoAtual = gestaoId;
             carregarGestoes();
             atualizarCardsGerais();
@@ -1207,7 +1231,7 @@
             const filhas = await carregarFilhas();
             const grid = document.getElementById('gridFilhas');
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
-            
+
             if (filhas.length === 0) {
                 grid.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Nenhuma filha cadastrada. Vá em "MEMBROS" para adicionar.</div>';
                 return;
@@ -1257,14 +1281,14 @@
             return partes.slice(0, 2).join(' ').toLowerCase();
         }
 
-        window.pesquisarPorDoisNomes = function(doisNomes) {
+        window.pesquisarPorDoisNomes = function (doisNomes) {
             document.getElementById('pesquisaNomeCompleto').value = doisNomes;
             pesquisarFilha();
         }
 
-        window.pesquisarFilha = async function() {
+        window.pesquisarFilha = async function () {
             const termoBusca = document.getElementById('pesquisaNomeCompleto').value.trim().toLowerCase();
-            
+
             if (!termoBusca) {
                 alert('Digite o nome da filha');
                 return;
@@ -1275,7 +1299,7 @@
                 const doisNomes = getPrimeirosDoisNomes(f.nome);
                 return doisNomes === termoBusca || (f.nome && f.nome.toLowerCase().includes(termoBusca));
             });
-            
+
             if (!filhaEncontrada) {
                 alert(`Filha não encontrada`);
                 return;
@@ -1289,16 +1313,16 @@
             const gestoesSnapshot = await db.collection('gestoes').get();
             const gestoes = [];
             gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-            
+
             const todasFaltas = [];
 
             rituaisSnapshot.forEach(doc => {
                 const gestao = gestoes.find(g => g.id === doc.id);
                 const rituais = doc.data().rituais || {};
-                
+
                 Object.entries(rituais).forEach(([data, ritual]) => {
                     const falta = ritual.filhas?.find(f => f.nome === filhaEncontrada.nome);
-                    
+
                     if (falta && !falta.presente) {
                         todasFaltas.push({
                             data: data,
@@ -1392,13 +1416,13 @@
             document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
         }
 
-        window.voltarCardsGerais = function() {
+        window.voltarCardsGerais = function () {
             document.getElementById('cardsGerais').style.display = 'grid';
             document.getElementById('resultadoPesquisa').style.display = 'none';
             document.getElementById('pesquisaNomeCompleto').value = '';
         }
 
-        window.limparPesquisa = function() {
+        window.limparPesquisa = function () {
             voltarCardsGerais();
         }
 
@@ -1410,7 +1434,7 @@
 
             const rituais = await getRituaisAtuais();
             let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
-            
+
             Object.values(rituais).forEach(data => {
                 [...(data.filhas || []), ...(data.conselho || [])].forEach(r => {
                     if (!r.presente) {
@@ -1430,16 +1454,16 @@
             `;
         }
 
-        window.criarNovaGestao = async function() {
+        window.criarNovaGestao = async function () {
             const ano = document.getElementById('novaGestaoAno').value;
             const numero = document.getElementById('novaGestaoNumero').value;
             const rainha = document.getElementById('novaGestaoRainha').value;
-            
+
             if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
 
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const novaGestao = {
                     ano: parseInt(ano),
                     numero,
@@ -1450,7 +1474,7 @@
 
                 // Criar documento da gestão
                 const gestaoRef = await db.collection('gestoes').add(novaGestao);
-                
+
                 // Criar documento de rituais vazio para a gestão
                 await db.collection('rituais').doc(gestaoRef.id).set({
                     rituais: {}
@@ -1460,7 +1484,7 @@
                 await carregarGestoes();
                 fecharModal('novaGestao');
                 atualizarCardsGerais();
-                
+
                 alert('Gestão criada com sucesso!');
             } catch (error) {
                 alert('Erro ao criar gestão: ' + error.message);
@@ -1469,18 +1493,18 @@
             }
         }
 
-        window.mostrarModal = function(tipo) {
+        window.mostrarModal = function (tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') carregarAmbasAbas();
             if (tipo === 'membros') carregarMembros('filhas');
             if (tipo === 'registros') carregarRegistros();
         }
 
-        window.fecharModal = function(tipo) {
+        window.fecharModal = function (tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none';
         }
 
-        window.mudarAba = function(aba) {
+        window.mudarAba = function (aba) {
             abaAtual = aba;
             document.getElementById('abaFilhasBtn').style.opacity = aba === 'filhas' ? '1' : '0.7';
             document.getElementById('abaConselhoBtn').style.opacity = aba === 'conselho' ? '1' : '0.7';
@@ -1488,7 +1512,7 @@
             document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
         }
 
-        window.carregarAmbasAbas = function() {
+        window.carregarAmbasAbas = function () {
             carregarMembrosModal('filhas', 'containerFilhas');
             carregarMembrosModal('conselho', 'containerConselho');
             atualizarProgresso();
@@ -1497,7 +1521,7 @@
         async function carregarMembrosModal(tipo, containerId) {
             const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
             const container = document.getElementById(containerId);
-            
+
             if (lista.length === 0) {
                 container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
                 return;
@@ -1527,14 +1551,14 @@
             }).join('');
         }
 
-        window.mudarPresencaModal = function(id, tipo) {
+        window.mudarPresencaModal = function (id, tipo) {
             const pres = document.getElementById(`pres-${id}`).value;
             document.getElementById(`just-${id}`).disabled = pres === 'presente';
             document.getElementById(`aceite-${id}`).disabled = pres === 'presente';
             atualizarProgresso();
         }
 
-        window.marcarTodosAtual = function(status) {
+        window.marcarTodosAtual = function (status) {
             const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
             document.querySelectorAll(`#${container} select[id^="pres-"]`).forEach(s => {
                 s.value = status;
@@ -1547,7 +1571,7 @@
                 const selects = document.querySelectorAll(`#container${tipo.charAt(0).toUpperCase() + tipo.slice(1)} select[id^="pres-"]`);
                 const total = selects.length;
                 const marcados = Array.from(selects).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-                
+
                 const el = document.getElementById(`progresso${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
                 if (el) {
                     el.innerHTML = marcados === total ? `✅ ${tipo}: ${marcados}/${total}` : `⏳ ${tipo}: ${marcados}/${total}`;
@@ -1555,16 +1579,16 @@
             });
 
             const btnSalvar = document.getElementById('botaoSalvar');
-            const filhasOk = document.querySelectorAll('#containerFilhas select[id^="pres-"]').length === 
-                            Array.from(document.querySelectorAll('#containerFilhas select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-            const conselhoOk = document.querySelectorAll('#containerConselho select[id^="pres-"]').length === 
-                              Array.from(document.querySelectorAll('#containerConselho select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-            
+            const filhasOk = document.querySelectorAll('#containerFilhas select[id^="pres-"]').length ===
+                Array.from(document.querySelectorAll('#containerFilhas select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
+            const conselhoOk = document.querySelectorAll('#containerConselho select[id^="pres-"]').length ===
+                Array.from(document.querySelectorAll('#containerConselho select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
+
             btnSalvar.disabled = !(filhasOk && conselhoOk);
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-        window.salvarRitualisticaCompleta = async function() {
+        window.salvarRitualisticaCompleta = async function () {
             if (!gestaoAtual) {
                 alert('Selecione uma gestão primeiro!');
                 return;
@@ -1575,7 +1599,7 @@
 
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const rituais = await getRituaisAtuais();
                 rituais[data] = {
                     filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => {
@@ -1616,14 +1640,14 @@
             }
         }
 
-        window.carregarMembros = function(tipo) {
+        window.carregarMembros = function (tipo) {
             carregarMembrosLista(tipo);
         }
 
         async function carregarMembrosLista(tipo) {
             const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
             const container = document.getElementById('listaMembrosGerenciar');
-            
+
             if (lista.length === 0) {
                 container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
             } else {
@@ -1642,19 +1666,19 @@
             container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
         }
 
-        window.salvarMembro = async function(index, tipo) {
+        window.salvarMembro = async function (index, tipo) {
             const nome = document.getElementById(`nome-${index}`).value;
             const cargo = document.getElementById(`cargo-${index}`).value;
             if (!nome || !cargo) return alert('Preencha todos os campos');
 
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
                 const snapshot = await db.collection(collection).get();
                 const docs = [];
                 snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                
+
                 if (docs[index]) {
                     await db.collection(collection).doc(docs[index].id).update({
                         nome, cargo
@@ -1670,17 +1694,17 @@
             }
         }
 
-        window.deletarMembro = async function(index, tipo) {
+        window.deletarMembro = async function (index, tipo) {
             if (!confirm('Deletar?')) return;
 
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
                 const snapshot = await db.collection(collection).get();
                 const docs = [];
                 snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                
+
                 if (docs[index]) {
                     await db.collection(collection).doc(docs[index].id).delete();
                 }
@@ -1694,10 +1718,10 @@
             }
         }
 
-        window.adicionarMembro = async function(tipo) {
+        window.adicionarMembro = async function (tipo) {
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
                 await db.collection(collection).add({
                     nome: 'Novo Membro',
@@ -1724,7 +1748,7 @@
                 const gestoesSnapshot = await db.collection('gestoes').get();
                 const gestoes = [];
                 gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-                
+
                 document.getElementById('abasGestao').innerHTML = gestoes.map(g => `
                     <button class="data-botao ${g.id === gestaoAtual ? 'ativo' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">
                         ${g.ano} - ${g.numero}
@@ -1733,9 +1757,9 @@
 
                 const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get();
                 const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {};
-                
+
                 const container = document.getElementById('listaRegistros');
-                
+
                 if (Object.keys(rituais).length === 0) {
                     container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro nesta gestão</p>';
                     return;
@@ -1745,7 +1769,7 @@
                     const totalFaltasFilhas = info.filhas?.filter(f => !f.presente).length || 0;
                     const totalFaltasConselho = info.conselho?.filter(c => !c.presente).length || 0;
                     const totalFaltas = totalFaltasFilhas + totalFaltasConselho;
-                    
+
                     return `
                         <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
                             <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
@@ -1767,17 +1791,17 @@
             }
         }
 
-        window.verDetalhesFaltas = async function(data) {
+        window.verDetalhesFaltas = async function (data) {
             const rituais = await getRituaisAtuais();
             const info = rituais[data];
-            
+
             if (!info) return;
 
             const filhasFaltas = info.filhas?.filter(f => !f.presente) || [];
             const conselhoFaltas = info.conselho?.filter(c => !c.presente) || [];
-            
+
             let html = '<div style="display: grid; gap: 20px;">';
-            
+
             if (filhasFaltas.length > 0) {
                 html += '<div><h3 style="color: var(--primary-light); margin-bottom: 15px;">👑 Filhas Ausentes</h3>';
                 filhasFaltas.forEach(f => {
@@ -1825,21 +1849,21 @@
             document.getElementById('modalDetalhesFaltas').style.display = 'block';
         }
 
-        window.selecionarGestaoRegistros = function(gestaoId) {
+        window.selecionarGestaoRegistros = function (gestaoId) {
             gestaoAtual = gestaoId;
             carregarRegistros();
             carregarGestoes();
         }
 
-        window.deletarRegistro = async function(data) {
+        window.deletarRegistro = async function (data) {
             if (!confirm(`Deletar registro de ${data}?`)) return;
 
             try {
                 document.getElementById('loading').style.display = 'flex';
-                
+
                 const rituais = await getRituaisAtuais();
                 delete rituais[data];
-                
+
                 await db.collection('rituais').doc(gestaoAtual).set({
                     rituais: rituais
                 });
@@ -1855,9 +1879,10 @@
 
         function atualizarDataHoraFooter() {
             const agora = new Date();
-            document.getElementById('dataHoraFooter').innerHTML = 
+            document.getElementById('dataHoraFooter').innerHTML =
                 `${agora.toLocaleDateString('pt-BR')} • ${agora.toLocaleTimeString('pt-BR')}`;
         }
     </script>
 </body>
+
 </html>
