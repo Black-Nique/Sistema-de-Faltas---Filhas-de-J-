@@ -1083,7 +1083,7 @@
         let usuarioAtual = null;
 
         // ========== VERIFICAR SE JÁ ESTÁ LOGADO ==========
-        auauth.onAuthStateChanged(async (user) => {
+        auth.onAuthStateChanged(async (user) => {  // ← Agora está "auth" e não "auauth"
             // Esconder o loading em QUALQUER situação
             document.getElementById('loading').style.display = 'none';
 
