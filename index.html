@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>✦ Ordem FDJI - Sistema de Faltas B04✦</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
 
@@ -545,39 +549,6 @@
             letter-spacing: 1px;
         }
 
-        .datas {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .data-botao {
-            background: rgba(42, 27, 74, 0.7);
-            border: 1px solid var(--primary);
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .data-botao:hover {
-            background: rgba(203, 166, 247, 0.2);
-            border-color: var(--gold);
-            transform: scale(1.05);
-        }
-
-        .data-botao.ativo {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
-            color: white;
-            border-color: var(--gold);
-            box-shadow: 0 0 20px var(--primary);
-        }
-
         .tabelas {
             display: grid;
             grid-template-columns: 1fr;
@@ -858,10 +829,40 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--gold);
         }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 7, 23, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--primary);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div id="statusConexao" class="status-conexao status-online">🟢 Conectado</div>
+    <div id="loading" class="loading" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
 
     <!-- TELA DE LOGIN -->
     <div id="telaLogin" class="login-container">
@@ -870,17 +871,17 @@
             <div class="login-subtitulo">Ordem Internacional das Filhas de Jó</div>
             
             <div class="input-group">
-                <label>USUÁRIO</label>
-                <input type="text" id="usuario" placeholder="Digite seu usuário" value="admin">
+                <label>USUÁRIO (email)</label>
+                <input type="email" id="usuario" placeholder="Digite seu email" value="admin@fdji.com">
             </div>
 
             <div class="input-group">
                 <label>SENHA</label>
-                <input type="password" id="senha" placeholder="Digite sua senha" value="123">
+                <input type="password" id="senha" placeholder="Digite sua senha" value="admin123">
             </div>
 
             <button class="login-btn" onclick="fazerLogin()">ENTRAR</button>
-            <a href="#" class="forgot-password" onclick="alert('Procure a secretária para recuperar sua senha.'); return false;">Esqueceu a senha?</a>
+            <a href="#" class="forgot-password" onclick="recuperarSenha()">Esqueceu a senha?</a>
         </div>
     </div>
 
@@ -936,35 +937,6 @@
 
             <!-- Cards de Estatísticas -->
             <div id="cardsGerais" class="cards"></div>
-
-            <!-- Lista de Datas -->
-            <div class="datas" id="listaDatas"></div>
-
-            <!-- Tabelas -->
-            <div class="tabelas">
-                <div>
-                    <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">👑 FILHAS DA ORDEM</h3>
-                    <div class="table-container">
-                        <table id="tabelaFilhas">
-                            <thead>
-                                <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
-                            </thead>
-                            <tbody id="corpoFilhas"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="text-align: center; color: var(--primary-light); margin-bottom: 15px; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;">⚡ CONSELHO GUARDIÃO</h3>
-                    <div class="table-container">
-                        <table id="tabelaConselho">
-                            <thead>
-                                <tr><th>Nome</th><th>Cargo</th><th>Status</th><th>Just.</th><th>Conselho</th></tr>
-                            </thead>
-                            <tbody id="corpoConselho"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- MODAL: Nova Ritualística -->
@@ -1063,50 +1035,111 @@
     </div>
 
     <div class="footer">
-        <div class="nome">✦ Dominique Bernazzolli Black ✦</div>
+        <div class="nome">✦ Sistema de Faltas FDJI ✦</div>
         <div class="data-hora" id="dataHoraFooter"></div>
-        <div class="assinatura">"Vida Antes da Morte" @dominique_cbb</div>
+        <div class="assinatura">"Vida Antes da Morte"</div>
     </div>
 
     <script>
-        // ========== LIMPAR TODOS OS DADOS INICIAIS ==========
-        // Agora o sistema começa completamente vazio!
-        if (!localStorage.getItem('filhas')) {
-            localStorage.setItem('filhas', JSON.stringify([])); // Começa vazio
-        }
-        if (!localStorage.getItem('conselho')) {
-            localStorage.setItem('conselho', JSON.stringify([])); // Começa vazio
-        }
-        if (!localStorage.getItem('gestoes')) {
-            localStorage.setItem('gestoes', JSON.stringify([])); // Começa vazio
-        }
-        if (!localStorage.getItem('rituaisPorGestao')) {
-            localStorage.setItem('rituaisPorGestao', JSON.stringify({})); // Começa vazio
-        }
+        // ========== CONFIGURAÇÃO DO FIREBASE (COPIADA DO SEU PROJETO) ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSkSzwoLBCQHd_84J0LTdVSQGmUvgrQhU",
+            authDomain: "sistema-de-faltas-b04-pp-ms.firebaseapp.com",
+            projectId: "sistema-de-faltas-b04-pp-ms",
+            storageBucket: "sistema-de-faltas-b04-pp-ms.firebasestorage.app",
+            messagingSenderId: "191746228461",
+            appId: "1:191746228461:web:ae9a1da546e7f61ebdcce4",
+            measurementId: "G-SVSNB555J1"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
         let gestaoAtual = null;
-        let dataSelecionada = null;
         let abaAtual = 'filhas';
+        let usuarioAtual = null;
 
-        // ========== FUNÇÕES DE LOGIN ==========
-        window.fazerLogin = function() {
-            const usuario = document.getElementById('usuario').value;
-            const senha = document.getElementById('senha').value;
-            
-            // Simulação de login (você pode ajustar a validação)
-            if (usuario === 'admin' && senha === '123') {
+        // ========== VERIFICAR SE JÁ ESTÁ LOGADO ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                usuarioAtual = user;
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPrincipal').style.display = 'block';
+                
+                // Criar admin na primeira vez se necessário
+                await criarAdminInicial();
+                
                 inicializarSistema();
             } else {
-                alert('Usuário ou senha incorretos! Tente admin/123');
+                document.getElementById('telaLogin').style.display = 'flex';
+                document.getElementById('conteudoPrincipal').style.display = 'none';
+            }
+        });
+
+        // ========== CRIAR ADMIN INICIAL AUTOMATICAMENTE ==========
+        async function criarAdminInicial() {
+            try {
+                // Verificar se já existe algum usuário
+                const usuariosRef = db.collection('usuarios');
+                const snapshot = await usuariosRef.limit(1).get();
+                
+                if (snapshot.empty) {
+                    // Criar usuário admin no Authentication
+                    try {
+                        await auth.createUserWithEmailAndPassword('admin@fdji.com', 'admin123');
+                    } catch (error) {
+                        console.log('Admin já existe ou erro ao criar:', error);
+                    }
+                    
+                    // Criar documento do admin no Firestore
+                    await usuariosRef.doc('admin').set({
+                        nome: 'Administrador',
+                        email: 'admin@fdji.com',
+                        tipo: 'admin',
+                        criadoEm: new Date()
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao criar admin:', error);
             }
         }
 
-        // ========== INICIALIZAÇÃO ==========
+        // ========== FUNÇÃO DE LOGIN ==========
+        window.fazerLogin = async function() {
+            const email = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
+            
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                await auth.signInWithEmailAndPassword(email, senha);
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Erro ao fazer login: ' + error.message);
+            }
+        }
+
+        window.recuperarSenha = async function() {
+            const email = document.getElementById('usuario').value;
+            if (!email) {
+                alert('Digite seu email primeiro!');
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                alert('Email de recuperação enviado! Verifique sua caixa de entrada.');
+            } catch (error) {
+                alert('Erro ao enviar email: ' + error.message);
+            }
+        }
+
+        // ========== INICIALIZAÇÃO DO SISTEMA ==========
         function inicializarSistema() {
             carregarGestoes();
-            atualizarTudo();
+            atualizarGridFilhas();
+            atualizarCardsGerais();
             setInterval(atualizarDataHoraFooter, 1000);
             document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
             document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', e => {
@@ -1114,57 +1147,64 @@
             });
         }
 
-        function carregarGestoes() {
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            const container = document.getElementById('gridGestoes');
-            
-            if (gestoes.length === 0) {
-                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhuma gestão cadastrada. Crie uma nova gestão!</div>';
-                return;
-            }
+        // ========== CARREGAR GESTÕES DO FIREBASE ==========
+        async function carregarGestoes() {
+            try {
+                const snapshot = await db.collection('gestoes').orderBy('ano', 'desc').get();
+                const gestoes = [];
+                snapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
+                
+                const container = document.getElementById('gridGestoes');
+                
+                if (gestoes.length === 0) {
+                    container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhuma gestão cadastrada. Crie uma nova gestão!</div>';
+                    return;
+                }
 
-            // Se não há gestão atual definida ou a gestão atual não existe mais, pegar a primeira
-            if (!gestaoAtual || !gestoes.find(g => g.id === gestaoAtual)) {
-                gestaoAtual = gestoes[0]?.id || null;
-            }
+                if (!gestaoAtual || !gestoes.find(g => g.id === gestaoAtual)) {
+                    gestaoAtual = gestoes[0]?.id || null;
+                }
 
-            container.innerHTML = gestoes.map(g => `
-                <div class="gestao-card ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
-                    <div class="gestao-ano">${g.ano}</div>
-                    <div class="gestao-numero">${g.numero}</div>
-                    <div class="gestao-rainha">${g.rainha ? g.rainha.split(' ')[0] : '---'}</div>
-                </div>
-            `).join('');
+                container.innerHTML = gestoes.map(g => `
+                    <div class="gestao-card ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
+                        <div class="gestao-ano">${g.ano}</div>
+                        <div class="gestao-numero">${g.numero}</div>
+                        <div class="gestao-rainha">${g.rainha ? g.rainha.split(' ')[0] : '---'}</div>
+                    </div>
+                `).join('');
 
-            const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual);
-            if (gestaoAtualObj) {
-                document.getElementById('anoAtual').textContent = gestaoAtualObj.ano || '---';
-                document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero || '---';
-                document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha || '---';
+                const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual);
+                if (gestaoAtualObj) {
+                    document.getElementById('anoAtual').textContent = gestaoAtualObj.ano || '---';
+                    document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero || '---';
+                    document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha || '---';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar gestões:', error);
             }
         }
 
         window.selecionarGestao = function(gestaoId) {
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
             gestaoAtual = gestaoId;
             carregarGestoes();
-            atualizarTudo();
+            atualizarCardsGerais();
         }
 
-        function getRituaisAtuais() {
-            if (!gestaoAtual) return {};
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            return rituaisPorGestao[gestaoAtual]?.rituais || {};
+        // ========== CARREGAR FILHAS DO FIREBASE ==========
+        async function carregarFilhas() {
+            try {
+                const snapshot = await db.collection('filhas').orderBy('nome').get();
+                const filhas = [];
+                snapshot.forEach(doc => filhas.push(doc.data()));
+                return filhas;
+            } catch (error) {
+                console.error('Erro ao carregar filhas:', error);
+                return [];
+            }
         }
 
-        function getPrimeirosDoisNomes(nomeCompleto) {
-            if (!nomeCompleto) return '';
-            const partes = nomeCompleto.trim().split(' ');
-            return partes.slice(0, 2).join(' ').toLowerCase();
-        }
-
-        function atualizarGridFilhas() {
-            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
+        async function atualizarGridFilhas() {
+            const filhas = await carregarFilhas();
             const grid = document.getElementById('gridFilhas');
             const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '🪶', '📜', '🔮'];
             
@@ -1185,12 +1225,44 @@
             }).join('');
         }
 
+        // ========== CARREGAR CONSELHO DO FIREBASE ==========
+        async function carregarConselho() {
+            try {
+                const snapshot = await db.collection('conselho').orderBy('nome').get();
+                const conselho = [];
+                snapshot.forEach(doc => conselho.push(doc.data()));
+                return conselho;
+            } catch (error) {
+                console.error('Erro ao carregar conselho:', error);
+                return [];
+            }
+        }
+
+        // ========== CARREGAR RITUAIS DA GESTÃO ATUAL ==========
+        async function getRituaisAtuais() {
+            if (!gestaoAtual) return {};
+            try {
+                const doc = await db.collection('rituais').doc(gestaoAtual).get();
+                return doc.exists ? doc.data().rituais || {} : {};
+            } catch (error) {
+                console.error('Erro ao carregar rituais:', error);
+                return {};
+            }
+        }
+
+        // ========== FUNÇÕES AUXILIARES ==========
+        function getPrimeirosDoisNomes(nomeCompleto) {
+            if (!nomeCompleto) return '';
+            const partes = nomeCompleto.trim().split(' ');
+            return partes.slice(0, 2).join(' ').toLowerCase();
+        }
+
         window.pesquisarPorDoisNomes = function(doisNomes) {
             document.getElementById('pesquisaNomeCompleto').value = doisNomes;
             pesquisarFilha();
         }
 
-        window.pesquisarFilha = function() {
+        window.pesquisarFilha = async function() {
             const termoBusca = document.getElementById('pesquisaNomeCompleto').value.trim().toLowerCase();
             
             if (!termoBusca) {
@@ -1198,7 +1270,7 @@
                 return;
             }
 
-            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
+            const filhas = await carregarFilhas();
             const filhaEncontrada = filhas.find(f => {
                 const doisNomes = getPrimeirosDoisNomes(f.nome);
                 return doisNomes === termoBusca || (f.nome && f.nome.toLowerCase().includes(termoBusca));
@@ -1212,13 +1284,17 @@
             document.getElementById('cardsGerais').style.display = 'none';
             document.getElementById('resultadoPesquisa').style.display = 'block';
 
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
+            // Buscar faltas em todas as gestões
+            const rituaisSnapshot = await db.collection('rituais').get();
+            const gestoesSnapshot = await db.collection('gestoes').get();
+            const gestoes = [];
+            gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
+            
             const todasFaltas = [];
 
-            Object.entries(rituaisPorGestao).forEach(([idGestao, gestaoData]) => {
-                const gestao = gestoes.find(g => g.id === idGestao);
-                const rituais = gestaoData.rituais || {};
+            rituaisSnapshot.forEach(doc => {
+                const gestao = gestoes.find(g => g.id === doc.id);
+                const rituais = doc.data().rituais || {};
                 
                 Object.entries(rituais).forEach(([data, ritual]) => {
                     const falta = ritual.filhas?.find(f => f.nome === filhaEncontrada.nome);
@@ -1226,7 +1302,7 @@
                     if (falta && !falta.presente) {
                         todasFaltas.push({
                             data: data,
-                            gestao: gestao ? `${gestao.ano} ${gestao.numero}` : idGestao,
+                            gestao: gestao ? `${gestao.ano} ${gestao.numero}` : doc.id,
                             rainha: gestao ? gestao.rainha : 'Desconhecida',
                             justificada: falta.justificada || false,
                             aceita: falta.aceita || false
@@ -1326,13 +1402,13 @@
             voltarCardsGerais();
         }
 
-        function atualizarCardsGerais() {
+        async function atualizarCardsGerais() {
             if (!gestaoAtual) {
-                document.getElementById('cardsGerais').innerHTML = '';
+                document.getElementById('cardsGerais').innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Selecione uma gestão para ver as estatísticas</div>';
                 return;
             }
 
-            const rituais = getRituaisAtuais();
+            const rituais = await getRituaisAtuais();
             let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
             
             Object.values(rituais).forEach(data => {
@@ -1346,112 +1422,51 @@
             });
 
             document.getElementById('cardsGerais').innerHTML = `
-                <div class="card"><div class="numero">${total}</div><div class="rotulo">Total</div></div>
-                <div class="card"><div class="numero">${just}</div><div class="rotulo">Just.</div></div>
+                <div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div>
+                <div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div>
                 <div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div>
                 <div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div>
-                <div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rej.</div></div>
+                <div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>
             `;
         }
 
-        function atualizarListaDatas() {
-            if (!gestaoAtual) {
-                document.getElementById('listaDatas').innerHTML = '';
-                return;
-            }
-
-            const rituais = getRituaisAtuais();
-            const datas = Object.keys(rituais).sort().reverse();
-            const container = document.getElementById('listaDatas');
-            
-            if (datas.length === 0) {
-                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 15px;">Nenhuma ritualística</div>';
-                return;
-            }
-            
-            if (!dataSelecionada || !datas.includes(dataSelecionada)) {
-                dataSelecionada = datas[0];
-            }
-
-            container.innerHTML = datas.map(data => `
-                <button class="data-botao ${data === dataSelecionada ? 'ativo' : ''}" onclick="mudarData('${data}')">
-                    ${data.split('-').reverse().join('/').substring(0,5)}
-                </button>
-            `).join('');
-        }
-
-        window.mudarData = function(data) {
-            dataSelecionada = data;
-            atualizarListaDatas();
-            carregarTabelas();
-        }
-
-        function carregarTabelas() {
-            if (!gestaoAtual || !dataSelecionada) {
-                document.getElementById('corpoFilhas').innerHTML = '';
-                document.getElementById('corpoConselho').innerHTML = '';
-                return;
-            }
-
-            const rituais = getRituaisAtuais();
-            const dados = rituais[dataSelecionada] || { filhas: [], conselho: [] };
-            const filhas = JSON.parse(localStorage.getItem('filhas')) || [];
-            const conselho = JSON.parse(localStorage.getItem('conselho')) || [];
-
-            document.getElementById('corpoFilhas').innerHTML = filhas.map(f => {
-                const r = dados.filhas?.find(x => x.nome === f.nome) || { presente: false };
-                return `<tr>
-                    <td>${f.nome || '---'}</td>
-                    <td>${f.cargo || '---'}</td>
-                    <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
-                    <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
-                    <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
-                </tr>`;
-            }).join('');
-
-            document.getElementById('corpoConselho').innerHTML = conselho.map(c => {
-                const r = dados.conselho?.find(x => x.nome === c.nome) || { presente: false };
-                return `<tr>
-                    <td>${c.nome || '---'}</td>
-                    <td>${c.cargo || '---'}</td>
-                    <td class="${r.presente ? 'presente' : 'ausente'}">${r.presente ? '✓' : '✗'}</td>
-                    <td>${r.presente ? '—' : (r.justificada ? '✓' : '✗')}</td>
-                    <td>${r.presente ? '—' : (r.aceita ? '✓' : '✗')}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        window.criarNovaGestao = function() {
+        window.criarNovaGestao = async function() {
             const ano = document.getElementById('novaGestaoAno').value;
             const numero = document.getElementById('novaGestaoNumero').value;
             const rainha = document.getElementById('novaGestaoRainha').value;
             
             if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
 
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            
-            const novaGestao = {
-                id: `${ano}_${Date.now()}`,
-                ano: parseInt(ano),
-                numero,
-                rainha,
-                ativa: true
-            };
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const novaGestao = {
+                    ano: parseInt(ano),
+                    numero,
+                    rainha,
+                    criadoEm: new Date(),
+                    criadoPor: usuarioAtual?.email
+                };
 
-            gestoes.push(novaGestao);
-            localStorage.setItem('gestoes', JSON.stringify(gestoes));
+                // Criar documento da gestão
+                const gestaoRef = await db.collection('gestoes').add(novaGestao);
+                
+                // Criar documento de rituais vazio para a gestão
+                await db.collection('rituais').doc(gestaoRef.id).set({
+                    rituais: {}
+                });
 
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            rituaisPorGestao[novaGestao.id] = {
-                informacoes: { ano: parseInt(ano), numero, rainha },
-                rituais: {}
-            };
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
-
-            gestaoAtual = novaGestao.id;
-            carregarGestoes();
-            fecharModal('novaGestao');
-            atualizarTudo();
+                gestaoAtual = gestaoRef.id;
+                await carregarGestoes();
+                fecharModal('novaGestao');
+                atualizarCardsGerais();
+                
+                alert('Gestão criada com sucesso!');
+            } catch (error) {
+                alert('Erro ao criar gestão: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
         window.mostrarModal = function(tipo) {
@@ -1479,8 +1494,8 @@
             atualizarProgresso();
         }
 
-        function carregarMembrosModal(tipo, containerId) {
-            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
+        async function carregarMembrosModal(tipo, containerId) {
+            const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
             const container = document.getElementById(containerId);
             
             if (lista.length === 0) {
@@ -1549,7 +1564,7 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-        window.salvarRitualisticaCompleta = function() {
+        window.salvarRitualisticaCompleta = async function() {
             if (!gestaoAtual) {
                 alert('Selecione uma gestão primeiro!');
                 return;
@@ -1558,43 +1573,55 @@
             const data = document.getElementById('novaData').value;
             if (!data) return alert('Selecione uma data');
 
-            const rituais = getRituaisAtuais();
-            rituais[data] = {
-                filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => {
-                    const nome = item.dataset.nome;
-                    const id = (nome || 'membro').replace(/\s/g, '') + 'filhas';
-                    const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
-                    return {
-                        nome,
-                        presente,
-                        justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
-                        aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
-                    };
-                }),
-                conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => {
-                    const nome = item.dataset.nome;
-                    const id = (nome || 'membro').replace(/\s/g, '') + 'conselho';
-                    const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
-                    return {
-                        nome,
-                        presente,
-                        justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
-                        aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
-                    };
-                })
-            };
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const rituais = await getRituaisAtuais();
+                rituais[data] = {
+                    filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => {
+                        const nome = item.dataset.nome;
+                        const id = (nome || 'membro').replace(/\s/g, '') + 'filhas';
+                        const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
+                        return {
+                            nome,
+                            presente,
+                            justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
+                            aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
+                        };
+                    }),
+                    conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => {
+                        const nome = item.dataset.nome;
+                        const id = (nome || 'membro').replace(/\s/g, '') + 'conselho';
+                        const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
+                        return {
+                            nome,
+                            presente,
+                            justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim',
+                            aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim'
+                        };
+                    })
+                };
 
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            rituaisPorGestao[gestaoAtual].rituais = rituais;
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
+                await db.collection('rituais').doc(gestaoAtual).set({
+                    rituais: rituais
+                });
 
-            fecharModal('nova');
-            atualizarTudo();
-            alert('✅ Ritualística salva!');
+                fecharModal('nova');
+                await atualizarCardsGerais();
+                alert('✅ Ritualística salva com sucesso!');
+            } catch (error) {
+                alert('Erro ao salvar: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
         window.carregarMembros = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
+            carregarMembrosLista(tipo);
+        }
+
+        async function carregarMembrosLista(tipo) {
+            const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
             const container = document.getElementById('listaMembrosGerenciar');
             
             if (lista.length === 0) {
@@ -1615,82 +1642,133 @@
             container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
         }
 
-        window.salvarMembro = function(index, tipo) {
+        window.salvarMembro = async function(index, tipo) {
             const nome = document.getElementById(`nome-${index}`).value;
             const cargo = document.getElementById(`cargo-${index}`).value;
             if (!nome || !cargo) return alert('Preencha todos os campos');
 
-            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
-            lista[index] = { nome, cargo };
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+                const snapshot = await db.collection(collection).get();
+                const docs = [];
+                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+                
+                if (docs[index]) {
+                    await db.collection(collection).doc(docs[index].id).update({
+                        nome, cargo
+                    });
+                }
+
+                await carregarMembrosLista(tipo);
+                if (tipo === 'filhas') await atualizarGridFilhas();
+            } catch (error) {
+                alert('Erro ao salvar: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        window.deletarMembro = function(index, tipo) {
+        window.deletarMembro = async function(index, tipo) {
             if (!confirm('Deletar?')) return;
-            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
-            lista.splice(index, 1);
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
+
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+                const snapshot = await db.collection(collection).get();
+                const docs = [];
+                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+                
+                if (docs[index]) {
+                    await db.collection(collection).doc(docs[index].id).delete();
+                }
+
+                await carregarMembrosLista(tipo);
+                if (tipo === 'filhas') await atualizarGridFilhas();
+            } catch (error) {
+                alert('Erro ao deletar: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        window.adicionarMembro = function(tipo) {
-            const lista = JSON.parse(localStorage.getItem(tipo)) || [];
-            lista.push({ nome: 'Novo Membro', cargo: 'Novo Cargo' });
-            localStorage.setItem(tipo, JSON.stringify(lista));
-            carregarMembros(tipo);
-            if (tipo === 'filhas') atualizarGridFilhas();
+        window.adicionarMembro = async function(tipo) {
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+                await db.collection(collection).add({
+                    nome: 'Novo Membro',
+                    cargo: 'Novo Cargo',
+                    criadoEm: new Date()
+                });
+
+                await carregarMembrosLista(tipo);
+                if (tipo === 'filhas') await atualizarGridFilhas();
+            } catch (error) {
+                alert('Erro ao adicionar: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
         }
 
-        function carregarRegistros() {
+        async function carregarRegistros() {
             if (!gestaoAtual) {
                 document.getElementById('listaRegistros').innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Selecione uma gestão primeiro</p>';
                 return;
             }
 
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            const gestoes = JSON.parse(localStorage.getItem('gestoes')) || [];
-            const container = document.getElementById('listaRegistros');
-            
-            document.getElementById('abasGestao').innerHTML = gestoes.map(g => `
-                <button class="data-botao ${g.id === gestaoAtual ? 'ativo' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">
-                    ${g.ano} - ${g.numero}
-                </button>
-            `).join('');
-
-            const gestaoData = rituaisPorGestao[gestaoAtual];
-            if (!gestaoData?.rituais || Object.keys(gestaoData.rituais).length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro nesta gestão</p>';
-                return;
-            }
-
-            container.innerHTML = Object.entries(gestaoData.rituais).sort().reverse().map(([data, info]) => {
-                const totalFaltasFilhas = info.filhas?.filter(f => !f.presente).length || 0;
-                const totalFaltasConselho = info.conselho?.filter(c => !c.presente).length || 0;
-                const totalFaltas = totalFaltasFilhas + totalFaltasConselho;
+            try {
+                const gestoesSnapshot = await db.collection('gestoes').get();
+                const gestoes = [];
+                gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
                 
-                return `
-                    <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
-                        <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
-                        <div style="text-align: center; color: var(--gold); margin: 10px 0;">${gestaoData.informacoes.ano} • ${gestaoData.informacoes.rainha ? gestaoData.informacoes.rainha.split(' ')[0] : '---'}</div>
-                        <div style="display: flex; justify-content: space-around; margin: 15px 0;">
-                            <div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div>
-                            <div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div>
-                            <div style="color: var(--danger);">❌ ${totalFaltas}</div>
+                document.getElementById('abasGestao').innerHTML = gestoes.map(g => `
+                    <button class="data-botao ${g.id === gestaoAtual ? 'ativo' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">
+                        ${g.ano} - ${g.numero}
+                    </button>
+                `).join('');
+
+                const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get();
+                const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {};
+                
+                const container = document.getElementById('listaRegistros');
+                
+                if (Object.keys(rituais).length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 30px;">Nenhum registro nesta gestão</p>';
+                    return;
+                }
+
+                container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
+                    const totalFaltasFilhas = info.filhas?.filter(f => !f.presente).length || 0;
+                    const totalFaltasConselho = info.conselho?.filter(c => !c.presente).length || 0;
+                    const totalFaltas = totalFaltasFilhas + totalFaltasConselho;
+                    
+                    return `
+                        <div class="registro-card" style="background: rgba(26,16,53,0.7); border-radius: 25px; padding: 20px; border: 1px solid var(--primary);">
+                            <h3 style="text-align: center; color: var(--primary-light);">${data.split('-').reverse().join('/')}</h3>
+                            <div style="text-align: center; color: var(--gold); margin: 10px 0;">${gestoes.find(g => g.id === gestaoAtual)?.ano || ''} • ${gestoes.find(g => g.id === gestaoAtual)?.rainha?.split(' ')[0] || '---'}</div>
+                            <div style="display: flex; justify-content: space-around; margin: 15px 0;">
+                                <div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div>
+                                <div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div>
+                                <div style="color: var(--danger);">❌ ${totalFaltas}</div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="botao" onclick="verDetalhesFaltas('${data}')" style="flex:1; padding: 8px;">Ver Faltas</button>
+                                <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">Deletar</button>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="botao" onclick="verDetalhesFaltas('${data}')" style="flex:1; padding: 8px;">Ver Faltas</button>
-                            <button class="botao perigo" onclick="deletarRegistro('${data}')" style="flex:1; padding: 8px;">Deletar</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Erro ao carregar registros:', error);
+            }
         }
 
-        window.verDetalhesFaltas = function(data) {
-            const rituais = getRituaisAtuais();
+        window.verDetalhesFaltas = async function(data) {
+            const rituais = await getRituaisAtuais();
             const info = rituais[data];
             
             if (!info) return;
@@ -1753,19 +1831,25 @@
             carregarGestoes();
         }
 
-        window.deletarRegistro = function(data) {
+        window.deletarRegistro = async function(data) {
             if (!confirm(`Deletar registro de ${data}?`)) return;
-            const rituais = getRituaisAtuais();
-            delete rituais[data];
-            
-            const rituaisPorGestao = JSON.parse(localStorage.getItem('rituaisPorGestao')) || {};
-            rituaisPorGestao[gestaoAtual].rituais = rituais;
-            localStorage.setItem('rituaisPorGestao', JSON.stringify(rituaisPorGestao));
-            
-            carregarRegistros();
-            if (dataSelecionada === data) {
-                dataSelecionada = Object.keys(rituais)[0] || null;
-                atualizarTudo();
+
+            try {
+                document.getElementById('loading').style.display = 'flex';
+                
+                const rituais = await getRituaisAtuais();
+                delete rituais[data];
+                
+                await db.collection('rituais').doc(gestaoAtual).set({
+                    rituais: rituais
+                });
+
+                await carregarRegistros();
+                await atualizarCardsGerais();
+            } catch (error) {
+                alert('Erro ao deletar: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
             }
         }
 
@@ -1773,20 +1857,6 @@
             const agora = new Date();
             document.getElementById('dataHoraFooter').innerHTML = 
                 `${agora.toLocaleDateString('pt-BR')} • ${agora.toLocaleTimeString('pt-BR')}`;
-        }
-
-        function atualizarTudo() {
-            if (!gestaoAtual) return;
-            atualizarGridFilhas();
-            atualizarListaDatas();
-            carregarTabelas();
-            atualizarCardsGerais();
-        }
-
-        // Verifica se já está logado (para desenvolvimento)
-        window.onload = function() {
-            // Comentar a linha abaixo se quiser sempre ver a tela de login
-            // fazerLogin();
         }
     </script>
 </body>
