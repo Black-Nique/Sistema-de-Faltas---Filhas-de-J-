@@ -880,12 +880,12 @@
 
             <div class="input-group">
                 <label>USUÁRIO (email)</label>
-                <input type="email" id="usuario" placeholder="Digite seu email" >
+                <input type="email" id="usuario" placeholder="Digite seu email">
             </div>
 
             <div class="input-group">
                 <label>SENHA</label>
-                <input type="password" id="senha" placeholder="Digite sua senha" >
+                <input type="password" id="senha" placeholder="Digite sua senha">
             </div>
 
             <button class="login-btn" onclick="fazerLogin()">ENTRAR</button>
@@ -1640,103 +1640,159 @@
             }
         }
 
+
         window.carregarMembros = function (tipo) {
+            console.log('Carregando membros do tipo:', tipo);
             carregarMembrosLista(tipo);
         }
 
+        // ========== CARREGAR MEMBROS (CORRIGIDO) ==========
         async function carregarMembrosLista(tipo) {
-            const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
-            const container = document.getElementById('listaMembrosGerenciar');
+            try {
+                const container = document.getElementById('listaMembrosGerenciar');
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>';
 
-            if (lista.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
-            } else {
-                container.innerHTML = lista.map((m, i) => `
-                    <div class="membro-item" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <input type="text" value="${m.nome || ''}" id="nome-${i}" placeholder="Nome" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                            <input type="text" value="${m.cargo || ''}" id="cargo-${i}" placeholder="Cargo" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                            <button class="botao" onclick="salvarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">💾</button>
-                            <button class="botao perigo" onclick="deletarMembro(${i}, '${tipo}')" style="padding: 8px 15px;">🗑️</button>
-                        </div>
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+                console.log(`Carregando ${collection}...`);
+
+                const snapshot = await db.collection(collection).orderBy('nome', 'asc').get();
+
+                const lista = [];
+                snapshot.forEach(doc => lista.push({ id: doc.id, ...doc.data() }));
+
+                console.log(`${collection} carregados:`, lista);
+
+                if (lista.length === 0) {
+                    container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
+                } else {
+                    container.innerHTML = lista.map((m, i) => `
+                <div class="membro-item" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" value="${m.nome || ''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                        <input type="text" value="${m.cargo || ''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
+                        <button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">💾</button>
+                        <button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">🗑️</button>
                     </div>
-                `).join('');
-            }
-
-            container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
-        }
-
-        window.salvarMembro = async function (index, tipo) {
-            const nome = document.getElementById(`nome-${index}`).value;
-            const cargo = document.getElementById(`cargo-${index}`).value;
-            if (!nome || !cargo) return alert('Preencha todos os campos');
-
-            try {
-                document.getElementById('loading').style.display = 'flex';
-
-                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
-                const snapshot = await db.collection(collection).get();
-                const docs = [];
-                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-
-                if (docs[index]) {
-                    await db.collection(collection).doc(docs[index].id).update({
-                        nome, cargo
-                    });
+                </div>
+            `).join('');
                 }
 
-                await carregarMembrosLista(tipo);
-                if (tipo === 'filhas') await atualizarGridFilhas();
+                // Botão para adicionar novo membro
+                container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
+
             } catch (error) {
-                alert('Erro ao salvar: ' + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
+                console.error('Erro detalhado ao carregar:', error);
+                document.getElementById('listaMembrosGerenciar').innerHTML = `
+            <div style="color: var(--danger); text-align: center; padding: 20px;">
+                Erro ao carregar: ${error.message}<br>
+                <button class="botao" onclick="carregarMembros('${tipo}')" style="margin-top: 10px;">Tentar novamente</button>
+            </div>
+        `;
             }
         }
 
-        window.deletarMembro = async function (index, tipo) {
-            if (!confirm('Deletar?')) return;
-
-            try {
-                document.getElementById('loading').style.display = 'flex';
-
-                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
-                const snapshot = await db.collection(collection).get();
-                const docs = [];
-                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-
-                if (docs[index]) {
-                    await db.collection(collection).doc(docs[index].id).delete();
-                }
-
-                await carregarMembrosLista(tipo);
-                if (tipo === 'filhas') await atualizarGridFilhas();
-            } catch (error) {
-                alert('Erro ao deletar: ' + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
+        // ========== ADICIONAR MEMBRO (CORRIGIDO) ==========
         window.adicionarMembro = async function (tipo) {
             try {
-                document.getElementById('loading').style.display = 'flex';
+                console.log(`Adicionando novo membro em ${tipo}...`);
 
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
-                await db.collection(collection).add({
+
+                // Adicionar membro com dados padrão
+                const docRef = await db.collection(collection).add({
                     nome: 'Novo Membro',
                     cargo: 'Novo Cargo',
-                    criadoEm: new Date()
+                    criadoEm: new Date(),
+                    criadoPor: usuarioAtual?.email || 'admin@fdji.com'
                 });
 
+                console.log('Membro adicionado com ID:', docRef.id);
+
+                // Recarregar a lista
                 await carregarMembrosLista(tipo);
-                if (tipo === 'filhas') await atualizarGridFilhas();
+
+                // Se for filha, atualizar o grid principal
+                if (tipo === 'filhas') {
+                    await atualizarGridFilhas();
+                }
+
+                alert('✅ Membro adicionado! Agora edite o nome e cargo.');
+
             } catch (error) {
+                console.error('Erro detalhado ao adicionar:', error);
                 alert('Erro ao adicionar: ' + error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
             }
         }
+
+        // ========== SALVAR MEMBRO (CORRIGIDO) ==========
+        window.salvarMembro = async function (docId, tipo) {
+            const nome = document.getElementById(`nome-${docId}`).value;
+            const cargo = document.getElementById(`cargo-${docId}`).value;
+
+            if (!nome || !cargo) {
+                alert('Preencha nome e cargo!');
+                return;
+            }
+
+            try {
+                console.log(`Salvando membro ${docId} em ${tipo}...`);
+
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+
+                await db.collection(collection).doc(docId).update({
+                    nome: nome,
+                    cargo: cargo
+                });
+
+                console.log('Membro salvo com sucesso!');
+
+                // Recarregar a lista
+                await carregarMembrosLista(tipo);
+
+                // Se for filha, atualizar o grid principal
+                if (tipo === 'filhas') {
+                    await atualizarGridFilhas();
+                }
+
+                alert('✅ Membro salvo com sucesso!');
+
+            } catch (error) {
+                console.error('Erro detalhado ao salvar:', error);
+                alert('Erro ao salvar: ' + error.message);
+            }
+        }
+
+        // ========== DELETAR MEMBRO (CORRIGIDO) ==========
+        window.deletarMembro = async function (docId, tipo) {
+            if (!confirm('Tem certeza que deseja deletar este membro?')) return;
+
+            try {
+                console.log(`Deletando membro ${docId} de ${tipo}...`);
+
+                const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
+
+                await db.collection(collection).doc(docId).delete();
+
+                console.log('Membro deletado com sucesso!');
+
+                // Recarregar a lista
+                await carregarMembrosLista(tipo);
+
+                // Se for filha, atualizar o grid principal
+                if (tipo === 'filhas') {
+                    await atualizarGridFilhas();
+                }
+
+                alert('✅ Membro deletado com sucesso!');
+
+            } catch (error) {
+                console.error('Erro detalhado ao deletar:', error);
+                alert('Erro ao deletar: ' + error.message);
+            }
+        }
+
+        // ========== CORRIGIR A FUNÇÃO carregarMembros ==========
+
 
         async function carregarRegistros() {
             if (!gestaoAtual) {
