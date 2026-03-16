@@ -1647,15 +1647,20 @@
         }
 
         // ========== CARREGAR MEMBROS (CORRIGIDO) ==========
+        // ========== CARREGAR MEMBROS EM ORDEM DE CADASTRO ==========
         async function carregarMembrosLista(tipo) {
             try {
                 const container = document.getElementById('listaMembrosGerenciar');
                 container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>';
 
+                // Configurar para lista vertical
+                container.style.cssText = 'display: flex; flex-direction: column; gap: 12px;';
+
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
                 console.log(`Carregando ${collection}...`);
 
-                const snapshot = await db.collection(collection).orderBy('nome', 'asc').get();
+                // Buscar ordenado por data de criação (do mais antigo para o mais novo)
+                const snapshot = await db.collection(collection).orderBy('criadoEm', 'asc').get();
 
                 const lista = [];
                 snapshot.forEach(doc => lista.push({ id: doc.id, ...doc.data() }));
@@ -1665,20 +1670,57 @@
                 if (lista.length === 0) {
                     container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
                 } else {
-                    container.innerHTML = lista.map((m, i) => `
-                <div class="membro-item" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <input type="text" value="${m.nome || ''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                        <input type="text" value="${m.cargo || ''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width: 150px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                        <button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">💾</button>
-                        <button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">🗑️</button>
+                    // Mapear sem numeração, apenas um embaixo do outro
+                    container.innerHTML = lista.map((m) => `
+                <div class="membro-item" style="
+                    background: linear-gradient(145deg, rgba(42, 27, 74, 0.9), rgba(26, 16, 53, 0.95));
+                    border-radius: 20px;
+                    padding: 15px;
+                    border: 1px solid var(--primary);
+                    transition: all 0.3s;
+                ">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <input type="text" value="${m.nome || ''}" id="nome-${m.id}" placeholder="Nome" style="
+                            flex: 2;
+                            min-width: 180px;
+                            background: rgba(26, 16, 53, 0.9);
+                            border: 1px solid var(--primary);
+                            border-radius: 15px;
+                            padding: 10px 15px;
+                            color: white;
+                            font-size: 0.95rem;
+                        ">
+                        <input type="text" value="${m.cargo || ''}" id="cargo-${m.id}" placeholder="Cargo" style="
+                            flex: 2;
+                            min-width: 180px;
+                            background: rgba(26, 16, 53, 0.9);
+                            border: 1px solid var(--primary);
+                            border-radius: 15px;
+                            padding: 10px 15px;
+                            color: white;
+                            font-size: 0.95rem;
+                        ">
+                        <div style="display: flex; gap: 8px; margin-left: auto;">
+                            <button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">💾</button>
+                            <button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')" style="padding: 8px 15px;">🗑️</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
                 }
 
-                // Botão para adicionar novo membro
-                container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width: 100%; margin-top: 15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
+                // Botão para adicionar novo membro (sempre no final)
+                container.innerHTML += `
+            <button class="botao" onclick="adicionarMembro('${tipo}')" style="
+                width: 100%;
+                margin-top: 15px;
+                padding: 15px;
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
+                border: 1px solid var(--gold);
+            ">
+                + Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}
+            </button>
+        `;
 
             } catch (error) {
                 console.error('Erro detalhado ao carregar:', error);
@@ -1692,17 +1734,18 @@
         }
 
         // ========== ADICIONAR MEMBRO (CORRIGIDO) ==========
+        // ========== ADICIONAR MEMBRO (COM DATA DE CRIAÇÃO) ==========
         window.adicionarMembro = async function (tipo) {
             try {
                 console.log(`Adicionando novo membro em ${tipo}...`);
 
                 const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
 
-                // Adicionar membro com dados padrão
+                // Adicionar membro com dados padrão e data de criação
                 const docRef = await db.collection(collection).add({
                     nome: 'Novo Membro',
                     cargo: 'Novo Cargo',
-                    criadoEm: new Date(),
+                    criadoEm: new Date(),  // ← Isso garante a ordem de cadastro
                     criadoPor: usuarioAtual?.email || 'admin@fdji.com'
                 });
 
