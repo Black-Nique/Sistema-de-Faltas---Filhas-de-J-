@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -10,15 +9,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        /* SEU CSS ORIGINAL (COMPLETO) - INCLUINDO A CLASSE .botao-glow */
+        /* ===== SEU CSS ORIGINAL (COMPLETO) - INCLUINDO A CLASSE .botao-glow ===== */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #cba6f7;
             --primary-dark: #b388ff;
@@ -42,7 +35,6 @@
             --border-glow: rgba(203, 166, 247, 0.3);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
-
         body {
             background: var(--bg-deep);
             min-height: 100vh;
@@ -52,7 +44,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -61,20 +52,17 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at 20% 30%, rgba(203, 166, 247, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
+                        radial-gradient(circle at 80% 70%, rgba(255, 217, 102, 0.05) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
-
-        .container,
-        .login-container {
+        .container, .login-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px 16px;
             position: relative;
             z-index: 1;
         }
-
         /* ========== TELA DE LOGIN ========== */
         .login-container {
             display: flex;
@@ -83,7 +71,6 @@
             min-height: 100vh;
             padding: 16px;
         }
-
         .login-card {
             background: linear-gradient(145deg, rgba(42, 27, 74, 0.95), rgba(26, 16, 53, 0.98));
             backdrop-filter: blur(10px);
@@ -96,26 +83,15 @@
             position: relative;
             text-align: center;
         }
-
-        .login-card::before,
-        .login-card::after {
+        .login-card::before, .login-card::after {
             content: '✧';
             position: absolute;
             font-size: 2.5rem;
             color: rgba(203, 166, 247, 0.2);
             font-family: 'Cormorant Garamond', serif;
         }
-
-        .login-card::before {
-            top: 20px;
-            left: 30px;
-        }
-
-        .login-card::after {
-            bottom: 20px;
-            right: 30px;
-        }
-
+        .login-card::before { top: 20px; left: 30px; }
+        .login-card::after { bottom: 20px; right: 30px; }
         .login-card h1 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(2.2rem, 8vw, 3.5rem);
@@ -126,7 +102,6 @@
             letter-spacing: 4px;
             margin-bottom: 10px;
         }
-
         .login-subtitulo {
             color: var(--text-secondary);
             font-size: clamp(0.7rem, 2.5vw, 0.9rem);
@@ -138,12 +113,10 @@
             border-radius: 40px;
             border: 1px solid var(--border-glow);
         }
-
         .input-group {
             margin-bottom: 25px;
             text-align: left;
         }
-
         .input-group label {
             display: block;
             color: var(--primary-light);
@@ -152,7 +125,6 @@
             margin-bottom: 8px;
             margin-left: 10px;
         }
-
         .input-group input {
             width: 100%;
             background: rgba(26, 16, 53, 0.8);
@@ -164,12 +136,10 @@
             transition: all 0.3s;
             outline: none;
         }
-
         .input-group input:focus {
             border-color: var(--gold);
             box-shadow: 0 0 30px rgba(203, 166, 247, 0.5);
         }
-
         .login-btn {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
             border: none;
@@ -187,13 +157,11 @@
             transition: all 0.3s;
             margin: 20px 0 15px;
         }
-
         .login-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 40px var(--primary), 0 0 40px rgba(255, 217, 102, 0.3);
             border-color: var(--gold);
         }
-
         .forgot-password {
             display: block;
             color: var(--text-muted);
@@ -203,16 +171,11 @@
             transition: color 0.3s;
             margin-top: 15px;
         }
-
         .forgot-password:hover {
             color: var(--gold);
         }
-
         /* ========== CONTEÚDO PRINCIPAL ========== */
-        #conteudoPrincipal {
-            display: none;
-        }
-
+        #conteudoPrincipal { display: none; }
         h1 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(2.2rem, 8vw, 4rem);
@@ -226,9 +189,7 @@
             position: relative;
             text-transform: uppercase;
         }
-
-        h1::before,
-        h1::after {
+        h1::before, h1::after {
             content: '✧';
             font-size: 1.2em;
             margin: 0 15px;
@@ -237,7 +198,6 @@
             -webkit-text-fill-color: transparent;
             opacity: 0.8;
         }
-
         .subtitulo {
             text-align: center;
             color: var(--text-secondary);
@@ -255,14 +215,12 @@
             line-height: 1.6;
             word-break: break-word;
         }
-
         .gestao-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
             gap: 15px;
             margin: 25px 0;
         }
-
         .gestao-item {
             background: linear-gradient(145deg, rgba(42, 27, 74, 0.8), rgba(26, 16, 53, 0.9));
             border-radius: 30px;
@@ -273,13 +231,11 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-
         .gestao-item:hover {
             transform: translateY(-5px);
             border-color: var(--gold);
             box-shadow: 0 15px 40px rgba(203, 166, 247, 0.3);
         }
-
         .gestao-item .label {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -288,7 +244,6 @@
             margin-bottom: 8px;
             font-weight: 300;
         }
-
         .gestao-item .valor {
             font-size: clamp(1.1rem, 4vw, 1.8rem);
             font-weight: 600;
@@ -297,7 +252,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .seletor-gestao {
             background: linear-gradient(145deg, rgba(42, 27, 74, 0.6), rgba(26, 16, 53, 0.8));
             border: 1px solid var(--primary);
@@ -307,7 +261,6 @@
             backdrop-filter: blur(10px);
             box-shadow: var(--shadow);
         }
-
         .seletor-gestao h3 {
             color: var(--primary-light);
             font-size: clamp(1.1rem, 4vw, 1.5rem);
@@ -317,13 +270,11 @@
             margin-bottom: 20px;
             letter-spacing: 2px;
         }
-
         .grid-gestoes {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
             gap: 12px;
         }
-
         .gestao-card {
             background: rgba(26, 16, 53, 0.8);
             border: 1px solid var(--primary);
@@ -335,7 +286,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .gestao-card::before {
             content: '';
             position: absolute;
@@ -347,42 +297,33 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
         .gestao-card:hover {
             transform: translateY(-5px) scale(1.02);
             border-color: var(--gold);
             box-shadow: 0 10px 30px rgba(203, 166, 247, 0.3);
         }
-
-        .gestao-card:hover::before {
-            opacity: 1;
-        }
-
+        .gestao-card:hover::before { opacity: 1; }
         .gestao-card.ativa {
             background: linear-gradient(135deg, var(--primary-deep), var(--primary-dark));
             border-color: var(--gold);
             box-shadow: 0 0 30px var(--primary);
         }
-
         .gestao-ano {
             font-size: 1.3rem;
             font-weight: 600;
             color: var(--primary-light);
             font-family: 'Cormorant Garamond', serif;
         }
-
         .gestao-numero {
             font-size: 0.9rem;
             color: var(--text-secondary);
             margin: 5px 0;
         }
-
         .gestao-rainha {
             font-size: 0.8rem;
             color: var(--gold);
             font-style: italic;
         }
-
         .botoes {
             display: flex;
             gap: 12px;
@@ -390,7 +331,6 @@
             margin: 30px 0;
             flex-wrap: wrap;
         }
-
         .botao {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
             border: none;
@@ -408,7 +348,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .botao::after {
             content: '';
             position: absolute;
@@ -420,48 +359,30 @@
             transform: rotate(30deg);
             transition: left 0.5s;
         }
-
         .botao:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px var(--primary), 0 0 30px rgba(255, 217, 102, 0.3);
             border-color: var(--gold);
         }
-
-        .botao:hover::after {
-            left: 100%;
-        }
-
-        .botao.perigo {
-            background: linear-gradient(135deg, #b34141, #8f3a3a);
-        }
-
-        .botao.perigo:hover {
-            box-shadow: 0 10px 30px rgba(255, 179, 179, 0.5);
-        }
-
-        .botao.success {
-            background: linear-gradient(135deg, #2e7d32, #1e5a21);
-        }
-
-        /* Botão glow para alternância */
+        .botao:hover::after { left: 100%; }
+        .botao.perigo { background: linear-gradient(135deg, #b34141, #8f3a3a); }
+        .botao.perigo:hover { box-shadow: 0 10px 30px rgba(255, 179, 179, 0.5); }
+        .botao.success { background: linear-gradient(135deg, #2e7d32, #1e5a21); }
         .botao-glow {
             background: linear-gradient(135deg, #d4b0ff, #b77dff);
             box-shadow: 0 0 20px rgba(203, 166, 247, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.3);
             transition: all 0.2s;
         }
-
         .botao-glow:hover {
             box-shadow: 0 0 35px #d4b0ff, 0 0 15px #ffd966;
             transform: scale(1.02);
         }
-
         .grid-imagens {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
             gap: 16px;
             margin: 35px 0;
         }
-
         .item-imagem {
             background: linear-gradient(145deg, rgba(42, 27, 74, 0.7), rgba(26, 16, 53, 0.8));
             border-radius: 30px;
@@ -474,7 +395,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .item-imagem::before {
             content: '';
             position: absolute;
@@ -486,28 +406,19 @@
             transform: translateX(-100%);
             transition: transform 0.5s;
         }
-
         .item-imagem:hover {
             transform: translateY(-8px) scale(1.02);
             border-color: var(--gold);
             box-shadow: 0 15px 35px rgba(203, 166, 247, 0.4);
         }
-
-        .item-imagem:hover::before {
-            transform: translateX(100%);
-        }
-
+        .item-imagem:hover::before { transform: translateX(100%); }
         .item-imagem .icone {
             font-size: 2.8rem;
             margin-bottom: 8px;
             filter: drop-shadow(0 0 8px var(--primary));
             transition: transform 0.3s;
         }
-
-        .item-imagem:hover .icone {
-            transform: scale(1.1) rotate(5deg);
-        }
-
+        .item-imagem:hover .icone { transform: scale(1.1) rotate(5deg); }
         .item-imagem .nome {
             font-weight: 600;
             font-size: 1rem;
@@ -515,7 +426,6 @@
             margin-bottom: 4px;
             font-family: 'Cormorant Garamond', serif;
         }
-
         .item-imagem .cargo {
             font-size: 0.7rem;
             color: var(--text-muted);
@@ -525,14 +435,12 @@
             display: inline-block;
             border: 1px solid var(--border-glow);
         }
-
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
             gap: 15px;
             margin: 30px 0;
         }
-
         .card {
             background: linear-gradient(145deg, rgba(203, 166, 247, 0.1), rgba(157, 122, 217, 0.05));
             border-radius: 25px;
@@ -542,13 +450,11 @@
             backdrop-filter: blur(5px);
             transition: all 0.3s;
         }
-
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--gold);
             box-shadow: 0 10px 30px rgba(203, 166, 247, 0.2);
         }
-
         .card .numero {
             font-size: clamp(1.8rem, 5vw, 2.5rem);
             font-weight: 700;
@@ -558,14 +464,12 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 5px;
         }
-
         .card .rotulo {
             color: var(--text-secondary);
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -579,7 +483,6 @@
             overflow-y: auto;
             padding: 15px;
         }
-
         .modal-conteudo {
             max-width: 1100px;
             margin: 30px auto;
@@ -590,7 +493,6 @@
             box-shadow: 0 0 60px rgba(203, 166, 247, 0.3), inset 0 0 30px rgba(255, 217, 102, 0.1);
             position: relative;
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -599,7 +501,6 @@
             border-bottom: 1px solid var(--primary);
             padding-bottom: 15px;
         }
-
         .modal-header h2 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(1.5rem, 5vw, 2.2rem);
@@ -607,7 +508,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .fechar {
             background: none;
             border: 2px solid var(--danger);
@@ -622,13 +522,11 @@
             justify-content: center;
             transition: all 0.3s;
         }
-
         .fechar:hover {
             background: var(--danger);
             color: var(--bg-dark);
             transform: rotate(90deg);
         }
-
         .info-detalhada {
             background: linear-gradient(145deg, rgba(203, 166, 247, 0.1), rgba(157, 122, 217, 0.05));
             border-radius: 40px;
@@ -636,26 +534,20 @@
             border: 2px solid var(--primary);
             margin: 20px 0;
         }
-
         .info-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
-
         @media (min-width: 768px) {
-            .info-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
         .info-card {
             background: rgba(26, 16, 53, 0.7);
             border-radius: 30px;
             padding: 25px 20px;
             border: 1px solid var(--primary);
         }
-
         .info-card h3 {
             color: var(--primary-light);
             font-size: 1.3rem;
@@ -664,7 +556,6 @@
             border-bottom: 1px solid var(--primary);
             padding-bottom: 10px;
         }
-
         .estatistica-item {
             display: flex;
             justify-content: space-between;
@@ -672,7 +563,6 @@
             padding: 8px 0;
             border-bottom: 1px dashed rgba(203, 166, 247, 0.2);
         }
-
         .falta-item {
             background: rgba(26, 16, 53, 0.6);
             border-left: 4px solid;
@@ -680,15 +570,8 @@
             margin: 10px 0;
             border-radius: 15px;
         }
-
-        .falta-item.justificada {
-            border-left-color: var(--gold);
-        }
-
-        .falta-item.nao-justificada {
-            border-left-color: var(--danger);
-        }
-
+        .falta-item.justificada { border-left-color: var(--gold); }
+        .falta-item.nao-justificada { border-left-color: var(--danger); }
         .badge {
             padding: 4px 12px;
             border-radius: 30px;
@@ -697,17 +580,8 @@
             background: rgba(203, 166, 247, 0.15);
             border: 1px solid;
         }
-
-        .badge.aceita {
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .badge.rejeitada {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
+        .badge.aceita { border-color: var(--success); color: var(--success); }
+        .badge.rejeitada { border-color: var(--danger); color: var(--danger); }
         .footer {
             max-width: 1400px;
             margin: 40px auto 0;
@@ -717,7 +591,6 @@
             border-top: 1px solid var(--border-glow);
             font-size: 0.9rem;
         }
-
         .status-conexao {
             position: fixed;
             top: 15px;
@@ -730,12 +603,7 @@
             border: 1px solid;
             z-index: 3000;
         }
-
-        .status-online {
-            border-color: var(--success);
-            color: var(--success);
-        }
-
+        .status-online { border-color: var(--success); color: var(--success); }
         .loading {
             position: fixed;
             top: 0;
@@ -749,7 +617,6 @@
             z-index: 10000;
             backdrop-filter: blur(10px);
         }
-
         .loading-spinner {
             width: 50px;
             height: 50px;
@@ -758,34 +625,20 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-
 <body>
     <div id="statusConexao" class="status-conexao status-online">🟢 Conectado</div>
-    <div id="loading" class="loading" style="display: none;">
-        <div class="loading-spinner"></div>
-    </div>
+    <div id="loading" class="loading" style="display: none;"><div class="loading-spinner"></div></div>
 
     <!-- TELA DE LOGIN -->
     <div id="telaLogin" class="login-container">
         <div class="login-card">
             <h1>✦ ACESSO ✦</h1>
             <div class="login-subtitulo">Ordem Internacional das Filhas de Jó</div>
-            <div class="input-group">
-                <label>USUÁRIO (email)</label>
-                <input type="email" id="usuario" placeholder="Digite seu email">
-            </div>
-            <div class="input-group">
-                <label>SENHA</label>
-                <input type="password" id="senha" placeholder="Digite sua senha">
-            </div>
+            <div class="input-group"><label>USUÁRIO (email)</label><input type="email" id="usuario" placeholder="Digite seu email"></div>
+            <div class="input-group"><label>SENHA</label><input type="password" id="senha" placeholder="Digite sua senha"></div>
             <button class="login-btn" onclick="fazerLogin()">ENTRAR</button>
             <a href="#" class="forgot-password" onclick="recuperarSenha()">Esqueceu a senha?</a>
         </div>
@@ -797,29 +650,17 @@
             <h1>✦ SISTEMA DE FALTAS ✦</h1>
             <div class="subtitulo">Ordem Internacional das Filhas de Jó • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
 
-            <!-- Informações da Gestão Atual (comum) -->
+            <!-- Informações da Gestão Atual -->
             <div class="gestao-info" id="gestaoInfo">
-                <div class="gestao-item">
-                    <div class="label">ANO</div>
-                    <div class="valor" id="anoAtual">---</div>
-                </div>
-                <div class="gestao-item">
-                    <div class="label">GESTÃO</div>
-                    <div class="valor" id="gestaoNumero">---</div>
-                </div>
-                <div class="gestao-item">
-                    <div class="label">RAINHA</div>
-                    <div class="valor" id="rainhaAtual">---</div>
-                </div>
+                <div class="gestao-item"><div class="label">ANO</div><div class="valor" id="anoAtual">---</div></div>
+                <div class="gestao-item"><div class="label">GESTÃO</div><div class="valor" id="gestaoNumero">---</div></div>
+                <div class="gestao-item"><div class="label">RAINHA</div><div class="valor" id="rainhaAtual">---</div></div>
             </div>
 
-            <!-- Seletor de Gestão (comum) -->
-            <div class="seletor-gestao">
-                <h3>✦ SELECIONAR GESTÃO ✦</h3>
-                <div class="grid-gestoes" id="gridGestoes"></div>
-            </div>
+            <!-- Seletor de Gestão -->
+            <div class="seletor-gestao"><h3>✦ SELECIONAR GESTÃO ✦</h3><div class="grid-gestoes" id="gridGestoes"></div></div>
 
-            <!-- Botões Principais (comuns) -->
+            <!-- Botões Principais -->
             <div class="botoes">
                 <button class="botao" onclick="mostrarModal('nova')">✦ NOVA</button>
                 <button class="botao" onclick="mostrarModal('membros')">👑 MEMBROS</button>
@@ -833,13 +674,11 @@
                 <button class="botao botao-glow" onclick="mostrarPagina('conselho')">⚡ CONSELHO</button>
             </div>
 
-            <!-- ========== PÁGINA FILHAS ========== -->
+            <!-- PÁGINA FILHAS -->
             <div id="paginaFilhas" style="display: block;">
                 <div class="grid-imagens" id="gridFilhas"></div>
-                <div class="pesquisa-box"
-                    style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
-                    <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..."
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
+                <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
+                    <input type="text" id="pesquisaNomeCompleto" placeholder="🔍 Digite os 2 primeiros nomes..." style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
                     <button class="botao" onclick="pesquisarFilha()">PESQUISAR</button>
                     <button class="botao perigo" onclick="limparPesquisa()">LIMPAR</button>
                 </div>
@@ -847,13 +686,11 @@
                 <div id="cardsGerais" class="cards"></div>
             </div>
 
-            <!-- ========== PÁGINA CONSELHO ========== -->
+            <!-- PÁGINA CONSELHO -->
             <div id="paginaConselho" style="display: none;">
                 <div class="grid-imagens" id="gridConselho"></div>
-                <div class="pesquisa-box"
-                    style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
-                    <input type="text" id="pesquisaConselho" placeholder="🔍 Pesquisar membro do conselho..."
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
+                <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
+                    <input type="text" id="pesquisaConselho" placeholder="🔍 Pesquisar membro do conselho..." style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 50px; padding: 14px 25px; color: white; min-width: 250px; flex: 1; max-width: 400px;">
                     <button class="botao" onclick="pesquisarMembroConselho()">PESQUISAR</button>
                     <button class="botao perigo" onclick="limparPesquisaConselho()">LIMPAR</button>
                 </div>
@@ -862,108 +699,26 @@
             </div>
         </div>
 
-        <!-- MODAL: Nova Ritualística -->
+        <!-- MODAIS (mantidos idênticos ao original) -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
-                <div class="modal-header">
-                    <h2>✦ NOVA RITUALÍSTICA</h2>
-                    <button class="fechar" onclick="fecharModal('nova')">✕</button>
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="color: var(--primary-light);">📅 Data:</label>
-                    <input type="date" id="novaData"
-                        style="width: 100%; margin-top: 8px; background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                </div>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="botao" onclick="mudarAba('filhas')" style="flex:1;" id="abaFilhasBtn">👑
-                        FILHAS</button>
-                    <button class="botao" onclick="mudarAba('conselho')" style="flex:1;" id="abaConselhoBtn">⚡
-                        CONSELHO</button>
-                </div>
-                <div id="progressoContainer">
-                    <div class="progresso" id="progressoFilhas">⏳ Filhas: 0/0</div>
-                    <div class="progresso" id="progressoConselho">⏳ Conselho: 0/0</div>
-                </div>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background: #2e7d32;">✓
-                        Presentes</button>
-                    <button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background: #b34141;">✗
-                        Ausentes</button>
-                </div>
-                <div id="containerFilhas" style="max-height: 400px; overflow-y: auto;"></div>
-                <div id="containerConselho" style="max-height: 400px; overflow-y: auto; display: none;"></div>
-                <button class="botao" onclick="salvarRitualisticaCompleta()"
-                    style="width: 100%; margin-top: 20px; padding: 15px;" id="botaoSalvar">✦ SALVAR ✦</button>
+                <div class="modal-header"><h2>✦ NOVA RITUALÍSTICA</h2><button class="fechar" onclick="fecharModal('nova')">✕</button></div>
+                <div style="margin-bottom:20px;"><label style="color:var(--primary-light);">📅 Data:</label><input type="date" id="novaData" style="width:100%; margin-top:8px; background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"></div>
+                <div style="display:flex; gap:10px; margin-bottom:20px;"><button class="botao" onclick="mudarAba('filhas')" style="flex:1;" id="abaFilhasBtn">👑 FILHAS</button><button class="botao" onclick="mudarAba('conselho')" style="flex:1;" id="abaConselhoBtn">⚡ CONSELHO</button></div>
+                <div id="progressoContainer"><div class="progresso" id="progressoFilhas">⏳ Filhas: 0/0</div><div class="progresso" id="progressoConselho">⏳ Conselho: 0/0</div></div>
+                <div style="display:flex; gap:10px; margin-bottom:20px;"><button class="botao" onclick="marcarTodosAtual('presente')" style="flex:1; background:#2e7d32;">✓ Presentes</button><button class="botao" onclick="marcarTodosAtual('ausente')" style="flex:1; background:#b34141;">✗ Ausentes</button></div>
+                <div id="containerFilhas" style="max-height:400px; overflow-y:auto;"></div>
+                <div id="containerConselho" style="max-height:400px; overflow-y:auto; display:none;"></div>
+                <button class="botao" onclick="salvarRitualisticaCompleta()" style="width:100%; margin-top:20px; padding:15px;" id="botaoSalvar">✦ SALVAR ✦</button>
             </div>
         </div>
-
-        <!-- MODAL: Nova Gestão -->
-        <div id="modalNovaGestao" class="modal">
-            <div class="modal-conteudo">
-                <div class="modal-header">
-                    <h2>➕ NOVA GESTÃO</h2>
-                    <button class="fechar" onclick="fecharModal('novaGestao')">✕</button>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="number" id="novaGestaoAno" value="2026" placeholder="Ano"
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)"
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha"
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;">
-                    <textarea id="novaGestaoObs" rows="2" placeholder="Observações..."
-                        style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 20px; padding: 12px; color: white;"></textarea>
-                    <button class="botao" onclick="criarNovaGestao()">✅ CRIAR GESTÃO</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL: Gerenciar Membros -->
-        <div id="modalMembros" class="modal">
-            <div class="modal-conteudo">
-                <div class="modal-header">
-                    <h2>👑 GERENCIAR MEMBROS</h2>
-                    <button class="fechar" onclick="fecharModal('membros')">✕</button>
-                </div>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="botao" onclick="carregarMembros('filhas')" style="flex:1;">FILHAS</button>
-                    <button class="botao" onclick="carregarMembros('conselho')" style="flex:1;">CONSELHO</button>
-                </div>
-                <div id="listaMembrosGerenciar"></div>
-            </div>
-        </div>
-
-        <!-- MODAL: Ver Registros -->
-        <div id="modalRegistros" class="modal">
-            <div class="modal-conteudo">
-                <div class="modal-header">
-                    <h2>📜 REGISTROS</h2>
-                    <button class="fechar" onclick="fecharModal('registros')">✕</button>
-                </div>
-                <div class="datas" id="abasGestao" style="justify-content: flex-start;"></div>
-                <div id="listaRegistros" class="registros-grid"
-                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 15px; margin-top: 20px;">
-                </div>
-            </div>
-        </div>
-
-        <!-- SUBMODAL: Detalhes das Faltas -->
-        <div id="modalDetalhesFaltas" class="modal">
-            <div class="modal-conteudo" style="max-width: 800px;">
-                <div class="modal-header">
-                    <h2 id="detalhesTitulo">📅 Detalhes das Faltas</h2>
-                    <button class="fechar" onclick="fecharModal('detalhesFaltas')">✕</button>
-                </div>
-                <div id="conteudoDetalhesFaltas" style="max-height: 70vh; overflow-y: auto; padding: 10px;"></div>
-            </div>
-        </div>
+        <div id="modalNovaGestao" class="modal"><div class="modal-conteudo"><div class="modal-header"><h2>➕ NOVA GESTÃO</h2><button class="fechar" onclick="fecharModal('novaGestao')">✕</button></div><div style="display:flex; flex-direction:column; gap:15px;"><input type="number" id="novaGestaoAno" value="2026" placeholder="Ano" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"><input type="text" id="novaGestaoNumero" placeholder="Nº Gestão (ex: 27ª)" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"><input type="text" id="novaGestaoRainha" placeholder="Nome da Rainha" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"><textarea id="novaGestaoObs" rows="2" placeholder="Observações..." style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"></textarea><button class="botao" onclick="criarNovaGestao()">✅ CRIAR GESTÃO</button></div></div></div>
+        <div id="modalMembros" class="modal"><div class="modal-conteudo"><div class="modal-header"><h2>👑 GERENCIAR MEMBROS</h2><button class="fechar" onclick="fecharModal('membros')">✕</button></div><div style="display:flex; gap:10px; margin-bottom:20px;"><button class="botao" onclick="carregarMembros('filhas')" style="flex:1;">FILHAS</button><button class="botao" onclick="carregarMembros('conselho')" style="flex:1;">CONSELHO</button></div><div id="listaMembrosGerenciar"></div></div></div>
+        <div id="modalRegistros" class="modal"><div class="modal-conteudo"><div class="modal-header"><h2>📜 REGISTROS</h2><button class="fechar" onclick="fecharModal('registros')">✕</button></div><div class="datas" id="abasGestao" style="justify-content:flex-start;"></div><div id="listaRegistros" class="registros-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:15px; margin-top:20px;"></div></div></div>
+        <div id="modalDetalhesFaltas" class="modal"><div class="modal-conteudo" style="max-width:800px;"><div class="modal-header"><h2 id="detalhesTitulo">📅 Detalhes das Faltas</h2><button class="fechar" onclick="fecharModal('detalhesFaltas')">✕</button></div><div id="conteudoDetalhesFaltas" style="max-height:70vh; overflow-y:auto; padding:10px;"></div></div></div>
     </div>
 
-    <div class="footer">
-        <div class="nome">✦ Sistema de Faltas FDJI ✦ Dominique Black - @dominique_cbb</div>
-        <div class="data-hora" id="dataHoraFooter"></div>
-        <div class="assinatura">"Vida Antes da Morte"</div>
-    </div>
+    <div class="footer"><div class="nome">✦ Sistema de Faltas FDJI ✦ Dominique Black - @dominique_cbb</div><div class="data-hora" id="dataHoraFooter"></div><div class="assinatura">"Vida Antes da Morte"</div></div>
 
     <script>
         // ========== CONFIGURAÇÃO DO FIREBASE ==========
@@ -976,7 +731,6 @@
             appId: "1:191746228461:web:ae9a1da546e7f61ebdcce4",
             measurementId: "G-SVSNB555J1"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -984,6 +738,9 @@
         let gestaoAtual = null;
         let abaAtual = 'filhas';
         let usuarioAtual = null;
+
+        // ===== URL DO WEB APP DO GOOGLE APPS SCRIPT (ALTERE PARA A SUA) =====
+        const GOOGLE_DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbyXS3s5jNg52jxQlZu4oYbRkIsNKcRJvkWeayL_Pubp8At8J3CnKNx8-cn_Ir08Bivx7A/exec';
 
         // ========== VERIFICAR LOGIN ==========
         auth.onAuthStateChanged(async (user) => {
@@ -1005,31 +762,31 @@
                 const usuariosRef = db.collection('usuarios');
                 const snapshot = await usuariosRef.limit(1).get();
                 if (snapshot.empty) {
-                    try { await auth.createUserWithEmailAndPassword('admin@fdji.com', 'admin123'); } catch (e) { }
+                    try { await auth.createUserWithEmailAndPassword('admin@fdji.com', 'admin123'); } catch(e) {}
                     await usuariosRef.doc('admin').set({ nome: 'Administrador', email: 'admin@fdji.com', tipo: 'admin', criadoEm: new Date() });
                 }
-            } catch (e) { console.error(e); }
+            } catch(e) { console.error(e); }
         }
 
-        window.fazerLogin = async function () {
+        window.fazerLogin = async function() {
             const email = document.getElementById('usuario').value;
             const senha = document.getElementById('senha').value;
             try {
                 document.getElementById('loading').style.display = 'flex';
                 await auth.signInWithEmailAndPassword(email, senha);
-            } catch (error) {
+            } catch(error) {
                 document.getElementById('loading').style.display = 'none';
                 alert('Erro ao fazer login: ' + error.message);
             }
         }
 
-        window.recuperarSenha = async function () {
+        window.recuperarSenha = async function() {
             const email = document.getElementById('usuario').value;
             if (!email) { alert('Digite seu email primeiro!'); return; }
             try {
                 await auth.sendPasswordResetEmail(email);
                 alert('Email de recuperação enviado!');
-            } catch (error) { alert('Erro: ' + error.message); }
+            } catch(error) { alert('Erro: ' + error.message); }
         }
 
         function inicializarSistema() {
@@ -1052,23 +809,17 @@
                     return;
                 }
                 if (!gestaoAtual || !gestoes.find(g => g.id === gestaoAtual)) gestaoAtual = gestoes[0]?.id || null;
-                container.innerHTML = gestoes.map(g => `
-                    <div class="gestao-card ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')">
-                        <div class="gestao-ano">${g.ano}</div>
-                        <div class="gestao-numero">${g.numero}</div>
-                        <div class="gestao-rainha">${g.rainha ? g.rainha.split(' ')[0] : '---'}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = gestoes.map(g => `<div class="gestao-card ${g.id === gestaoAtual ? 'ativa' : ''}" onclick="selecionarGestao('${g.id}')"><div class="gestao-ano">${g.ano}</div><div class="gestao-numero">${g.numero}</div><div class="gestao-rainha">${g.rainha ? g.rainha.split(' ')[0] : '---'}</div></div>`).join('');
                 const gestaoAtualObj = gestoes.find(g => g.id === gestaoAtual);
                 if (gestaoAtualObj) {
                     document.getElementById('anoAtual').textContent = gestaoAtualObj.ano || '---';
                     document.getElementById('gestaoNumero').textContent = gestaoAtualObj.numero || '---';
                     document.getElementById('rainhaAtual').textContent = gestaoAtualObj.rainha || '---';
                 }
-            } catch (e) { console.error(e); }
+            } catch(e) { console.error(e); }
         }
 
-        window.selecionarGestao = function (gestaoId) {
+        window.selecionarGestao = function(gestaoId) {
             gestaoAtual = gestaoId;
             carregarGestoes();
             atualizarCardsGerais();
@@ -1082,15 +833,15 @@
                 const filhas = [];
                 snapshot.forEach(doc => filhas.push(doc.data()));
                 return filhas;
-            } catch (e) { return []; }
+            } catch(e) { return []; }
         }
 
         async function atualizarGridFilhas() {
             const filhas = await carregarFilhas();
             const grid = document.getElementById('gridFilhas');
-            const icones = ['👑', '👸', '🧚‍♀️', '🦋', '🌸', '🌙', '⭐', '✨', '🕊️', '📜', '🔮', '💖', '🦄', '🐇', '🎀', '🍰', '☕', '🕯️', '💍', '👗', '🥿', '🐈', '🍓', '🩰', '🌷', '🍬', '🫧', '🎠', '🐰', '🐣', '🦢', '🦩', '🌺', '🌼', '🌹', '🥀', '🧁', '🧸', '🎈', '🧜‍♀️', '🧝‍♀️', '💫', '🌟', '💗', '🕰️', '🔮'];
+            const icones = ['👑','👸','🧚‍♀️','🦋','🌸','🌙','⭐','✨','🕊️','📜','🔮','💖','🦄','🐇','🎀','🍰','☕','🕯️','💍','👗','🥿','🐈','🍓','🩰','🌷','🍬','🫧','🎠','🐰','🐣','🦢','🦩','🌺','🌼','🌹','🥀','🧁','🧸','🎈','🧜‍♀️','🧝‍♀️','💫','🌟','💗','🕰️','🔮'];
             if (!filhas.length) { grid.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Nenhuma filha cadastrada. Vá em "MEMBROS" para adicionar.</div>'; return; }
-            grid.innerHTML = filhas.map((f, i) => `<div class="item-imagem" onclick="pesquisarPorDoisNomes('${getPrimeirosDoisNomes(f.nome)}')"><div class="icone">${icones[i % icones.length]}</div><div class="nome">${f.nome || '---'} ${f.temProficiencia ? '📜' : ''}</div><div class="cargo">${f.cargo || '---'}</div></div>`).join('');
+            grid.innerHTML = filhas.map((f,i) => `<div class="item-imagem" onclick="pesquisarPorDoisNomes('${getPrimeirosDoisNomes(f.nome)}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${f.nome||'---'} ${f.temProficiencia?'📜':''}</div><div class="cargo">${f.cargo||'---'}</div></div>`).join('');
         }
 
         // ========== CONSELHO ==========
@@ -1100,18 +851,18 @@
                 const conselho = [];
                 snapshot.forEach(doc => conselho.push(doc.data()));
                 return conselho;
-            } catch (e) { return []; }
+            } catch(e) { return []; }
         }
 
         async function carregarGridConselho() {
             const conselho = await carregarConselho();
             const grid = document.getElementById('gridConselho');
-            const icones = ['🛡️', '⚔️', '🔱', '📜', '🕊️', '🏛️', '⚜️', '🎖️', '⛪', '🗡️', '🏰', '🌿', '🍷', '📖', '🔔'];
+            const icones = ['🛡️','⚔️','🔱','📜','🕊️','🏛️','⚜️','🎖️','⛪','🗡️','🏰','🌿','🍷','📖','🔔'];
             if (!conselho.length) { grid.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Nenhum membro do conselho cadastrado.</div>'; return; }
-            grid.innerHTML = conselho.map((c, i) => `<div class="item-imagem" onclick="pesquisarMembroConselho('${c.nome}')"><div class="icone">${icones[i % icones.length]}</div><div class="nome">${c.nome || '---'}</div><div class="cargo">${c.cargo || '---'}</div></div>`).join('');
+            grid.innerHTML = conselho.map((c,i) => `<div class="item-imagem" onclick="pesquisarMembroConselho('${c.nome}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${c.nome||'---'}</div><div class="cargo">${c.cargo||'---'}</div></div>`).join('');
         }
 
-        window.pesquisarMembroConselho = async function (nomeForcado = null) {
+        window.pesquisarMembroConselho = async function(nomeForcado=null) {
             let termo = nomeForcado || document.getElementById('pesquisaConselho').value.trim();
             if (!termo) return alert('Digite o nome do membro do conselho');
             const membros = await carregarConselho();
@@ -1120,7 +871,7 @@
             alert(`Faltas de ${encontrado.nome} - implementar em breve`);
         }
 
-        window.limparPesquisaConselho = function () {
+        window.limparPesquisaConselho = function() {
             document.getElementById('pesquisaConselho').value = '';
             document.getElementById('resultadoPesquisaConselho').style.display = 'none';
             document.getElementById('cardsConselho').style.display = 'grid';
@@ -1129,7 +880,7 @@
         async function atualizarCardsConselho() {
             if (!gestaoAtual) return;
             const rituais = await getRituaisAtuais();
-            let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
+            let total=0, just=0, naoJust=0, aceitas=0, rejeitadas=0;
             Object.values(rituais).forEach(data => {
                 (data.conselho || []).forEach(m => {
                     if (!m.presente) {
@@ -1148,22 +899,22 @@
             try {
                 const doc = await db.collection('rituais').doc(gestaoAtual).get();
                 return doc.exists ? doc.data().rituais || {} : {};
-            } catch (e) { return {}; }
+            } catch(e) { return {}; }
         }
 
         // ========== AUXILIARES ==========
         function getPrimeirosDoisNomes(nomeCompleto) {
             if (!nomeCompleto) return '';
             const partes = nomeCompleto.trim().split(' ');
-            return partes.slice(0, 2).join(' ').toLowerCase();
+            return partes.slice(0,2).join(' ').toLowerCase();
         }
 
-        window.pesquisarPorDoisNomes = function (doisNomes) {
+        window.pesquisarPorDoisNomes = function(doisNomes) {
             document.getElementById('pesquisaNomeCompleto').value = doisNomes;
             pesquisarFilha();
         }
 
-        window.pesquisarFilha = async function () { /* mantido igual ao original, extenso, mas funciona */
+        window.pesquisarFilha = async function() {
             const termoBusca = document.getElementById('pesquisaNomeCompleto').value.trim().toLowerCase();
             if (!termoBusca) return alert('Digite o nome da filha');
             const filhas = await carregarFilhas();
@@ -1181,51 +932,51 @@
                 const rituais = doc.data().rituais || {};
                 Object.entries(rituais).forEach(([data, ritual]) => {
                     const falta = ritual.filhas?.find(f => f.nome === filhaEncontrada.nome);
-                    if (falta && !falta.presente) todasFaltas.push({ data, gestao: gestao ? `${gestao.ano} ${gestao.numero}` : doc.id, rainha: gestao ? gestao.rainha : 'Desconhecida', justificada: falta.justificada || false, aceita: falta.aceita || false });
+                    if (falta && !falta.presente) todasFaltas.push({ data, gestao: gestao ? `${gestao.ano} ${gestao.numero}` : doc.id, rainha: gestao ? gestao.rainha : 'Desconhecida', justificada: falta.justificada||false, aceita: falta.aceita||false });
                 });
             });
-            todasFaltas.sort((a, b) => b.data.localeCompare(a.data));
-            const totalFaltas = todasFaltas.length, justificadas = todasFaltas.filter(f => f.justificada).length, naoJustificadas = totalFaltas - justificadas, aceitas = todasFaltas.filter(f => f.aceita).length, rejeitadas = totalFaltas - aceitas;
+            todasFaltas.sort((a,b)=>b.data.localeCompare(a.data));
+            const totalFaltas = todasFaltas.length, justificadas = todasFaltas.filter(f=>f.justificada).length, naoJustificadas = totalFaltas - justificadas, aceitas = todasFaltas.filter(f=>f.aceita).length, rejeitadas = totalFaltas - aceitas;
             let faltasHTML = '';
-            if (todasFaltas.length) faltasHTML = todasFaltas.map(f => `<div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}"><div style="display:flex;justify-content:space-between"><span>${f.data.split('-').reverse().join('/')}</span><span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span></div><div>${f.gestao} • ${f.rainha.split(' ')[0]}</div><div>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</div></div>`).join('');
+            if (todasFaltas.length) faltasHTML = todasFaltas.map(f => `<div class="falta-item ${f.justificada?'justificada':'nao-justificada'}"><div style="display:flex;justify-content:space-between"><span>${f.data.split('-').reverse().join('/')}</span><span class="badge ${f.aceita?'aceita':'rejeitada'}">${f.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>${f.gestao} • ${f.rainha.split(' ')[0]}</div><div>${f.justificada?'📄 Justificada':'❌ Não Justificada'}</div></div>`).join('');
             else faltasHTML = '<p style="color:var(--text-muted);text-align:center;">Nenhuma falta registrada</p>';
-            const resultadoHTML = `<div class="info-detalhada"><div style="display:flex;justify-content:space-between;"><h2>👑 ${filhaEncontrada.nome}</h2><button class="botao" onclick="voltarCardsGerais()">← Voltar</button></div><div style="text-align:center;margin:10px 0;"><span style="background:rgba(203,166,247,0.2);padding:8px 25px;border-radius:40px;">${filhaEncontrada.cargo || '---'}</span></div><div class="info-grid"><div class="info-card"><h3>📊 ESTATÍSTICAS</h3><div class="estatistica-item"><span>Total de Faltas:</span><span>${totalFaltas}</span></div><div class="estatistica-item"><span>Justificadas:</span><span style="color:var(--gold);">${justificadas}</span></div><div class="estatistica-item"><span>Não Justificadas:</span><span style="color:var(--danger);">${naoJustificadas}</span></div><div class="estatistica-item"><span>Aceitas:</span><span style="color:var(--success);">${aceitas}</span></div><div class="estatistica-item"><span>Rejeitadas:</span><span style="color:var(--danger);">${rejeitadas}</span></div></div><div class="info-card"><h3>📅 HISTÓRICO</h3>${faltasHTML}</div></div></div>`;
+            const resultadoHTML = `<div class="info-detalhada"><div style="display:flex;justify-content:space-between;"><h2>👑 ${filhaEncontrada.nome}</h2><button class="botao" onclick="voltarCardsGerais()">← Voltar</button></div><div style="text-align:center;margin:10px 0;"><span style="background:rgba(203,166,247,0.2);padding:8px 25px;border-radius:40px;">${filhaEncontrada.cargo||'---'}</span></div><div class="info-grid"><div class="info-card"><h3>📊 ESTATÍSTICAS</h3><div class="estatistica-item"><span>Total de Faltas:</span><span>${totalFaltas}</span></div><div class="estatistica-item"><span>Justificadas:</span><span style="color:var(--gold);">${justificadas}</span></div><div class="estatistica-item"><span>Não Justificadas:</span><span style="color:var(--danger);">${naoJustificadas}</span></div><div class="estatistica-item"><span>Aceitas:</span><span style="color:var(--success);">${aceitas}</span></div><div class="estatistica-item"><span>Rejeitadas:</span><span style="color:var(--danger);">${rejeitadas}</span></div></div><div class="info-card"><h3>📅 HISTÓRICO</h3>${faltasHTML}</div></div></div>`;
             document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
         }
 
-        window.voltarCardsGerais = function () {
+        window.voltarCardsGerais = function() {
             document.getElementById('cardsGerais').style.display = 'grid';
             document.getElementById('resultadoPesquisa').style.display = 'none';
             document.getElementById('pesquisaNomeCompleto').value = '';
         }
-        window.limparPesquisa = function () { voltarCardsGerais(); }
+        window.limparPesquisa = function() { voltarCardsGerais(); }
 
         async function atualizarCardsGerais() {
             if (!gestaoAtual) { document.getElementById('cardsGerais').innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Selecione uma gestão</div>'; return; }
             const rituais = await getRituaisAtuais();
-            let total = 0, just = 0, naoJust = 0, aceitas = 0, rejeitadas = 0;
+            let total=0, just=0, naoJust=0, aceitas=0, rejeitadas=0;
             Object.values(rituais).forEach(data => {
-                [...(data.filhas || []), ...(data.conselho || [])].forEach(r => { if (!r.presente) { total++; if (r.justificada) just++; else naoJust++; if (r.aceita) aceitas++; else rejeitadas++; } });
+                [...(data.filhas||[]),...(data.conselho||[])].forEach(r => { if (!r.presente) { total++; if (r.justificada) just++; else naoJust++; if (r.aceita) aceitas++; else rejeitadas++; } });
             });
             document.getElementById('cardsGerais').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
         // ========== MODAIS E NOVA RITUALÍSTICA (COM ANEXOS) ==========
-        window.mostrarModal = function (tipo) {
+        window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') carregarAmbasAbas();
             if (tipo === 'membros') carregarMembros('filhas');
             if (tipo === 'registros') carregarRegistros();
         }
-        window.fecharModal = function (tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none'; }
-        window.mudarAba = function (aba) {
+        window.fecharModal = function(tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none'; }
+        window.mudarAba = function(aba) {
             abaAtual = aba;
-            document.getElementById('abaFilhasBtn').style.opacity = aba === 'filhas' ? '1' : '0.7';
-            document.getElementById('abaConselhoBtn').style.opacity = aba === 'conselho' ? '1' : '0.7';
-            document.getElementById('containerFilhas').style.display = aba === 'filhas' ? 'block' : 'none';
-            document.getElementById('containerConselho').style.display = aba === 'conselho' ? 'block' : 'none';
+            document.getElementById('abaFilhasBtn').style.opacity = aba==='filhas'?'1':'0.7';
+            document.getElementById('abaConselhoBtn').style.opacity = aba==='conselho'?'1':'0.7';
+            document.getElementById('containerFilhas').style.display = aba==='filhas'?'block':'none';
+            document.getElementById('containerConselho').style.display = aba==='conselho'?'block':'none';
         }
-        window.carregarAmbasAbas = function () {
+        window.carregarAmbasAbas = function() {
             carregarMembrosModal('filhas', 'containerFilhas');
             carregarMembrosModal('conselho', 'containerConselho');
             atualizarProgresso();
@@ -1237,8 +988,8 @@
             if (!lista.length) { container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`; return; }
             container.innerHTML = lista.map(m => {
                 const id = (m.nome || 'membro').replace(/\s/g, '') + tipo;
-                return `<div class="membro-item" data-nome="${m.nome || ''}" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
-                            <div><strong>${m.nome || '---'}</strong> - ${m.cargo || '---'}</div>
+                return `<div class="membro-item" data-nome="${m.nome||''}" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
+                            <div><strong>${m.nome||'---'}</strong> - ${m.cargo||'---'}</div>
                             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
                                 <select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
                                     <option value="presente">✓ Presente</option>
@@ -1257,13 +1008,12 @@
                             <div id="listaAnexos-${id}" style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);"></div>
                         </div>`;
             }).join('');
-            // Adicionar eventos de clique para os botões de anexo
             container.querySelectorAll('.anexar-pdf').forEach(btn => {
                 btn.onclick = () => uploadAnexo(btn.dataset.id, btn.dataset.nome, btn.dataset.tipo);
             });
         }
 
-        window.mudarPresencaModal = function (id, tipo) {
+        window.mudarPresencaModal = function(id, tipo) {
             const pres = document.getElementById(`pres-${id}`).value;
             document.getElementById(`just-${id}`).disabled = (pres === 'presente');
             document.getElementById(`aceite-${id}`).disabled = (pres === 'presente');
@@ -1272,7 +1022,7 @@
             atualizarProgresso();
         }
 
-        window.marcarTodosAtual = function (status) {
+        window.marcarTodosAtual = function(status) {
             const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
             document.querySelectorAll(`#${container} select[id^="pres-"]`).forEach(s => {
                 s.value = status;
@@ -1281,7 +1031,7 @@
         }
 
         function atualizarProgresso() {
-            ['filhas', 'conselho'].forEach(tipo => {
+            ['filhas','conselho'].forEach(tipo => {
                 const selects = document.querySelectorAll(`#container${tipo.charAt(0).toUpperCase() + tipo.slice(1)} select[id^="pres-"]`);
                 const total = selects.length;
                 const marcados = Array.from(selects).filter(s => s.value === 'presente' || s.value === 'ausente').length;
@@ -1295,108 +1045,88 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-        window.uploadAnexo = async function (memberId, memberNome, tipo) {
-            // URL do seu Web App do Google Apps Script (substitua pela sua, se mudar)
-            const GOOGLE_DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbyXS3s5jNg52jxQlZu4oYbRkIsNKcRJvkWeayL_Pubp8At8J3CnKNx8-cn_Ir08Bivx7A/exec';
-
-            // Função auxiliar para enviar o arquivo para o Google Drive
-            async function uploadToGoogleDrive(file, fileName, mimeType) {
+        // ---------- FUNÇÕES DE UPLOAD CORRIGIDAS ----------
+        async function uploadToGoogleDrive(file, fileName, mimeType) {
+            return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                return new Promise((resolve, reject) => {
-                    reader.onloadend = async () => {
-                        const base64Data = reader.result.split(',')[1];
-                        const payload = { fileData: base64Data, fileName, mimeType };
-                        try {
-                            const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
-                                method: 'POST',
-                                mode: 'cors',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(payload)
-                            });
-                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                            const result = await response.json();
-                            if (result.success) {
-                                resolve(result.fileUrl);
-                            } else {
-                                throw new Error(result.error || 'Erro desconhecido no upload');
-                            }
-                        } catch (err) {
-                            reject(err);
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            // Função principal de anexo (substitua a existente)
-            window.uploadAnexo = async function (memberId, memberNome, tipo) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'application/pdf';
-                input.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const dataAtual = document.getElementById('novaData').value;
-                    if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
-                    if (!gestaoAtual) { alert('Nenhuma gestão selecionada. Selecione uma gestão.'); return; }
-
+                reader.onloadend = async () => {
+                    const base64Data = reader.result.split(',')[1];
+                    const payload = { fileData: base64Data, fileName, mimeType };
                     try {
-                        document.getElementById('loading').style.display = 'flex';
-
-                        // Nome único para o arquivo (evita conflitos)
-                        const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
-
-                        // Envia para o Google Drive e obtém a URL pública
-                        const fileUrl = await uploadToGoogleDrive(file, uniqueFileName, 'application/pdf');
-                        if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
-
-                        // Guarda nos anexos temporários (para salvar junto com a falta)
-                        if (!window.anexosTemp) window.anexosTemp = {};
-                        if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
-                        window.anexosTemp[memberId].push({
-                            nome: file.name,
-                            url: fileUrl,
-                            dataUpload: new Date()
+                        const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
+                            method: 'POST',
+                            mode: 'cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
                         });
-
-                        // Atualiza a visualização dos anexos no modal
-                        const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
-                        if (divAnexos) {
-                            divAnexos.innerHTML = window.anexosTemp[memberId].map((a, idx) => `
-          <div>📄 ${a.nome} 
-            <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" 
-                    style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button>
-          </div>
-        `).join('');
-
-                            // Reaplica os eventos de remoção
-                            document.querySelectorAll('.remover-anexo').forEach(btn => {
-                                btn.onclick = (e) => {
-                                    const id = btn.dataset.id;
-                                    const url = btn.dataset.url;
-                                    window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url);
-                                    const div = document.getElementById(`listaAnexos-${id}`);
-                                    if (div) {
-                                        div.innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join('');
-                                    }
-                                };
-                            });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        const result = await response.json();
+                        if (result.success) {
+                            resolve(result.fileUrl);
+                        } else {
+                            throw new Error(result.error || 'Erro desconhecido no upload');
                         }
-
-                        alert('PDF anexado com sucesso!');
                     } catch (err) {
-                        console.error('Erro no upload:', err);
-                        alert('Erro no upload: ' + err.message);
-                    } finally {
-                        document.getElementById('loading').style.display = 'none';
+                        reject(err);
                     }
                 };
-                input.click();
-            };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
-        window.salvarRitualisticaCompleta = async function () {
+        window.uploadAnexo = async function(memberId, memberNome, tipo) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/pdf';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const dataAtual = document.getElementById('novaData').value;
+                if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
+                if (!gestaoAtual) { alert('Nenhuma gestão selecionada.'); return; }
+
+                try {
+                    document.getElementById('loading').style.display = 'flex';
+                    const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
+                    const fileUrl = await uploadToGoogleDrive(file, uniqueFileName, 'application/pdf');
+                    if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
+
+                    if (!window.anexosTemp) window.anexosTemp = {};
+                    if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
+                    window.anexosTemp[memberId].push({ nome: file.name, url: fileUrl, dataUpload: new Date() });
+
+                    const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
+                    if (divAnexos) {
+                        divAnexos.innerHTML = window.anexosTemp[memberId].map((a) => `
+                            <div>📄 ${a.nome} 
+                                <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" 
+                                    style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button>
+                            </div>
+                        `).join('');
+                        document.querySelectorAll('.remover-anexo').forEach(btn => {
+                            btn.onclick = (e) => {
+                                const id = btn.dataset.id;
+                                const url = btn.dataset.url;
+                                window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url);
+                                const div = document.getElementById(`listaAnexos-${id}`);
+                                if (div) div.innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join('');
+                            };
+                        });
+                    }
+                    alert('PDF anexado com sucesso!');
+                } catch (err) {
+                    console.error('Erro no upload:', err);
+                    alert('Erro no upload: ' + err.message);
+                } finally {
+                    document.getElementById('loading').style.display = 'none';
+                }
+            };
+            input.click();
+        };
+
+        window.salvarRitualisticaCompleta = async function() {
             if (!gestaoAtual) { alert('Selecione uma gestão primeiro!'); return; }
             const data = document.getElementById('novaData').value;
             if (!data) return alert('Selecione uma data');
@@ -1425,12 +1155,12 @@
                 await atualizarCardsGerais();
                 if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho();
                 alert('✅ Ritualística salva com sucesso!');
-            } catch (error) { alert('Erro ao salvar: ' + error.message); }
+            } catch(error) { alert('Erro ao salvar: ' + error.message); }
             finally { document.getElementById('loading').style.display = 'none'; }
         }
 
-        // ========== GERENCIAR MEMBROS (COM PROFICIÊNCIA) ==========
-        window.carregarMembros = function (tipo) { carregarMembrosLista(tipo); }
+        // ========== GERENCIAR MEMBROS ==========
+        window.carregarMembros = function(tipo) { carregarMembrosLista(tipo); }
 
         async function carregarMembrosLista(tipo) {
             const container = document.getElementById('listaMembrosGerenciar');
@@ -1447,8 +1177,8 @@
                     const proficienciaHtml = (tipo === 'filhas') ? `<label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="proficiencia-${m.id}" ${m.temProficiencia ? 'checked' : ''}> 📜 Teste de Proficiência</label>` : '';
                     return `<div class="membro-item" style="background: linear-gradient(145deg, rgba(42,27,74,0.9), rgba(26,16,53,0.95)); border-radius: 20px; padding: 15px; border: 1px solid var(--primary);">
                                 <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                                    <input type="text" value="${m.nome || ''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
-                                    <input type="text" value="${m.cargo || ''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
+                                    <input type="text" value="${m.nome||''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
+                                    <input type="text" value="${m.cargo||''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
                                     ${proficienciaHtml}
                                     <div style="display: flex; gap: 8px;">
                                         <button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')">💾</button>
@@ -1461,7 +1191,7 @@
             container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width:100%; margin-top:15px; padding:15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
         }
 
-        window.adicionarMembro = async function (tipo) {
+        window.adicionarMembro = async function(tipo) {
             const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
             const docRef = await db.collection(collection).add({ nome: 'Novo Membro', cargo: 'Novo Cargo', criadoEm: new Date(), criadoPor: usuarioAtual?.email || 'admin@fdji.com', temProficiencia: false });
             await carregarMembrosLista(tipo);
@@ -1469,7 +1199,7 @@
             alert('✅ Membro adicionado! Edite nome e cargo.');
         }
 
-        window.salvarMembro = async function (docId, tipo) {
+        window.salvarMembro = async function(docId, tipo) {
             const nome = document.getElementById(`nome-${docId}`).value;
             const cargo = document.getElementById(`cargo-${docId}`).value;
             const updateData = { nome, cargo };
@@ -1483,7 +1213,7 @@
             alert('✅ Membro salvo!');
         }
 
-        window.deletarMembro = async function (docId, tipo) {
+        window.deletarMembro = async function(docId, tipo) {
             if (!confirm('Deletar este membro?')) return;
             await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).delete();
             await carregarMembrosLista(tipo);
@@ -1492,42 +1222,42 @@
         }
 
         // ========== REGISTROS ==========
-        async function carregarRegistros() { /* igual ao original, compactado */
+        async function carregarRegistros() {
             if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; }
             const gestoesSnapshot = await db.collection('gestoes').get();
             const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-            document.getElementById('abasGestao').innerHTML = gestoes.map(g => `<button class="data-botao ${g.id === gestaoAtual ? 'ativo' : ''}" onclick="selecionarGestaoRegistros('${g.id}')">${g.ano} - ${g.numero}</button>`).join('');
+            document.getElementById('abasGestao').innerHTML = gestoes.map(g => `<button class="data-botao ${g.id===gestaoAtual?'ativo':''}" onclick="selecionarGestaoRegistros('${g.id}')">${g.ano} - ${g.numero}</button>`).join('');
             const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get();
             const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {};
             const container = document.getElementById('listaRegistros');
             if (!Object.keys(rituais).length) { container.innerHTML = '<p>Nenhum registro</p>'; return; }
-            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);"><h3>${data.split('-').reverse().join('/')}</h3><div style="text-align:center;color:var(--gold);">${gestoes.find(g => g.id === gestaoAtual)?.ano || ''} • ${gestoes.find(g => g.id === gestaoAtual)?.rainha?.split(' ')[0] || '---'}</div><div style="display:flex;justify-content:space-around;margin:15px 0;"><div>👑 ${info.filhas?.filter(f => f.presente).length || 0}/${info.filhas?.length || 0}</div><div>⚡ ${info.conselho?.filter(c => c.presente).length || 0}/${info.conselho?.length || 0}</div><div style="color:var(--danger);">❌ ${(info.filhas?.filter(f => !f.presente).length || 0) + (info.conselho?.filter(c => !c.presente).length || 0)}</div></div><div style="display:flex;gap:8px;"><button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button><button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button></div></div>`).join('');
+            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);"><h3>${data.split('-').reverse().join('/')}</h3><div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div><div style="display:flex;justify-content:space-around;margin:15px 0;"><div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div><div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div><div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div></div><div style="display:flex;gap:8px;"><button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button><button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button></div></div>`).join('');
         }
 
-        window.verDetalhesFaltas = async function (data) {
+        window.verDetalhesFaltas = async function(data) {
             const rituais = await getRituaisAtuais();
             const info = rituais[data];
             if (!info) return;
             let html = '<div style="display:grid;gap:20px;">';
-            if (info.filhas?.filter(f => !f.presente).length) {
+            if (info.filhas?.filter(f=>!f.presente).length) {
                 html += '<div><h3>👑 Filhas Ausentes</h3>';
-                info.filhas.filter(f => !f.presente).forEach(f => html += `<div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}"><div><strong>${f.nome}</strong> <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span></div><div>Justificativa: ${f.justificada ? '✅ Sim' : '❌ Não'}</div>${f.anexos?.length ? `<div>Anexos: ${f.anexos.map(a => `<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>` : ''}</div>`);
+                info.filhas.filter(f=>!f.presente).forEach(f => html += `<div class="falta-item ${f.justificada?'justificada':'nao-justificada'}"><div><strong>${f.nome}</strong> <span class="badge ${f.aceita?'aceita':'rejeitada'}">${f.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${f.justificada?'✅ Sim':'❌ Não'}</div>${f.anexos?.length?`<div>Anexos: ${f.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`);
                 html += '</div>';
             }
-            if (info.conselho?.filter(c => !c.presente).length) {
+            if (info.conselho?.filter(c=>!c.presente).length) {
                 html += '<div><h3>⚡ Conselho Ausente</h3>';
-                info.conselho.filter(c => !c.presente).forEach(c => html += `<div class="falta-item ${c.justificada ? 'justificada' : 'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita ? 'aceita' : 'rejeitada'}">${c.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada ? '✅ Sim' : '❌ Não'}</div></div>`);
+                info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div></div>`);
                 html += '</div>';
             }
-            if (!info.filhas?.some(f => !f.presente) && !info.conselho?.some(c => !c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>';
+            if (!info.filhas?.some(f=>!f.presente) && !info.conselho?.some(c=>!c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>';
             html += '</div>';
             document.getElementById('detalhesTitulo').innerHTML = `📅 Faltas - ${data.split('-').reverse().join('/')}`;
             document.getElementById('conteudoDetalhesFaltas').innerHTML = html;
             document.getElementById('modalDetalhesFaltas').style.display = 'block';
         }
 
-        window.selecionarGestaoRegistros = function (gestaoId) { gestaoAtual = gestaoId; carregarRegistros(); carregarGestoes(); }
-        window.deletarRegistro = async function (data) {
+        window.selecionarGestaoRegistros = function(gestaoId) { gestaoAtual = gestaoId; carregarRegistros(); carregarGestoes(); }
+        window.deletarRegistro = async function(data) {
             if (!confirm(`Deletar ${data}?`)) return;
             const rituais = await getRituaisAtuais();
             delete rituais[data];
@@ -1537,7 +1267,7 @@
             if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho();
         }
 
-        window.criarNovaGestao = async function () {
+        window.criarNovaGestao = async function() {
             const ano = document.getElementById('novaGestaoAno').value, numero = document.getElementById('novaGestaoNumero').value, rainha = document.getElementById('novaGestaoRainha').value;
             if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
             const novaGestao = { ano: parseInt(ano), numero, rainha, criadoEm: new Date(), criadoPor: usuarioAtual?.email };
@@ -1551,7 +1281,7 @@
         }
 
         // ========== ALTERNÂNCIA ENTRE PÁGINAS ==========
-        window.mostrarPagina = function (pagina) {
+        window.mostrarPagina = function(pagina) {
             document.getElementById('paginaFilhas').style.display = (pagina === 'filhas') ? 'block' : 'none';
             document.getElementById('paginaConselho').style.display = (pagina === 'conselho') ? 'block' : 'none';
             if (pagina === 'conselho') {
@@ -1564,5 +1294,4 @@
         }
     </script>
 </body>
-
 </html>
