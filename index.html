@@ -1045,7 +1045,7 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-       async function uploadToGoogleDrive(file, fileName, mimeType) {
+async function uploadToGoogleDrive(file, fileName, mimeType) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = async () => {
