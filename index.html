@@ -1045,35 +1045,43 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-        // ---------- FUNÇÕES DE UPLOAD CORRIGIDAS ----------
-        async function uploadToGoogleDrive(file, fileName, mimeType) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const base64Data = reader.result.split(',')[1];
-                    const payload = { fileData: base64Data, fileName, mimeType };
-                    try {
-                        const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
-                            method: 'POST',
-                            mode: 'cors',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                        const result = await response.json();
-                        if (result.success) {
-                            resolve(result.fileUrl);
-                        } else {
-                            throw new Error(result.error || 'Erro desconhecido no upload');
-                        }
-                    } catch (err) {
-                        reject(err);
-                    }
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
+       async function uploadToGoogleDrive(file, fileName, mimeType) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64Data = reader.result.split(',')[1];
+            
+            // 1. Mudança aqui: Usamos URLSearchParams em vez de um objeto JSON puro
+            const payload = new URLSearchParams({
+                fileData: base64Data,
+                fileName: fileName,
+                mimeType: mimeType
             });
-        }
+
+            try {
+                const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
+                    method: 'POST',
+                    // mode: 'cors' pode ser mantido ou removido, mas o padrão 'no-cors' não lerá a resposta.
+                    // 2. Mudança aqui: Alterado para 'application/x-www-form-urlencoded' implicitamente pelo URLSearchParams
+                    body: payload 
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const result = await response.json();
+                if (result.success) {
+                    resolve(result.fileUrl);
+                } else {
+                    throw new Error(result.error || 'Erro desconhecido no upload');
+                }
+            } catch (err) {
+                reject(err);
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
 
         window.uploadAnexo = async function(memberId, memberNome, tipo) {
             const input = document.createElement('input');
