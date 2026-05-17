@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         /* SEU CSS ORIGINAL (COMPLETO) - INCLUINDO A CLASSE .botao-glow */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
@@ -979,7 +978,6 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -1298,34 +1296,104 @@
         }
 
         window.uploadAnexo = async function (memberId, memberNome, tipo) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/pdf';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const dataAtual = document.getElementById('novaData').value;
-                if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
-                try {
-                    const path = `anexos/${gestaoAtual}/${dataAtual}/${memberId}_${Date.now()}.pdf`;
-                    const uploadTask = await storage.ref(path).put(file);
-                    const url = await uploadTask.ref.getDownloadURL();
-                    if (!window.anexosTemp) window.anexosTemp = {};
-                    if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
-                    window.anexosTemp[memberId].push({ nome: file.name, url: url, dataUpload: new Date() });
-                    const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
-                    divAnexos.innerHTML = window.anexosTemp[memberId].map((a, idx) => `<div>📄 ${a.nome} <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button></div>`).join('');
-                    document.querySelectorAll('.remover-anexo').forEach(btn => {
-                        btn.onclick = (e) => {
-                            const id = btn.dataset.id;
-                            const url = btn.dataset.url;
-                            window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url);
-                            document.getElementById(`listaAnexos-${id}`).innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join('');
-                        };
-                    });
-                } catch (err) { alert('Erro no upload: ' + err.message); }
+            // URL do seu Web App do Google Apps Script (substitua pela sua, se mudar)
+            const GOOGLE_DRIVE_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbxW0GnAF5uKwEMWpzpYAUuan49nsL5jxoOf5oEk_KCiuAEF6oGprxTATJIHQMvoi2bVqw/exec';
+
+            // Função auxiliar para enviar o arquivo para o Google Drive
+            async function uploadToGoogleDrive(file, fileName, mimeType) {
+                const reader = new FileReader();
+                return new Promise((resolve, reject) => {
+                    reader.onloadend = async () => {
+                        const base64Data = reader.result.split(',')[1];
+                        const payload = { fileData: base64Data, fileName, mimeType };
+                        try {
+                            const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
+                                method: 'POST',
+                                mode: 'cors',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                            const result = await response.json();
+                            if (result.success) {
+                                resolve(result.fileUrl);
+                            } else {
+                                throw new Error(result.error || 'Erro desconhecido no upload');
+                            }
+                        } catch (err) {
+                            reject(err);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Função principal de anexo (substitua a existente)
+            window.uploadAnexo = async function (memberId, memberNome, tipo) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'application/pdf';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const dataAtual = document.getElementById('novaData').value;
+                    if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
+                    if (!gestaoAtual) { alert('Nenhuma gestão selecionada. Selecione uma gestão.'); return; }
+
+                    try {
+                        document.getElementById('loading').style.display = 'flex';
+
+                        // Nome único para o arquivo (evita conflitos)
+                        const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
+
+                        // Envia para o Google Drive e obtém a URL pública
+                        const fileUrl = await uploadToGoogleDrive(file, uniqueFileName, 'application/pdf');
+                        if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
+
+                        // Guarda nos anexos temporários (para salvar junto com a falta)
+                        if (!window.anexosTemp) window.anexosTemp = {};
+                        if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
+                        window.anexosTemp[memberId].push({
+                            nome: file.name,
+                            url: fileUrl,
+                            dataUpload: new Date()
+                        });
+
+                        // Atualiza a visualização dos anexos no modal
+                        const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
+                        if (divAnexos) {
+                            divAnexos.innerHTML = window.anexosTemp[memberId].map((a, idx) => `
+          <div>📄 ${a.nome} 
+            <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" 
+                    style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button>
+          </div>
+        `).join('');
+
+                            // Reaplica os eventos de remoção
+                            document.querySelectorAll('.remover-anexo').forEach(btn => {
+                                btn.onclick = (e) => {
+                                    const id = btn.dataset.id;
+                                    const url = btn.dataset.url;
+                                    window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url);
+                                    const div = document.getElementById(`listaAnexos-${id}`);
+                                    if (div) {
+                                        div.innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join('');
+                                    }
+                                };
+                            });
+                        }
+
+                        alert('PDF anexado com sucesso!');
+                    } catch (err) {
+                        console.error('Erro no upload:', err);
+                        alert('Erro no upload: ' + err.message);
+                    } finally {
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                };
+                input.click();
             };
-            input.click();
         }
 
         window.salvarRitualisticaCompleta = async function () {
