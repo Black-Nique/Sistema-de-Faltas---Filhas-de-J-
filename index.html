@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        /* ===== SEU CSS ORIGINAL (COMPLETO) - INCLUINDO A CLASSE .botao-glow ===== */
+        /* ===== SEU CSS ORIGINAL (COMPLETO) ===== */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -699,7 +699,7 @@
             </div>
         </div>
 
-        <!-- MODAIS (mantidos idênticos ao original) -->
+        <!-- MODAIS -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header"><h2>✦ NOVA RITUALÍSTICA</h2><button class="fechar" onclick="fecharModal('nova')">✕</button></div>
@@ -739,8 +739,8 @@
         let abaAtual = 'filhas';
         let usuarioAtual = null;
 
-        // ===== URL DO WEB APP DO GOOGLE APPS SCRIPT (ALTERE PARA A SUA) =====
-        const GOOGLE_DRIVE_UPLOAD_URL = 'https://script.google.com/d/1naqDeyNEj35AUc0FUI23v47uYXa3WTRb2-29kS5gS-iIdwhNksVLhW_E/edit?usp=sharing';
+        // ===== NOVA URL DO CLOUDFLARE WORKER (SUBSTITUA PELA SUA) =====
+        const WORKER_URL = 'https://seu-worker.workers.dev'; // <-- COLOQUE A URL DO SEU WORKER AQUI
 
         // ========== VERIFICAR LOGIN ==========
         auth.onAuthStateChanged(async (user) => {
@@ -1045,43 +1045,34 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-async function uploadToGoogleDrive(file, fileName, mimeType) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            const base64Data = reader.result.split(',')[1];
-            
-            // 1. Mudança aqui: Usamos URLSearchParams em vez de um objeto JSON puro
-            const payload = new URLSearchParams({
-                fileData: base64Data,
-                fileName: fileName,
-                mimeType: mimeType
+        // ========== NOVA FUNÇÃO DE UPLOAD USANDO O WORKER ==========
+        async function uploadToWorker(file, fileName, mimeType) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64Data = reader.result.split(',')[1];
+                    const payload = { fileData: base64Data, fileName, mimeType };
+                    try {
+                        const response = await fetch(WORKER_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const result = await response.json();
+                        if (result.success) {
+                            resolve(result.fileUrl);
+                        } else {
+                            throw new Error(result.error || 'Erro desconhecido no upload');
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
             });
-
-            try {
-                const response = await fetch(GOOGLE_DRIVE_UPLOAD_URL, {
-                    method: 'POST',
-                    // mode: 'cors' pode ser mantido ou removido, mas o padrão 'no-cors' não lerá a resposta.
-                    // 2. Mudança aqui: Alterado para 'application/x-www-form-urlencoded' implicitamente pelo URLSearchParams
-                    body: payload 
-                });
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const result = await response.json();
-                if (result.success) {
-                    resolve(result.fileUrl);
-                } else {
-                    throw new Error(result.error || 'Erro desconhecido no upload');
-                }
-            } catch (err) {
-                reject(err);
-            }
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
+        }
 
         window.uploadAnexo = async function(memberId, memberNome, tipo) {
             const input = document.createElement('input');
@@ -1098,7 +1089,7 @@ async function uploadToGoogleDrive(file, fileName, mimeType) {
                 try {
                     document.getElementById('loading').style.display = 'flex';
                     const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
-                    const fileUrl = await uploadToGoogleDrive(file, uniqueFileName, 'application/pdf');
+                    const fileUrl = await uploadToWorker(file, uniqueFileName, 'application/pdf');
                     if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
 
                     if (!window.anexosTemp) window.anexosTemp = {};
