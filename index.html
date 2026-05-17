@@ -1052,7 +1052,6 @@ conforme instruções anteriores. O código já está preparado para usar o `sto
             carregarGestoes();
             atualizarGridFilhas();
             atualizarCardsGerais();
-            setInterval(atualizarDataHoraFooter, 1000);
             document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
             document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', e => { if (e.key === 'Enter') pesquisarFilha(); });
         }
@@ -1508,11 +1507,6 @@ conforme instruções anteriores. O código já está preparado para usar o `sto
                 atualizarGridFilhas();
                 atualizarCardsGerais();
             }
-        }
-
-        function atualizarDataHoraFooter() {
-            const agora = new Date();
-            document.getElementById('dataHoraFooter').innerHTML = `${agora.toLocaleDateString('pt-BR')} • ${agora.toLocaleTimeString('pt-BR')}`;
         }
     </script>
 </body>
