@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>✦ Ordem FDJI - Sistema de Faltas B04✦</title>
+    <title>✦ Ordem FDJI - Sistema de Faltas B04 ✦</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -739,7 +739,7 @@
         let abaAtual = 'filhas';
         let usuarioAtual = null;
 
-        // ===== NOVA URL DO CLOUDFLARE WORKER (SUBSTITUA PELA SUA) =====
+        // ===== NOVA URL DO CLOUDFLARE WORKER =====
         const WORKER_URL = 'https://rapid-river-9d19sistemadefaltaspdffdj.3565dominique.workers.dev/'; 
 
         // ========== VERIFICAR LOGIN ==========
@@ -795,6 +795,7 @@
             atualizarCardsGerais();
             document.getElementById('novaData').value = new Date().toISOString().split('T')[0];
             document.getElementById('pesquisaNomeCompleto').addEventListener('keypress', e => { if (e.key === 'Enter') pesquisarFilha(); });
+            document.getElementById('pesquisaConselho').addEventListener('keypress', e => { if (e.key === 'Enter') pesquisarMembroConselho(); });
         }
 
         // ========== GESTÕES ==========
@@ -859,24 +860,111 @@
             const grid = document.getElementById('gridConselho');
             const icones = ['🛡️','⚔️','🔱','📜','🕊️','🏛️','⚜️','🎖️','⛪','🗡️','🏰','🌿','🍷','📖','🔔'];
             if (!conselho.length) { grid.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Nenhum membro do conselho cadastrado.</div>'; return; }
-            grid.innerHTML = conselho.map((c,i) => `<div class="item-imagem" onclick="pesquisarMembroConselho('${c.nome}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${c.nome||'---'}</div><div class="cargo">${c.cargo||'---'}</div></div>`).join('');
+            grid.innerHTML = conselho.map((c,i) => `<div class="item-imagem" onclick="pesquisarMembroConselho('${c.nome.replace(/'/g, "\\'")}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${c.nome||'---'}</div><div class="cargo">${c.cargo||'---'}</div></div>`).join('');
         }
 
-        window.pesquisarMembroConselho = async function(nomeForcado=null) {
+        // DETALHES COMPLETOS PARA MEMBRO DO CONSELHO (MESMA LÓGICA DAS FILHAS, IGNORANDO ANEXOS)
+        window.pesquisarMembroConselho = async function(nomeForcado = null) {
             let termo = nomeForcado || document.getElementById('pesquisaConselho').value.trim();
             if (!termo) return alert('Digite o nome do membro do conselho');
             const membros = await carregarConselho();
             const encontrado = membros.find(m => m.nome.toLowerCase().includes(termo.toLowerCase()));
             if (!encontrado) return alert('Membro não encontrado');
-            alert(`Faltas de ${encontrado.nome} - implementar em breve`);
-        }
-
-        window.limparPesquisaConselho = function() {
-            document.getElementById('pesquisaConselho').value = '';
+            
+            // esconde grid e cards, mostra resultado
+            document.getElementById('gridConselho').style.display = 'none';
+            document.getElementById('cardsConselho').style.display = 'none';
+            const resultadoDiv = document.getElementById('resultadoPesquisaConselho');
+            resultadoDiv.style.display = 'block';
+            
+            // Buscar todas as gestões e rituais para histórico completo
+            const gestoesSnapshot = await db.collection('gestoes').get();
+            const gestoes = [];
+            gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
+            
+            const rituaisSnapshot = await db.collection('rituais').get();
+            const todasFaltas = [];
+            for (const doc of rituaisSnapshot.docs) {
+                const gestaoId = doc.id;
+                const gestao = gestoes.find(g => g.id === gestaoId);
+                const rituais = doc.data().rituais || {};
+                for (const [data, ritual] of Object.entries(rituais)) {
+                    const faltaMembro = (ritual.conselho || []).find(m => m.nome === encontrado.nome);
+                    if (faltaMembro && !faltaMembro.presente) {
+                        todasFaltas.push({
+                            data,
+                            gestao: gestao ? `${gestao.ano} ${gestao.numero}` : gestaoId,
+                            rainha: gestao ? gestao.rainha : 'Desconhecida',
+                            justificada: faltaMembro.justificada || false,
+                            aceita: faltaMembro.aceita || false
+                        });
+                    }
+                }
+            }
+            todasFaltas.sort((a,b) => b.data.localeCompare(a.data));
+            const totalFaltas = todasFaltas.length;
+            const justificadas = todasFaltas.filter(f => f.justificada).length;
+            const naoJustificadas = totalFaltas - justificadas;
+            const aceitas = todasFaltas.filter(f => f.aceita).length;
+            const rejeitadas = totalFaltas - aceitas;
+            
+            let faltasHTML = '';
+            if (todasFaltas.length) {
+                faltasHTML = todasFaltas.map(f => `
+                    <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
+                        <div style="display:flex;justify-content:space-between">
+                            <span>${f.data.split('-').reverse().join('/')}</span>
+                            <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span>
+                        </div>
+                        <div>${f.gestao} • ${f.rainha.split(' ')[0]}</div>
+                        <div>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</div>
+                    </div>
+                `).join('');
+            } else {
+                faltasHTML = '<p style="color:var(--text-muted);text-align:center;">Nenhuma falta registrada</p>';
+            }
+            
+            const resultadoHTML = `
+                <div class="info-detalhada">
+                    <div style="display:flex;justify-content:space-between;">
+                        <h2>⚡ ${encontrado.nome}</h2>
+                        <button class="botao" onclick="voltarCardsConselho()">← Voltar</button>
+                    </div>
+                    <div style="text-align:center;margin:10px 0;">
+                        <span style="background:rgba(203,166,247,0.2);padding:8px 25px;border-radius:40px;">${encontrado.cargo || '---'}</span>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>📊 ESTATÍSTICAS</h3>
+                            <div class="estatistica-item"><span>Total de Faltas:</span><span>${totalFaltas}</span></div>
+                            <div class="estatistica-item"><span>Justificadas:</span><span style="color:var(--gold);">${justificadas}</span></div>
+                            <div class="estatistica-item"><span>Não Justificadas:</span><span style="color:var(--danger);">${naoJustificadas}</span></div>
+                            <div class="estatistica-item"><span>Aceitas:</span><span style="color:var(--success);">${aceitas}</span></div>
+                            <div class="estatistica-item"><span>Rejeitadas:</span><span style="color:var(--danger);">${rejeitadas}</span></div>
+                        </div>
+                        <div class="info-card">
+                            <h3>📅 HISTÓRICO</h3>
+                            ${faltasHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultadoDiv.innerHTML = resultadoHTML;
+        };
+        
+        window.voltarCardsConselho = function() {
             document.getElementById('resultadoPesquisaConselho').style.display = 'none';
+            document.getElementById('gridConselho').style.display = 'grid';
             document.getElementById('cardsConselho').style.display = 'grid';
-        }
-
+            document.getElementById('pesquisaConselho').value = '';
+            // recarregar cards para manter atualizado
+            atualizarCardsConselho();
+        };
+        
+        window.limparPesquisaConselho = function() {
+            voltarCardsConselho();
+        };
+        
         async function atualizarCardsConselho() {
             if (!gestaoAtual) return;
             const rituais = await getRituaisAtuais();
@@ -961,7 +1049,7 @@
             document.getElementById('cardsGerais').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
-        // ========== MODAIS E NOVA RITUALÍSTICA (COM ANEXOS) ==========
+        // ========== MODAIS E NOVA RITUALÍSTICA (COM ANEXOS) - SEM ALTERAÇÕES ==========
         window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') carregarAmbasAbas();
@@ -1045,7 +1133,6 @@
             btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
         }
 
-        // ========== NOVA FUNÇÃO DE UPLOAD USANDO O WORKER ==========
         async function uploadToWorker(file, fileName, mimeType) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1081,21 +1168,17 @@
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-
                 const dataAtual = document.getElementById('novaData').value;
                 if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
                 if (!gestaoAtual) { alert('Nenhuma gestão selecionada.'); return; }
-
                 try {
                     document.getElementById('loading').style.display = 'flex';
                     const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
                     const fileUrl = await uploadToWorker(file, uniqueFileName, 'application/pdf');
                     if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
-
                     if (!window.anexosTemp) window.anexosTemp = {};
                     if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
                     window.anexosTemp[memberId].push({ nome: file.name, url: fileUrl, dataUpload: new Date() });
-
                     const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
                     if (divAnexos) {
                         divAnexos.innerHTML = window.anexosTemp[memberId].map((a) => `
@@ -1158,7 +1241,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         }
 
-        // ========== GERENCIAR MEMBROS ==========
+        // ========== GERENCIAR MEMBROS (SEM ALTERAÇÕES) ==========
         window.carregarMembros = function(tipo) { carregarMembrosLista(tipo); }
 
         async function carregarMembrosLista(tipo) {
@@ -1220,7 +1303,7 @@
             alert('✅ Membro deletado!');
         }
 
-        // ========== REGISTROS ==========
+        // ========== REGISTROS (SEM ALTERAÇÕES) ==========
         async function carregarRegistros() {
             if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; }
             const gestoesSnapshot = await db.collection('gestoes').get();
@@ -1286,6 +1369,9 @@
             if (pagina === 'conselho') {
                 carregarGridConselho();
                 atualizarCardsConselho();
+                document.getElementById('resultadoPesquisaConselho').style.display = 'none';
+                document.getElementById('gridConselho').style.display = 'grid';
+                document.getElementById('cardsConselho').style.display = 'grid';
             } else {
                 atualizarGridFilhas();
                 atualizarCardsGerais();
