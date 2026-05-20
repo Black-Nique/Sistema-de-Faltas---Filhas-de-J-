@@ -739,7 +739,6 @@
         let abaAtual = 'filhas';
         let usuarioAtual = null;
 
-        // ===== NOVA URL DO CLOUDFLARE WORKER =====
         const WORKER_URL = 'https://rapid-river-9d19sistemadefaltaspdffdj.3565dominique.workers.dev/'; 
 
         // ========== VERIFICAR LOGIN ==========
@@ -863,7 +862,6 @@
             grid.innerHTML = conselho.map((c,i) => `<div class="item-imagem" onclick="pesquisarMembroConselho('${c.nome.replace(/'/g, "\\'")}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${c.nome||'---'}</div><div class="cargo">${c.cargo||'---'}</div></div>`).join('');
         }
 
-        // DETALHES COMPLETOS PARA MEMBRO DO CONSELHO (MESMA LÓGICA DAS FILHAS, IGNORANDO ANEXOS)
         window.pesquisarMembroConselho = async function(nomeForcado = null) {
             let termo = nomeForcado || document.getElementById('pesquisaConselho').value.trim();
             if (!termo) return alert('Digite o nome do membro do conselho');
@@ -871,13 +869,11 @@
             const encontrado = membros.find(m => m.nome.toLowerCase().includes(termo.toLowerCase()));
             if (!encontrado) return alert('Membro não encontrado');
             
-            // esconde grid e cards, mostra resultado
             document.getElementById('gridConselho').style.display = 'none';
             document.getElementById('cardsConselho').style.display = 'none';
             const resultadoDiv = document.getElementById('resultadoPesquisaConselho');
             resultadoDiv.style.display = 'block';
             
-            // Buscar todas as gestões e rituais para histórico completo
             const gestoesSnapshot = await db.collection('gestoes').get();
             const gestoes = [];
             gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
@@ -957,7 +953,6 @@
             document.getElementById('gridConselho').style.display = 'grid';
             document.getElementById('cardsConselho').style.display = 'grid';
             document.getElementById('pesquisaConselho').value = '';
-            // recarregar cards para manter atualizado
             atualizarCardsConselho();
         };
         
@@ -1049,7 +1044,7 @@
             document.getElementById('cardsGerais').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
-        // ========== MODAIS E NOVA RITUALÍSTICA (COM ANEXOS) - SEM ALTERAÇÕES ==========
+        // ========== MODAIS E NOVA RITUALÍSTICA ==========
         window.mostrarModal = function(tipo) {
             document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
             if (tipo === 'nova') carregarAmbasAbas();
@@ -1241,7 +1236,7 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         }
 
-        // ========== GERENCIAR MEMBROS (SEM ALTERAÇÕES) ==========
+        // ========== GERENCIAR MEMBROS ==========
         window.carregarMembros = function(tipo) { carregarMembrosLista(tipo); }
 
         async function carregarMembrosLista(tipo) {
@@ -1303,7 +1298,7 @@
             alert('✅ Membro deletado!');
         }
 
-        // ========== REGISTROS (SEM ALTERAÇÕES) ==========
+        // ========== REGISTROS (COM LINKS DE ANEXOS VISÍVEIS) ==========
         async function carregarRegistros() {
             if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; }
             const gestoesSnapshot = await db.collection('gestoes').get();
@@ -1313,7 +1308,26 @@
             const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {};
             const container = document.getElementById('listaRegistros');
             if (!Object.keys(rituais).length) { container.innerHTML = '<p>Nenhum registro</p>'; return; }
-            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);"><h3>${data.split('-').reverse().join('/')}</h3><div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div><div style="display:flex;justify-content:space-around;margin:15px 0;"><div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div><div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div><div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div></div><div style="display:flex;gap:8px;"><button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button><button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button></div></div>`).join('');
+            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
+                let totalAnexos = 0;
+                (info.filhas || []).forEach(f => { if (!f.presente && f.anexos) totalAnexos += f.anexos.length; });
+                (info.conselho || []).forEach(c => { if (!c.presente && c.anexos) totalAnexos += c.anexos.length; });
+                const anexoBadge = totalAnexos > 0 ? `<div style="font-size:0.7rem; margin-top:5px;">📎 ${totalAnexos} anexo(s)</div>` : '';
+                return `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);">
+                            <h3>${data.split('-').reverse().join('/')}</h3>
+                            <div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div>
+                            <div style="display:flex;justify-content:space-around;margin:15px 0;">
+                                <div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div>
+                                <div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div>
+                                <div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div>
+                            </div>
+                            ${anexoBadge}
+                            <div style="display:flex;gap:8px; margin-top:10px;">
+                                <button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button>
+                                <button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button>
+                            </div>
+                        </div>`;
+            }).join('');
         }
 
         window.verDetalhesFaltas = async function(data) {
@@ -1328,7 +1342,7 @@
             }
             if (info.conselho?.filter(c=>!c.presente).length) {
                 html += '<div><h3>⚡ Conselho Ausente</h3>';
-                info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div></div>`);
+                info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div>${c.anexos?.length?`<div>Anexos: ${c.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`);
                 html += '</div>';
             }
             if (!info.filhas?.some(f=>!f.presente) && !info.conselho?.some(c=>!c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>';
