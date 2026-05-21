@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        /* ===== SEU CSS ORIGINAL (COMPLETO) ===== */
+        /* ===== CSS ORIGINAL (COMPLETO) ===== */
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -626,6 +626,53 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Estilos para o modal de gerenciar gestões */
+        .pesquisa-gestao {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            background: rgba(26,16,53,0.9);
+            border: 1px solid var(--primary);
+            color: white;
+            font-size: 1rem;
+        }
+        .lista-gestoes-modal {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .gestao-row {
+            background: rgba(26,16,53,0.7);
+            border-radius: 30px;
+            padding: 15px;
+            border: 1px solid var(--primary);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .gestao-info-text {
+            flex: 3;
+        }
+        .gestao-acoes {
+            display: flex;
+            gap: 8px;
+        }
+        .chip-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+        .chip-em-andamento { background: #2e7d32; color: white; }
+        .chip-concluida { background: #6c757d; color: white; }
     </style>
 </head>
 <body>
@@ -665,6 +712,7 @@
                 <button class="botao" onclick="mostrarModal('nova')">✦ NOVA</button>
                 <button class="botao" onclick="mostrarModal('membros')">👑 MEMBROS</button>
                 <button class="botao" onclick="mostrarModal('registros')">📜 REGISTROS</button>
+                <button class="botao" onclick="abrirGerenciarGestao()">📋 GESTÕES</button>
                 <button class="botao success" onclick="mostrarModal('novaGestao')">➕ GESTÃO</button>
             </div>
 
@@ -699,7 +747,7 @@
             </div>
         </div>
 
-        <!-- MODAIS -->
+        <!-- MODAIS EXISTENTES -->
         <div id="modalNova" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header"><h2>✦ NOVA RITUALÍSTICA</h2><button class="fechar" onclick="fecharModal('nova')">✕</button></div>
@@ -716,6 +764,29 @@
         <div id="modalMembros" class="modal"><div class="modal-conteudo"><div class="modal-header"><h2>👑 GERENCIAR MEMBROS</h2><button class="fechar" onclick="fecharModal('membros')">✕</button></div><div style="display:flex; gap:10px; margin-bottom:20px;"><button class="botao" onclick="carregarMembros('filhas')" style="flex:1;">FILHAS</button><button class="botao" onclick="carregarMembros('conselho')" style="flex:1;">CONSELHO</button></div><div id="listaMembrosGerenciar"></div></div></div>
         <div id="modalRegistros" class="modal"><div class="modal-conteudo"><div class="modal-header"><h2>📜 REGISTROS</h2><button class="fechar" onclick="fecharModal('registros')">✕</button></div><div class="datas" id="abasGestao" style="justify-content:flex-start;"></div><div id="listaRegistros" class="registros-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:15px; margin-top:20px;"></div></div></div>
         <div id="modalDetalhesFaltas" class="modal"><div class="modal-conteudo" style="max-width:800px;"><div class="modal-header"><h2 id="detalhesTitulo">📅 Detalhes das Faltas</h2><button class="fechar" onclick="fecharModal('detalhesFaltas')">✕</button></div><div id="conteudoDetalhesFaltas" style="max-height:70vh; overflow-y:auto; padding:10px;"></div></div></div>
+
+        <!-- MODAL GERENCIAR GESTÕES (NOVO) -->
+        <div id="modalGerenciarGestao" class="modal">
+            <div class="modal-conteudo">
+                <div class="modal-header"><h2>📋 GERENCIAR GESTÕES</h2><button class="fechar" onclick="fecharModal('gerenciarGestao')">✕</button></div>
+                <input type="text" id="pesquisaGestao" class="pesquisa-gestao" placeholder="🔍 Pesquisar por ano ou número da gestão...">
+                <div id="listaGestoesModal" class="lista-gestoes-modal"></div>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR GESTÃO (NOVO) -->
+        <div id="modalEditarGestao" class="modal">
+            <div class="modal-conteudo" style="max-width:500px;">
+                <div class="modal-header"><h2>✏️ EDITAR GESTÃO</h2><button class="fechar" onclick="fecharModal('editarGestao')">✕</button></div>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <input type="number" id="editGestaoAno" placeholder="Ano" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;">
+                    <input type="text" id="editGestaoNumero" placeholder="Nº Gestão" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;">
+                    <input type="text" id="editGestaoRainha" placeholder="Nome da Rainha" style="background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;">
+                    <label style="display:flex; align-items:center; gap:10px;"><input type="checkbox" id="editGestaoConcluida"> Gestão Concluída</label>
+                    <button class="botao" id="btnSalvarEdicaoGestao">💾 SALVAR ALTERAÇÕES</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="footer"><div class="nome">✦ Sistema de Faltas FDJI ✦ Dominique Black - @dominique_cbb</div><div class="data-hora" id="dataHoraFooter"></div><div class="assinatura">"Vida Antes da Morte"</div></div>
@@ -738,6 +809,7 @@
         let gestaoAtual = null;
         let abaAtual = 'filhas';
         let usuarioAtual = null;
+        let gestaoEditandoId = null;
 
         const WORKER_URL = 'https://rapid-river-9d19sistemadefaltaspdffdj.3565dominique.workers.dev/'; 
 
@@ -797,7 +869,7 @@
             document.getElementById('pesquisaConselho').addEventListener('keypress', e => { if (e.key === 'Enter') pesquisarMembroConselho(); });
         }
 
-        // ========== GESTÕES ==========
+        // ========== GESTÕES (com campo concluida) ==========
         async function carregarGestoes() {
             try {
                 const snapshot = await db.collection('gestoes').orderBy('ano', 'desc').get();
@@ -825,6 +897,114 @@
             atualizarCardsGerais();
             if (document.getElementById('paginaConselho').style.display !== 'none') atualizarCardsConselho();
         }
+
+        // ========== GERENCIAR GESTÕES (NOVO) ==========
+        window.abrirGerenciarGestao = async function() {
+            document.getElementById('modalGerenciarGestao').style.display = 'block';
+            await carregarListaGestaoModal('');
+            document.getElementById('pesquisaGestao').oninput = (e) => carregarListaGestaoModal(e.target.value);
+        };
+
+        async function carregarListaGestaoModal(filtro) {
+            const snapshot = await db.collection('gestoes').orderBy('ano', 'desc').get();
+            let gestoes = [];
+            snapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
+            if (filtro) {
+                const lower = filtro.toLowerCase();
+                gestoes = gestoes.filter(g => g.ano?.toString().includes(lower) || g.numero?.toLowerCase().includes(lower));
+            }
+            const container = document.getElementById('listaGestoesModal');
+            if (!gestoes.length) { container.innerHTML = '<div style="text-align:center;color:var(--text-muted);">Nenhuma gestão encontrada.</div>'; return; }
+            container.innerHTML = gestoes.map(g => `
+                <div class="gestao-row">
+                    <div class="gestao-info-text">
+                        <strong>${g.ano} - ${g.numero}</strong><br>
+                        Rainha: ${g.rainha || '---'}<br>
+                        <span class="chip-status ${g.concluida ? 'chip-concluida' : 'chip-em-andamento'}">${g.concluida ? '✓ Concluída' : '⚡ Em andamento'}</span>
+                    </div>
+                    <div class="gestao-acoes">
+                        ${!g.concluida ? `
+                            <button class="botao" onclick="salvarGestao('${g.id}')" title="Marcar como concluída">💾 Salvar</button>
+                            <button class="botao" onclick="abrirEditarGestao('${g.id}')">✏️ Editar</button>
+                            <button class="botao perigo" onclick="deletarGestao('${g.id}')">🗑️ Deletar</button>
+                        ` : '<span style="color:var(--text-muted);">🔒 Concluída</span>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.salvarGestao = async function(gestaoId) {
+            if (!confirm('Marcar esta gestão como CONCLUÍDA? Essa ação não poderá ser desfeita.')) return;
+            await db.collection('gestoes').doc(gestaoId).update({ concluida: true });
+            await carregarListaGestaoModal(document.getElementById('pesquisaGestao').value);
+            await carregarGestoes();
+            if (gestaoAtual === gestaoId) {
+                const atual = (await db.collection('gestoes').doc(gestaoAtual).get()).data();
+                if (atual.concluida) {
+                    // Se a gestão atual foi concluída, podemos opcionalmente selecionar outra, mas deixamos como está
+                }
+            }
+            alert('Gestão marcada como concluída!');
+        };
+
+        window.abrirEditarGestao = async function(gestaoId) {
+            gestaoEditandoId = gestaoId;
+            const doc = await db.collection('gestoes').doc(gestaoId).get();
+            const data = doc.data();
+            document.getElementById('editGestaoAno').value = data.ano || '';
+            document.getElementById('editGestaoNumero').value = data.numero || '';
+            document.getElementById('editGestaoRainha').value = data.rainha || '';
+            document.getElementById('editGestaoConcluida').checked = data.concluida || false;
+            document.getElementById('modalEditarGestao').style.display = 'block';
+        };
+
+        document.getElementById('btnSalvarEdicaoGestao').onclick = async () => {
+            if (!gestaoEditandoId) return;
+            const ano = parseInt(document.getElementById('editGestaoAno').value);
+            const numero = document.getElementById('editGestaoNumero').value;
+            const rainha = document.getElementById('editGestaoRainha').value;
+            const concluida = document.getElementById('editGestaoConcluida').checked;
+            if (!ano || !numero || !rainha) { alert('Preencha todos os campos'); return; }
+            await db.collection('gestoes').doc(gestaoEditandoId).update({ ano, numero, rainha, concluida });
+            fecharModal('editarGestao');
+            await carregarListaGestaoModal(document.getElementById('pesquisaGestao').value);
+            await carregarGestoes();
+            if (gestaoAtual === gestaoEditandoId) {
+                const atual = (await db.collection('gestoes').doc(gestaoAtual).get()).data();
+                document.getElementById('anoAtual').textContent = atual.ano;
+                document.getElementById('gestaoNumero').textContent = atual.numero;
+                document.getElementById('rainhaAtual').textContent = atual.rainha;
+            }
+            alert('Gestão atualizada!');
+        };
+
+        window.deletarGestao = async function(gestaoId) {
+            const doc = await db.collection('gestoes').doc(gestaoId).get();
+            if (doc.data().concluida) { alert('Gestão concluída não pode ser excluída.'); return; }
+            if (!confirm('Tem certeza que deseja excluir esta gestão? TODOS os registros de faltas serão perdidos permanentemente.')) return;
+            await db.collection('rituais').doc(gestaoId).delete();
+            await db.collection('gestoes').doc(gestaoId).delete();
+            if (gestaoAtual === gestaoId) {
+                const restantes = await db.collection('gestoes').limit(1).get();
+                gestaoAtual = restantes.empty ? null : restantes.docs[0].id;
+            }
+            await carregarListaGestaoModal(document.getElementById('pesquisaGestao').value);
+            await carregarGestoes();
+            alert('Gestão excluída!');
+        };
+
+        window.criarNovaGestao = async function() {
+            const ano = document.getElementById('novaGestaoAno').value, numero = document.getElementById('novaGestaoNumero').value, rainha = document.getElementById('novaGestaoRainha').value;
+            if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
+            const novaGestao = { ano: parseInt(ano), numero, rainha, concluida: false, criadoEm: new Date(), criadoPor: usuarioAtual?.email };
+            const gestaoRef = await db.collection('gestoes').add(novaGestao);
+            await db.collection('rituais').doc(gestaoRef.id).set({ rituais: {} });
+            gestaoAtual = gestaoRef.id;
+            await carregarGestoes();
+            fecharModal('novaGestao');
+            atualizarCardsGerais();
+            alert('Gestão criada!');
+        };
 
         // ========== FILHAS ==========
         async function carregarFilhas() {
@@ -868,16 +1048,12 @@
             const membros = await carregarConselho();
             const encontrado = membros.find(m => m.nome.toLowerCase().includes(termo.toLowerCase()));
             if (!encontrado) return alert('Membro não encontrado');
-            
             document.getElementById('gridConselho').style.display = 'none';
             document.getElementById('cardsConselho').style.display = 'none';
             const resultadoDiv = document.getElementById('resultadoPesquisaConselho');
             resultadoDiv.style.display = 'block';
-            
             const gestoesSnapshot = await db.collection('gestoes').get();
-            const gestoes = [];
-            gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-            
+            const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
             const rituaisSnapshot = await db.collection('rituais').get();
             const todasFaltas = [];
             for (const doc of rituaisSnapshot.docs) {
@@ -887,64 +1063,16 @@
                 for (const [data, ritual] of Object.entries(rituais)) {
                     const faltaMembro = (ritual.conselho || []).find(m => m.nome === encontrado.nome);
                     if (faltaMembro && !faltaMembro.presente) {
-                        todasFaltas.push({
-                            data,
-                            gestao: gestao ? `${gestao.ano} ${gestao.numero}` : gestaoId,
-                            rainha: gestao ? gestao.rainha : 'Desconhecida',
-                            justificada: faltaMembro.justificada || false,
-                            aceita: faltaMembro.aceita || false
-                        });
+                        todasFaltas.push({ data, gestao: gestao ? `${gestao.ano} ${gestao.numero}` : gestaoId, rainha: gestao ? gestao.rainha : 'Desconhecida', justificada: faltaMembro.justificada || false, aceita: faltaMembro.aceita || false });
                     }
                 }
             }
             todasFaltas.sort((a,b) => b.data.localeCompare(a.data));
-            const totalFaltas = todasFaltas.length;
-            const justificadas = todasFaltas.filter(f => f.justificada).length;
-            const naoJustificadas = totalFaltas - justificadas;
-            const aceitas = todasFaltas.filter(f => f.aceita).length;
-            const rejeitadas = totalFaltas - aceitas;
-            
+            const totalFaltas = todasFaltas.length, justificadas = todasFaltas.filter(f => f.justificada).length, naoJustificadas = totalFaltas - justificadas, aceitas = todasFaltas.filter(f => f.aceita).length, rejeitadas = totalFaltas - aceitas;
             let faltasHTML = '';
-            if (todasFaltas.length) {
-                faltasHTML = todasFaltas.map(f => `
-                    <div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}">
-                        <div style="display:flex;justify-content:space-between">
-                            <span>${f.data.split('-').reverse().join('/')}</span>
-                            <span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span>
-                        </div>
-                        <div>${f.gestao} • ${f.rainha.split(' ')[0]}</div>
-                        <div>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</div>
-                    </div>
-                `).join('');
-            } else {
-                faltasHTML = '<p style="color:var(--text-muted);text-align:center;">Nenhuma falta registrada</p>';
-            }
-            
-            const resultadoHTML = `
-                <div class="info-detalhada">
-                    <div style="display:flex;justify-content:space-between;">
-                        <h2>⚡ ${encontrado.nome}</h2>
-                        <button class="botao" onclick="voltarCardsConselho()">← Voltar</button>
-                    </div>
-                    <div style="text-align:center;margin:10px 0;">
-                        <span style="background:rgba(203,166,247,0.2);padding:8px 25px;border-radius:40px;">${encontrado.cargo || '---'}</span>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <h3>📊 ESTATÍSTICAS</h3>
-                            <div class="estatistica-item"><span>Total de Faltas:</span><span>${totalFaltas}</span></div>
-                            <div class="estatistica-item"><span>Justificadas:</span><span style="color:var(--gold);">${justificadas}</span></div>
-                            <div class="estatistica-item"><span>Não Justificadas:</span><span style="color:var(--danger);">${naoJustificadas}</span></div>
-                            <div class="estatistica-item"><span>Aceitas:</span><span style="color:var(--success);">${aceitas}</span></div>
-                            <div class="estatistica-item"><span>Rejeitadas:</span><span style="color:var(--danger);">${rejeitadas}</span></div>
-                        </div>
-                        <div class="info-card">
-                            <h3>📅 HISTÓRICO</h3>
-                            ${faltasHTML}
-                        </div>
-                    </div>
-                </div>
-            `;
+            if (todasFaltas.length) faltasHTML = todasFaltas.map(f => `<div class="falta-item ${f.justificada ? 'justificada' : 'nao-justificada'}"><div style="display:flex;justify-content:space-between"><span>${f.data.split('-').reverse().join('/')}</span><span class="badge ${f.aceita ? 'aceita' : 'rejeitada'}">${f.aceita ? '✓ Aceita' : '✗ Rejeitada'}</span></div><div>${f.gestao} • ${f.rainha.split(' ')[0]}</div><div>${f.justificada ? '📄 Justificada' : '❌ Não Justificada'}</div></div>`).join('');
+            else faltasHTML = '<p style="color:var(--text-muted);text-align:center;">Nenhuma falta registrada</p>';
+            const resultadoHTML = `<div class="info-detalhada"><div style="display:flex;justify-content:space-between;"><h2>⚡ ${encontrado.nome}</h2><button class="botao" onclick="voltarCardsConselho()">← Voltar</button></div><div style="text-align:center;margin:10px 0;"><span style="background:rgba(203,166,247,0.2);padding:8px 25px;border-radius:40px;">${encontrado.cargo || '---'}</span></div><div class="info-grid"><div class="info-card"><h3>📊 ESTATÍSTICAS</h3><div class="estatistica-item"><span>Total de Faltas:</span><span>${totalFaltas}</span></div><div class="estatistica-item"><span>Justificadas:</span><span style="color:var(--gold);">${justificadas}</span></div><div class="estatistica-item"><span>Não Justificadas:</span><span style="color:var(--danger);">${naoJustificadas}</span></div><div class="estatistica-item"><span>Aceitas:</span><span style="color:var(--success);">${aceitas}</span></div><div class="estatistica-item"><span>Rejeitadas:</span><span style="color:var(--danger);">${rejeitadas}</span></div></div><div class="info-card"><h3>📅 HISTÓRICO</h3>${faltasHTML}</div></div></div>`;
             resultadoDiv.innerHTML = resultadoHTML;
         };
         
@@ -956,46 +1084,28 @@
             atualizarCardsConselho();
         };
         
-        window.limparPesquisaConselho = function() {
-            voltarCardsConselho();
-        };
+        window.limparPesquisaConselho = function() { voltarCardsConselho(); };
         
         async function atualizarCardsConselho() {
             if (!gestaoAtual) return;
             const rituais = await getRituaisAtuais();
             let total=0, just=0, naoJust=0, aceitas=0, rejeitadas=0;
-            Object.values(rituais).forEach(data => {
-                (data.conselho || []).forEach(m => {
-                    if (!m.presente) {
-                        total++;
-                        if (m.justificada) just++; else naoJust++;
-                        if (m.aceita) aceitas++; else rejeitadas++;
-                    }
-                });
-            });
+            Object.values(rituais).forEach(data => { (data.conselho || []).forEach(m => { if (!m.presente) { total++; if (m.justificada) just++; else naoJust++; if (m.aceita) aceitas++; else rejeitadas++; } }); });
             document.getElementById('cardsConselho').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
-        // ========== RITUAIS ==========
         async function getRituaisAtuais() {
             if (!gestaoAtual) return {};
-            try {
-                const doc = await db.collection('rituais').doc(gestaoAtual).get();
-                return doc.exists ? doc.data().rituais || {} : {};
-            } catch(e) { return {}; }
+            try { const doc = await db.collection('rituais').doc(gestaoAtual).get(); return doc.exists ? doc.data().rituais || {} : {}; } catch(e) { return {}; }
         }
 
-        // ========== AUXILIARES ==========
         function getPrimeirosDoisNomes(nomeCompleto) {
             if (!nomeCompleto) return '';
             const partes = nomeCompleto.trim().split(' ');
             return partes.slice(0,2).join(' ').toLowerCase();
         }
 
-        window.pesquisarPorDoisNomes = function(doisNomes) {
-            document.getElementById('pesquisaNomeCompleto').value = doisNomes;
-            pesquisarFilha();
-        }
+        window.pesquisarPorDoisNomes = function(doisNomes) { document.getElementById('pesquisaNomeCompleto').value = doisNomes; pesquisarFilha(); }
 
         window.pesquisarFilha = async function() {
             const termoBusca = document.getElementById('pesquisaNomeCompleto').value.trim().toLowerCase();
@@ -1007,8 +1117,7 @@
             document.getElementById('resultadoPesquisa').style.display = 'block';
             const rituaisSnapshot = await db.collection('rituais').get();
             const gestoesSnapshot = await db.collection('gestoes').get();
-            const gestoes = [];
-            gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
+            const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
             const todasFaltas = [];
             rituaisSnapshot.forEach(doc => {
                 const gestao = gestoes.find(g => g.id === doc.id);
@@ -1027,370 +1136,56 @@
             document.getElementById('resultadoPesquisa').innerHTML = resultadoHTML;
         }
 
-        window.voltarCardsGerais = function() {
-            document.getElementById('cardsGerais').style.display = 'grid';
-            document.getElementById('resultadoPesquisa').style.display = 'none';
-            document.getElementById('pesquisaNomeCompleto').value = '';
-        }
+        window.voltarCardsGerais = function() { document.getElementById('cardsGerais').style.display = 'grid'; document.getElementById('resultadoPesquisa').style.display = 'none'; document.getElementById('pesquisaNomeCompleto').value = ''; }
         window.limparPesquisa = function() { voltarCardsGerais(); }
 
         async function atualizarCardsGerais() {
             if (!gestaoAtual) { document.getElementById('cardsGerais').innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Selecione uma gestão</div>'; return; }
             const rituais = await getRituaisAtuais();
             let total=0, just=0, naoJust=0, aceitas=0, rejeitadas=0;
-            Object.values(rituais).forEach(data => {
-                [...(data.filhas||[]),...(data.conselho||[])].forEach(r => { if (!r.presente) { total++; if (r.justificada) just++; else naoJust++; if (r.aceita) aceitas++; else rejeitadas++; } });
-            });
+            Object.values(rituais).forEach(data => { [...(data.filhas||[]),...(data.conselho||[])].forEach(r => { if (!r.presente) { total++; if (r.justificada) just++; else naoJust++; if (r.aceita) aceitas++; else rejeitadas++; } }); });
             document.getElementById('cardsGerais').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
-        // ========== MODAIS E NOVA RITUALÍSTICA ==========
-        window.mostrarModal = function(tipo) {
-            document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block';
-            if (tipo === 'nova') carregarAmbasAbas();
-            if (tipo === 'membros') carregarMembros('filhas');
-            if (tipo === 'registros') carregarRegistros();
-        }
+        // ========== MODAIS E NOVA RITUALÍSTICA (mantido original) ==========
+        window.mostrarModal = function(tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block'; if (tipo === 'nova') carregarAmbasAbas(); if (tipo === 'membros') carregarMembros('filhas'); if (tipo === 'registros') carregarRegistros(); }
         window.fecharModal = function(tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none'; }
-        window.mudarAba = function(aba) {
-            abaAtual = aba;
-            document.getElementById('abaFilhasBtn').style.opacity = aba==='filhas'?'1':'0.7';
-            document.getElementById('abaConselhoBtn').style.opacity = aba==='conselho'?'1':'0.7';
-            document.getElementById('containerFilhas').style.display = aba==='filhas'?'block':'none';
-            document.getElementById('containerConselho').style.display = aba==='conselho'?'block':'none';
-        }
-        window.carregarAmbasAbas = function() {
-            carregarMembrosModal('filhas', 'containerFilhas');
-            carregarMembrosModal('conselho', 'containerConselho');
-            atualizarProgresso();
-        }
+        window.mudarAba = function(aba) { abaAtual = aba; document.getElementById('abaFilhasBtn').style.opacity = aba==='filhas'?'1':'0.7'; document.getElementById('abaConselhoBtn').style.opacity = aba==='conselho'?'1':'0.7'; document.getElementById('containerFilhas').style.display = aba==='filhas'?'block':'none'; document.getElementById('containerConselho').style.display = aba==='conselho'?'block':'none'; }
+        window.carregarAmbasAbas = function() { carregarMembrosModal('filhas', 'containerFilhas'); carregarMembrosModal('conselho', 'containerConselho'); atualizarProgresso(); }
 
         async function carregarMembrosModal(tipo, containerId) {
             const lista = tipo === 'filhas' ? await carregarFilhas() : await carregarConselho();
             const container = document.getElementById(containerId);
             if (!lista.length) { container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`; return; }
-            container.innerHTML = lista.map(m => {
-                const id = (m.nome || 'membro').replace(/\s/g, '') + tipo;
-                return `<div class="membro-item" data-nome="${m.nome||''}" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;">
-                            <div><strong>${m.nome||'---'}</strong> - ${m.cargo||'---'}</div>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
-                                <select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                                    <option value="presente">✓ Presente</option>
-                                    <option value="ausente">✗ Ausente</option>
-                                </select>
-                                <select id="just-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                                    <option value="nao">Não Just.</option>
-                                    <option value="sim">Just.</option>
-                                </select>
-                                <select id="aceite-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;">
-                                    <option value="nao">Rej.</option>
-                                    <option value="sim">Aceita</option>
-                                </select>
-                                <button type="button" class="botao anexar-pdf" data-id="${id}" data-nome="${m.nome}" data-tipo="${tipo}" style="padding: 4px 12px; font-size: 0.7rem;" disabled>📎 Anexar</button>
-                            </div>
-                            <div id="listaAnexos-${id}" style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);"></div>
-                        </div>`;
-            }).join('');
-            container.querySelectorAll('.anexar-pdf').forEach(btn => {
-                btn.onclick = () => uploadAnexo(btn.dataset.id, btn.dataset.nome, btn.dataset.tipo);
-            });
+            container.innerHTML = lista.map(m => { const id = (m.nome || 'membro').replace(/\s/g, '') + tipo; return `<div class="membro-item" data-nome="${m.nome||''}" style="background: rgba(26,16,53,0.8); border-radius: 20px; padding: 15px; margin-bottom: 10px;"><div><strong>${m.nome||'---'}</strong> - ${m.cargo||'---'}</div><div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;"><select id="pres-${id}" onchange="mudarPresencaModal('${id}', '${tipo}')" style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;"><option value="presente">✓ Presente</option><option value="ausente">✗ Ausente</option></select><select id="just-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;"><option value="nao">Não Just.</option><option value="sim">Just.</option></select><select id="aceite-${id}" disabled style="background: rgba(26,16,53,0.9); border: 1px solid var(--primary); border-radius: 15px; padding: 8px; color: white;"><option value="nao">Rej.</option><option value="sim">Aceita</option></select><button type="button" class="botao anexar-pdf" data-id="${id}" data-nome="${m.nome}" data-tipo="${tipo}" style="padding: 4px 12px; font-size: 0.7rem;" disabled>📎 Anexar</button></div><div id="listaAnexos-${id}" style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted);"></div></div>`; }).join('');
+            container.querySelectorAll('.anexar-pdf').forEach(btn => { btn.onclick = () => uploadAnexo(btn.dataset.id, btn.dataset.nome, btn.dataset.tipo); });
         }
 
-        window.mudarPresencaModal = function(id, tipo) {
-            const pres = document.getElementById(`pres-${id}`).value;
-            document.getElementById(`just-${id}`).disabled = (pres === 'presente');
-            document.getElementById(`aceite-${id}`).disabled = (pres === 'presente');
-            const anexoBtn = document.querySelector(`.anexar-pdf[data-id="${id}"]`);
-            if (anexoBtn) anexoBtn.disabled = (pres === 'presente');
-            atualizarProgresso();
-        }
+        window.mudarPresencaModal = function(id, tipo) { const pres = document.getElementById(`pres-${id}`).value; document.getElementById(`just-${id}`).disabled = (pres === 'presente'); document.getElementById(`aceite-${id}`).disabled = (pres === 'presente'); const anexoBtn = document.querySelector(`.anexar-pdf[data-id="${id}"]`); if (anexoBtn) anexoBtn.disabled = (pres === 'presente'); atualizarProgresso(); }
+        window.marcarTodosAtual = function(status) { const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho'; document.querySelectorAll(`#${container} select[id^="pres-"]`).forEach(s => { s.value = status; mudarPresencaModal(s.id.replace('pres-', ''), abaAtual); }); }
+        function atualizarProgresso() { ['filhas','conselho'].forEach(tipo => { const selects = document.querySelectorAll(`#container${tipo.charAt(0).toUpperCase() + tipo.slice(1)} select[id^="pres-"]`); const total = selects.length; const marcados = Array.from(selects).filter(s => s.value === 'presente' || s.value === 'ausente').length; const el = document.getElementById(`progresso${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`); if (el) el.innerHTML = marcados === total ? `✅ ${tipo}: ${marcados}/${total}` : `⏳ ${tipo}: ${marcados}/${total}`; }); const btnSalvar = document.getElementById('botaoSalvar'); const filhasOk = document.querySelectorAll('#containerFilhas select[id^="pres-"]').length === Array.from(document.querySelectorAll('#containerFilhas select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length; const conselhoOk = document.querySelectorAll('#containerConselho select[id^="pres-"]').length === Array.from(document.querySelectorAll('#containerConselho select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length; btnSalvar.disabled = !(filhasOk && conselhoOk); btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1'; }
 
-        window.marcarTodosAtual = function(status) {
-            const container = abaAtual === 'filhas' ? 'containerFilhas' : 'containerConselho';
-            document.querySelectorAll(`#${container} select[id^="pres-"]`).forEach(s => {
-                s.value = status;
-                mudarPresencaModal(s.id.replace('pres-', ''), abaAtual);
-            });
-        }
+        async function uploadToWorker(file, fileName, mimeType) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = async () => { const base64Data = reader.result.split(',')[1]; const payload = { fileData: base64Data, fileName, mimeType }; try { const response = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); const result = await response.json(); if (result.success) { resolve(result.fileUrl); } else { throw new Error(result.error || 'Erro desconhecido no upload'); } } catch (err) { reject(err); } }; reader.onerror = reject; reader.readAsDataURL(file); }); }
 
-        function atualizarProgresso() {
-            ['filhas','conselho'].forEach(tipo => {
-                const selects = document.querySelectorAll(`#container${tipo.charAt(0).toUpperCase() + tipo.slice(1)} select[id^="pres-"]`);
-                const total = selects.length;
-                const marcados = Array.from(selects).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-                const el = document.getElementById(`progresso${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
-                if (el) el.innerHTML = marcados === total ? `✅ ${tipo}: ${marcados}/${total}` : `⏳ ${tipo}: ${marcados}/${total}`;
-            });
-            const btnSalvar = document.getElementById('botaoSalvar');
-            const filhasOk = document.querySelectorAll('#containerFilhas select[id^="pres-"]').length === Array.from(document.querySelectorAll('#containerFilhas select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-            const conselhoOk = document.querySelectorAll('#containerConselho select[id^="pres-"]').length === Array.from(document.querySelectorAll('#containerConselho select[id^="pres-"]')).filter(s => s.value === 'presente' || s.value === 'ausente').length;
-            btnSalvar.disabled = !(filhasOk && conselhoOk);
-            btnSalvar.style.opacity = btnSalvar.disabled ? '0.5' : '1';
-        }
+        window.uploadAnexo = async function(memberId, memberNome, tipo) { const input = document.createElement('input'); input.type = 'file'; input.accept = 'application/pdf'; input.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; const dataAtual = document.getElementById('novaData').value; if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; } if (!gestaoAtual) { alert('Nenhuma gestão selecionada.'); return; } try { document.getElementById('loading').style.display = 'flex'; const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`; const fileUrl = await uploadToWorker(file, uniqueFileName, 'application/pdf'); if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL'); if (!window.anexosTemp) window.anexosTemp = {}; if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = []; window.anexosTemp[memberId].push({ nome: file.name, url: fileUrl, dataUpload: new Date() }); const divAnexos = document.getElementById(`listaAnexos-${memberId}`); if (divAnexos) { divAnexos.innerHTML = window.anexosTemp[memberId].map((a) => `<div>📄 ${a.nome} <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button></div>`).join(''); document.querySelectorAll('.remover-anexo').forEach(btn => { btn.onclick = (e) => { const id = btn.dataset.id; const url = btn.dataset.url; window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url); const div = document.getElementById(`listaAnexos-${id}`); if (div) div.innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join(''); }; }); } alert('PDF anexado com sucesso!'); } catch (err) { console.error('Erro no upload:', err); alert('Erro no upload: ' + err.message); } finally { document.getElementById('loading').style.display = 'none'; } }; input.click(); };
 
-        async function uploadToWorker(file, fileName, mimeType) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const base64Data = reader.result.split(',')[1];
-                    const payload = { fileData: base64Data, fileName, mimeType };
-                    try {
-                        const response = await fetch(WORKER_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        const result = await response.json();
-                        if (result.success) {
-                            resolve(result.fileUrl);
-                        } else {
-                            throw new Error(result.error || 'Erro desconhecido no upload');
-                        }
-                    } catch (err) {
-                        reject(err);
-                    }
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        window.uploadAnexo = async function(memberId, memberNome, tipo) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/pdf';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const dataAtual = document.getElementById('novaData').value;
-                if (!dataAtual) { alert('Selecione uma data antes de anexar o PDF'); return; }
-                if (!gestaoAtual) { alert('Nenhuma gestão selecionada.'); return; }
-                try {
-                    document.getElementById('loading').style.display = 'flex';
-                    const uniqueFileName = `${gestaoAtual}_${dataAtual}_${memberId}_${Date.now()}.pdf`;
-                    const fileUrl = await uploadToWorker(file, uniqueFileName, 'application/pdf');
-                    if (!fileUrl) throw new Error('Upload falhou, não foi possível obter a URL');
-                    if (!window.anexosTemp) window.anexosTemp = {};
-                    if (!window.anexosTemp[memberId]) window.anexosTemp[memberId] = [];
-                    window.anexosTemp[memberId].push({ nome: file.name, url: fileUrl, dataUpload: new Date() });
-                    const divAnexos = document.getElementById(`listaAnexos-${memberId}`);
-                    if (divAnexos) {
-                        divAnexos.innerHTML = window.anexosTemp[memberId].map((a) => `
-                            <div>📄 ${a.nome} 
-                                <button class="remover-anexo" data-id="${memberId}" data-url="${a.url}" 
-                                    style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button>
-                            </div>
-                        `).join('');
-                        document.querySelectorAll('.remover-anexo').forEach(btn => {
-                            btn.onclick = (e) => {
-                                const id = btn.dataset.id;
-                                const url = btn.dataset.url;
-                                window.anexosTemp[id] = window.anexosTemp[id].filter(a => a.url !== url);
-                                const div = document.getElementById(`listaAnexos-${id}`);
-                                if (div) div.innerHTML = window.anexosTemp[id].map(a => `📄 ${a.nome} <button ...>✖</button>`).join('');
-                            };
-                        });
-                    }
-                    alert('PDF anexado com sucesso!');
-                } catch (err) {
-                    console.error('Erro no upload:', err);
-                    alert('Erro no upload: ' + err.message);
-                } finally {
-                    document.getElementById('loading').style.display = 'none';
-                }
-            };
-            input.click();
-        };
-
-        window.salvarRitualisticaCompleta = async function() {
-            if (!gestaoAtual) { alert('Selecione uma gestão primeiro!'); return; }
-            const data = document.getElementById('novaData').value;
-            if (!data) return alert('Selecione uma data');
-            try {
-                document.getElementById('loading').style.display = 'flex';
-                const rituais = await getRituaisAtuais();
-                rituais[data] = {
-                    filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => {
-                        const nome = item.dataset.nome;
-                        const id = (nome || 'membro').replace(/\s/g, '') + 'filhas';
-                        const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
-                        const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : [];
-                        return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos };
-                    }),
-                    conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => {
-                        const nome = item.dataset.nome;
-                        const id = (nome || 'membro').replace(/\s/g, '') + 'conselho';
-                        const presente = document.getElementById(`pres-${id}`)?.value === 'presente';
-                        const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : [];
-                        return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos };
-                    })
-                };
-                await db.collection('rituais').doc(gestaoAtual).set({ rituais });
-                window.anexosTemp = {};
-                fecharModal('nova');
-                await atualizarCardsGerais();
-                if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho();
-                alert('✅ Ritualística salva com sucesso!');
-            } catch(error) { alert('Erro ao salvar: ' + error.message); }
-            finally { document.getElementById('loading').style.display = 'none'; }
-        }
+        window.salvarRitualisticaCompleta = async function() { if (!gestaoAtual) { alert('Selecione uma gestão primeiro!'); return; } const data = document.getElementById('novaData').value; if (!data) return alert('Selecione uma data'); try { document.getElementById('loading').style.display = 'flex'; const rituais = await getRituaisAtuais(); rituais[data] = { filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => { const nome = item.dataset.nome; const id = (nome || 'membro').replace(/\s/g, '') + 'filhas'; const presente = document.getElementById(`pres-${id}`)?.value === 'presente'; const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : []; return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos }; }), conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => { const nome = item.dataset.nome; const id = (nome || 'membro').replace(/\s/g, '') + 'conselho'; const presente = document.getElementById(`pres-${id}`)?.value === 'presente'; const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : []; return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos }; }) }; await db.collection('rituais').doc(gestaoAtual).set({ rituais }); window.anexosTemp = {}; fecharModal('nova'); await atualizarCardsGerais(); if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho(); alert('✅ Ritualística salva com sucesso!'); } catch(error) { alert('Erro ao salvar: ' + error.message); } finally { document.getElementById('loading').style.display = 'none'; } }
 
         // ========== GERENCIAR MEMBROS ==========
         window.carregarMembros = function(tipo) { carregarMembrosLista(tipo); }
+        async function carregarMembrosLista(tipo) { const collection = tipo === 'filhas' ? 'filhas' : 'conselho'; const snapshot = await db.collection(collection).orderBy('criadoEm', 'asc').get(); const lista = []; snapshot.forEach(doc => lista.push({ id: doc.id, ...doc.data() })); const container = document.getElementById('listaMembrosGerenciar'); if (!lista.length) { container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`; return; } container.innerHTML = lista.map(m => { const proficienciaHtml = (tipo === 'filhas') ? `<label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="proficiencia-${m.id}" ${m.temProficiencia ? 'checked' : ''}> 📜 Teste de Proficiência</label>` : ''; return `<div class="membro-item" style="background: linear-gradient(145deg, rgba(42,27,74,0.9), rgba(26,16,53,0.95)); border-radius: 20px; padding: 15px; border: 1px solid var(--primary);"><div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;"><input type="text" value="${m.nome||''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;"><input type="text" value="${m.cargo||''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">${proficienciaHtml}<div style="display: flex; gap: 8px;"><button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')">💾</button><button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')">🗑️</button></div></div></div>`; }).join(''); container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width:100%; margin-top:15px; padding:15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`; }
+        window.adicionarMembro = async function(tipo) { const collection = tipo === 'filhas' ? 'filhas' : 'conselho'; await db.collection(collection).add({ nome: 'Novo Membro', cargo: 'Novo Cargo', criadoEm: new Date(), criadoPor: usuarioAtual?.email || 'admin@fdji.com', temProficiencia: false }); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro adicionado! Edite nome e cargo.'); }
+        window.salvarMembro = async function(docId, tipo) { const nome = document.getElementById(`nome-${docId}`).value; const cargo = document.getElementById(`cargo-${docId}`).value; const updateData = { nome, cargo }; if (tipo === 'filhas') { const cb = document.getElementById(`proficiencia-${docId}`); if (cb) updateData.temProficiencia = cb.checked; } await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).update(updateData); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro salvo!'); }
+        window.deletarMembro = async function(docId, tipo) { if (!confirm('Deletar este membro?')) return; await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).delete(); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro deletado!'); }
 
-        async function carregarMembrosLista(tipo) {
-            const container = document.getElementById('listaMembrosGerenciar');
-            container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>';
-            container.style.cssText = 'display: flex; flex-direction: column; gap: 12px;';
-            const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
-            const snapshot = await db.collection(collection).orderBy('criadoEm', 'asc').get();
-            const lista = [];
-            snapshot.forEach(doc => lista.push({ id: doc.id, ...doc.data() }));
-            if (!lista.length) {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`;
-            } else {
-                container.innerHTML = lista.map(m => {
-                    const proficienciaHtml = (tipo === 'filhas') ? `<label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="proficiencia-${m.id}" ${m.temProficiencia ? 'checked' : ''}> 📜 Teste de Proficiência</label>` : '';
-                    return `<div class="membro-item" style="background: linear-gradient(145deg, rgba(42,27,74,0.9), rgba(26,16,53,0.95)); border-radius: 20px; padding: 15px; border: 1px solid var(--primary);">
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                                    <input type="text" value="${m.nome||''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
-                                    <input type="text" value="${m.cargo||''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">
-                                    ${proficienciaHtml}
-                                    <div style="display: flex; gap: 8px;">
-                                        <button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')">💾</button>
-                                        <button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')">🗑️</button>
-                                    </div>
-                                </div>
-                            </div>`;
-                }).join('');
-            }
-            container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width:100%; margin-top:15px; padding:15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`;
-        }
-
-        window.adicionarMembro = async function(tipo) {
-            const collection = tipo === 'filhas' ? 'filhas' : 'conselho';
-            const docRef = await db.collection(collection).add({ nome: 'Novo Membro', cargo: 'Novo Cargo', criadoEm: new Date(), criadoPor: usuarioAtual?.email || 'admin@fdji.com', temProficiencia: false });
-            await carregarMembrosLista(tipo);
-            if (tipo === 'filhas') await atualizarGridFilhas();
-            alert('✅ Membro adicionado! Edite nome e cargo.');
-        }
-
-        window.salvarMembro = async function(docId, tipo) {
-            const nome = document.getElementById(`nome-${docId}`).value;
-            const cargo = document.getElementById(`cargo-${docId}`).value;
-            const updateData = { nome, cargo };
-            if (tipo === 'filhas') {
-                const cb = document.getElementById(`proficiencia-${docId}`);
-                if (cb) updateData.temProficiencia = cb.checked;
-            }
-            await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).update(updateData);
-            await carregarMembrosLista(tipo);
-            if (tipo === 'filhas') await atualizarGridFilhas();
-            alert('✅ Membro salvo!');
-        }
-
-        window.deletarMembro = async function(docId, tipo) {
-            if (!confirm('Deletar este membro?')) return;
-            await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).delete();
-            await carregarMembrosLista(tipo);
-            if (tipo === 'filhas') await atualizarGridFilhas();
-            alert('✅ Membro deletado!');
-        }
-
-        // ========== REGISTROS (COM LINKS DE ANEXOS VISÍVEIS) ==========
-        async function carregarRegistros() {
-            if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; }
-            const gestoesSnapshot = await db.collection('gestoes').get();
-            const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() }));
-            document.getElementById('abasGestao').innerHTML = gestoes.map(g => `<button class="data-botao ${g.id===gestaoAtual?'ativo':''}" onclick="selecionarGestaoRegistros('${g.id}')">${g.ano} - ${g.numero}</button>`).join('');
-            const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get();
-            const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {};
-            const container = document.getElementById('listaRegistros');
-            if (!Object.keys(rituais).length) { container.innerHTML = '<p>Nenhum registro</p>'; return; }
-            container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => {
-                let totalAnexos = 0;
-                (info.filhas || []).forEach(f => { if (!f.presente && f.anexos) totalAnexos += f.anexos.length; });
-                (info.conselho || []).forEach(c => { if (!c.presente && c.anexos) totalAnexos += c.anexos.length; });
-                const anexoBadge = totalAnexos > 0 ? `<div style="font-size:0.7rem; margin-top:5px;">📎 ${totalAnexos} anexo(s)</div>` : '';
-                return `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);">
-                            <h3>${data.split('-').reverse().join('/')}</h3>
-                            <div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div>
-                            <div style="display:flex;justify-content:space-around;margin:15px 0;">
-                                <div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div>
-                                <div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div>
-                                <div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div>
-                            </div>
-                            ${anexoBadge}
-                            <div style="display:flex;gap:8px; margin-top:10px;">
-                                <button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button>
-                                <button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button>
-                            </div>
-                        </div>`;
-            }).join('');
-        }
-
-        window.verDetalhesFaltas = async function(data) {
-            const rituais = await getRituaisAtuais();
-            const info = rituais[data];
-            if (!info) return;
-            let html = '<div style="display:grid;gap:20px;">';
-            if (info.filhas?.filter(f=>!f.presente).length) {
-                html += '<div><h3>👑 Filhas Ausentes</h3>';
-                info.filhas.filter(f=>!f.presente).forEach(f => html += `<div class="falta-item ${f.justificada?'justificada':'nao-justificada'}"><div><strong>${f.nome}</strong> <span class="badge ${f.aceita?'aceita':'rejeitada'}">${f.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${f.justificada?'✅ Sim':'❌ Não'}</div>${f.anexos?.length?`<div>Anexos: ${f.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`);
-                html += '</div>';
-            }
-            if (info.conselho?.filter(c=>!c.presente).length) {
-                html += '<div><h3>⚡ Conselho Ausente</h3>';
-                info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div>${c.anexos?.length?`<div>Anexos: ${c.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`);
-                html += '</div>';
-            }
-            if (!info.filhas?.some(f=>!f.presente) && !info.conselho?.some(c=>!c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>';
-            html += '</div>';
-            document.getElementById('detalhesTitulo').innerHTML = `📅 Faltas - ${data.split('-').reverse().join('/')}`;
-            document.getElementById('conteudoDetalhesFaltas').innerHTML = html;
-            document.getElementById('modalDetalhesFaltas').style.display = 'block';
-        }
-
+        // ========== REGISTROS ==========
+        async function carregarRegistros() { if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; } const gestoesSnapshot = await db.collection('gestoes').get(); const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() })); document.getElementById('abasGestao').innerHTML = gestoes.map(g => `<button class="data-botao ${g.id===gestaoAtual?'ativo':''}" onclick="selecionarGestaoRegistros('${g.id}')">${g.ano} - ${g.numero}</button>`).join(''); const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get(); const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {}; const container = document.getElementById('listaRegistros'); if (!Object.keys(rituais).length) { container.innerHTML = '<p>Nenhum registro</p>'; return; } container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => { let totalAnexos = 0; (info.filhas || []).forEach(f => { if (!f.presente && f.anexos) totalAnexos += f.anexos.length; }); (info.conselho || []).forEach(c => { if (!c.presente && c.anexos) totalAnexos += c.anexos.length; }); const anexoBadge = totalAnexos > 0 ? `<div style="font-size:0.7rem; margin-top:5px;">📎 ${totalAnexos} anexo(s)</div>` : ''; return `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);"><h3>${data.split('-').reverse().join('/')}</h3><div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div><div style="display:flex;justify-content:space-around;margin:15px 0;"><div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div><div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div><div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div></div>${anexoBadge}<div style="display:flex;gap:8px; margin-top:10px;"><button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button><button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button></div></div>`; }).join(''); }
+        window.verDetalhesFaltas = async function(data) { const rituais = await getRituaisAtuais(); const info = rituais[data]; if (!info) return; let html = '<div style="display:grid;gap:20px;">'; if (info.filhas?.filter(f=>!f.presente).length) { html += '<div><h3>👑 Filhas Ausentes</h3>'; info.filhas.filter(f=>!f.presente).forEach(f => html += `<div class="falta-item ${f.justificada?'justificada':'nao-justificada'}"><div><strong>${f.nome}</strong> <span class="badge ${f.aceita?'aceita':'rejeitada'}">${f.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${f.justificada?'✅ Sim':'❌ Não'}</div>${f.anexos?.length?`<div>Anexos: ${f.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`); html += '</div>'; } if (info.conselho?.filter(c=>!c.presente).length) { html += '<div><h3>⚡ Conselho Ausente</h3>'; info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div>${c.anexos?.length?`<div>Anexos: ${c.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`); html += '</div>'; } if (!info.filhas?.some(f=>!f.presente) && !info.conselho?.some(c=>!c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>'; html += '</div>'; document.getElementById('detalhesTitulo').innerHTML = `📅 Faltas - ${data.split('-').reverse().join('/')}`; document.getElementById('conteudoDetalhesFaltas').innerHTML = html; document.getElementById('modalDetalhesFaltas').style.display = 'block'; }
         window.selecionarGestaoRegistros = function(gestaoId) { gestaoAtual = gestaoId; carregarRegistros(); carregarGestoes(); }
-        window.deletarRegistro = async function(data) {
-            if (!confirm(`Deletar ${data}?`)) return;
-            const rituais = await getRituaisAtuais();
-            delete rituais[data];
-            await db.collection('rituais').doc(gestaoAtual).set({ rituais });
-            await carregarRegistros();
-            await atualizarCardsGerais();
-            if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho();
-        }
-
-        window.criarNovaGestao = async function() {
-            const ano = document.getElementById('novaGestaoAno').value, numero = document.getElementById('novaGestaoNumero').value, rainha = document.getElementById('novaGestaoRainha').value;
-            if (!ano || !numero || !rainha) return alert('Preencha todos os campos');
-            const novaGestao = { ano: parseInt(ano), numero, rainha, criadoEm: new Date(), criadoPor: usuarioAtual?.email };
-            const gestaoRef = await db.collection('gestoes').add(novaGestao);
-            await db.collection('rituais').doc(gestaoRef.id).set({ rituais: {} });
-            gestaoAtual = gestaoRef.id;
-            await carregarGestoes();
-            fecharModal('novaGestao');
-            atualizarCardsGerais();
-            alert('Gestão criada!');
-        }
+        window.deletarRegistro = async function(data) { if (!confirm(`Deletar ${data}?`)) return; const rituais = await getRituaisAtuais(); delete rituais[data]; await db.collection('rituais').doc(gestaoAtual).set({ rituais }); await carregarRegistros(); await atualizarCardsGerais(); if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho(); }
 
         // ========== ALTERNÂNCIA ENTRE PÁGINAS ==========
-        window.mostrarPagina = function(pagina) {
-            document.getElementById('paginaFilhas').style.display = (pagina === 'filhas') ? 'block' : 'none';
-            document.getElementById('paginaConselho').style.display = (pagina === 'conselho') ? 'block' : 'none';
-            if (pagina === 'conselho') {
-                carregarGridConselho();
-                atualizarCardsConselho();
-                document.getElementById('resultadoPesquisaConselho').style.display = 'none';
-                document.getElementById('gridConselho').style.display = 'grid';
-                document.getElementById('cardsConselho').style.display = 'grid';
-            } else {
-                atualizarGridFilhas();
-                atualizarCardsGerais();
-            }
-        }
+        window.mostrarPagina = function(pagina) { document.getElementById('paginaFilhas').style.display = (pagina === 'filhas') ? 'block' : 'none'; document.getElementById('paginaConselho').style.display = (pagina === 'conselho') ? 'block' : 'none'; if (pagina === 'conselho') { carregarGridConselho(); atualizarCardsConselho(); document.getElementById('resultadoPesquisaConselho').style.display = 'none'; document.getElementById('gridConselho').style.display = 'grid'; document.getElementById('cardsConselho').style.display = 'grid'; } else { atualizarGridFilhas(); atualizarCardsGerais(); } }
     </script>
 </body>
 </html>
