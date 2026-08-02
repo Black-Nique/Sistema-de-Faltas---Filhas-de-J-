@@ -679,7 +679,6 @@
     <div id="statusConexao" class="status-conexao status-online">🟢 Conectado</div>
     <div id="loading" class="loading" style="display: none;"><div class="loading-spinner"></div></div>
 
-    <!-- TELA DE LOGIN -->
     <div id="telaLogin" class="login-container">
         <div class="login-card">
             <h1>✦ ACESSO ✦</h1>
@@ -687,15 +686,14 @@
             <div class="input-group"><label>USUÁRIO (email)</label><input type="email" id="usuario" placeholder="Digite seu email"></div>
             <div class="input-group"><label>SENHA</label><input type="password" id="senha" placeholder="Digite sua senha"></div>
             <button class="login-btn" onclick="fazerLogin()">ENTRAR</button>
-            <a href="#" class="forgot-password" onclick="recuperarSenha()">Esqueceu a senha?</a>
         </div>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    
     <div id="conteudoPrincipal">
         <div class="container">
             <h1>✦ SISTEMA DE FALTAS ✦</h1>
-            <div class="subtitulo">Ordem Internacional das Filhas de Jó • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
+            <div class="subtitulo">Ordem das Filhas de Jó Internacional  • Bethel 04 Flor de Liz • Ponta Porã/MS</div>
 
             <!-- Informações da Gestão Atual -->
             <div class="gestao-info" id="gestaoInfo">
@@ -704,10 +702,10 @@
                 <div class="gestao-item"><div class="label">RAINHA</div><div class="valor" id="rainhaAtual">---</div></div>
             </div>
 
-            <!-- Seletor de Gestão -->
+    
             <div class="seletor-gestao"><h3>✦ SELECIONAR GESTÃO ✦</h3><div class="grid-gestoes" id="gridGestoes"></div></div>
 
-            <!-- Botões Principais -->
+    
             <div class="botoes">
                 <button class="botao" onclick="mostrarModal('nova')">✦ NOVA</button>
                 <button class="botao" onclick="mostrarModal('membros')">👑 MEMBROS</button>
@@ -716,13 +714,13 @@
                 <button class="botao success" onclick="mostrarModal('novaGestao')">➕ GESTÃO</button>
             </div>
 
-            <!-- Botões de alternância entre páginas -->
+    
             <div class="botoes-paginas" style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
                 <button class="botao botao-glow" onclick="mostrarPagina('filhas')">👑 FILHAS</button>
                 <button class="botao botao-glow" onclick="mostrarPagina('conselho')">⚡ CONSELHO</button>
             </div>
 
-            <!-- PÁGINA FILHAS -->
+    
             <div id="paginaFilhas" style="display: block;">
                 <div class="grid-imagens" id="gridFilhas"></div>
                 <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
@@ -734,7 +732,7 @@
                 <div id="cardsGerais" class="cards"></div>
             </div>
 
-            <!-- PÁGINA CONSELHO -->
+    
             <div id="paginaConselho" style="display: none;">
                 <div class="grid-imagens" id="gridConselho"></div>
                 <div class="pesquisa-box" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
@@ -747,8 +745,7 @@
             </div>
         </div>
 
-        <!-- MODAIS EXISTENTES -->
-        <div id="modalNova" class="modal">
+            <div id="modalNova" class="modal">
             <div class="modal-conteudo">
                 <div class="modal-header"><h2>✦ NOVA RITUALÍSTICA</h2><button class="fechar" onclick="fecharModal('nova')">✕</button></div>
                 <div style="margin-bottom:20px;"><label style="color:var(--primary-light);">📅 Data:</label><input type="date" id="novaData" style="width:100%; margin-top:8px; background:rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:20px; padding:12px; color:white;"></div>
@@ -792,8 +789,7 @@
     <div class="footer"><div class="nome">✦ Sistema de Faltas FDJI ✦ Dominique Black - @dominique_cbb</div><div class="data-hora" id="dataHoraFooter"></div><div class="assinatura">"Vida Antes da Morte"</div></div>
 
     <script>
-        // ========== CONFIGURAÇÃO DO FIREBASE ==========
-        const firebaseConfig = {
+            const firebaseConfig = {
             apiKey: "AIzaSyDSkSzwoLBCQHd_84J0LTdVSQGmUvgrQhU",
             authDomain: "sistema-de-faltas-b04-pp-ms.firebaseapp.com",
             projectId: "sistema-de-faltas-b04-pp-ms",
@@ -813,7 +809,7 @@
 
         const WORKER_URL = 'https://rapid-river-9d19sistemadefaltaspdffdj.3565dominique.workers.dev/'; 
 
-        // ========== VERIFICAR LOGIN ==========
+        
         auth.onAuthStateChanged(async (user) => {
             document.getElementById('loading').style.display = 'none';
             if (user) {
@@ -869,7 +865,7 @@
             document.getElementById('pesquisaConselho').addEventListener('keypress', e => { if (e.key === 'Enter') pesquisarMembroConselho(); });
         }
 
-        // ========== GESTÕES (com campo concluida) ==========
+        
         async function carregarGestoes() {
             try {
                 const snapshot = await db.collection('gestoes').orderBy('ano', 'desc').get();
@@ -898,7 +894,7 @@
             if (document.getElementById('paginaConselho').style.display !== 'none') atualizarCardsConselho();
         }
 
-        // ========== GERENCIAR GESTÕES (NOVO) ==========
+        
         window.abrirGerenciarGestao = async function() {
             document.getElementById('modalGerenciarGestao').style.display = 'block';
             await carregarListaGestaoModal('');
@@ -941,7 +937,7 @@
             if (gestaoAtual === gestaoId) {
                 const atual = (await db.collection('gestoes').doc(gestaoAtual).get()).data();
                 if (atual.concluida) {
-                    // Se a gestão atual foi concluída, podemos opcionalmente selecionar outra, mas deixamos como está
+        
                 }
             }
             alert('Gestão marcada como concluída!');
@@ -1006,7 +1002,7 @@
             alert('Gestão criada!');
         };
 
-        // ========== FILHAS ==========
+        
         async function carregarFilhas() {
             try {
                 const snapshot = await db.collection('filhas').orderBy('nome').get();
@@ -1024,7 +1020,7 @@
             grid.innerHTML = filhas.map((f,i) => `<div class="item-imagem" onclick="pesquisarPorDoisNomes('${getPrimeirosDoisNomes(f.nome)}')"><div class="icone">${icones[i%icones.length]}</div><div class="nome">${f.nome||'---'} ${f.temProficiencia?'📜':''}</div><div class="cargo">${f.cargo||'---'}</div></div>`).join('');
         }
 
-        // ========== CONSELHO ==========
+        
         async function carregarConselho() {
             try {
                 const snapshot = await db.collection('conselho').orderBy('nome').get();
@@ -1147,7 +1143,7 @@
             document.getElementById('cardsGerais').innerHTML = `<div class="card"><div class="numero">${total}</div><div class="rotulo">Total de Faltas</div></div><div class="card"><div class="numero">${just}</div><div class="rotulo">Justificadas</div></div><div class="card"><div class="numero">${naoJust}</div><div class="rotulo">Não Just.</div></div><div class="card"><div class="numero">${aceitas}</div><div class="rotulo">Aceitas</div></div><div class="card"><div class="numero">${rejeitadas}</div><div class="rotulo">Rejeitadas</div></div>`;
         }
 
-        // ========== MODAIS E NOVA RITUALÍSTICA (mantido original) ==========
+
         window.mostrarModal = function(tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'block'; if (tipo === 'nova') carregarAmbasAbas(); if (tipo === 'membros') carregarMembros('filhas'); if (tipo === 'registros') carregarRegistros(); }
         window.fecharModal = function(tipo) { document.getElementById(`modal${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).style.display = 'none'; }
         window.mudarAba = function(aba) { abaAtual = aba; document.getElementById('abaFilhasBtn').style.opacity = aba==='filhas'?'1':'0.7'; document.getElementById('abaConselhoBtn').style.opacity = aba==='conselho'?'1':'0.7'; document.getElementById('containerFilhas').style.display = aba==='filhas'?'block':'none'; document.getElementById('containerConselho').style.display = aba==='conselho'?'block':'none'; }
@@ -1171,20 +1167,19 @@
 
         window.salvarRitualisticaCompleta = async function() { if (!gestaoAtual) { alert('Selecione uma gestão primeiro!'); return; } const data = document.getElementById('novaData').value; if (!data) return alert('Selecione uma data'); try { document.getElementById('loading').style.display = 'flex'; const rituais = await getRituaisAtuais(); rituais[data] = { filhas: Array.from(document.querySelectorAll('#containerFilhas .membro-item')).map(item => { const nome = item.dataset.nome; const id = (nome || 'membro').replace(/\s/g, '') + 'filhas'; const presente = document.getElementById(`pres-${id}`)?.value === 'presente'; const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : []; return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos }; }), conselho: Array.from(document.querySelectorAll('#containerConselho .membro-item')).map(item => { const nome = item.dataset.nome; const id = (nome || 'membro').replace(/\s/g, '') + 'conselho'; const presente = document.getElementById(`pres-${id}`)?.value === 'presente'; const anexos = (!presente && window.anexosTemp && window.anexosTemp[id]) ? window.anexosTemp[id] : []; return { nome, presente, justificada: presente ? false : document.getElementById(`just-${id}`)?.value === 'sim', aceita: presente ? false : document.getElementById(`aceite-${id}`)?.value === 'sim', anexos }; }) }; await db.collection('rituais').doc(gestaoAtual).set({ rituais }); window.anexosTemp = {}; fecharModal('nova'); await atualizarCardsGerais(); if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho(); alert('✅ Ritualística salva com sucesso!'); } catch(error) { alert('Erro ao salvar: ' + error.message); } finally { document.getElementById('loading').style.display = 'none'; } }
 
-        // ========== GERENCIAR MEMBROS ==========
+
         window.carregarMembros = function(tipo) { carregarMembrosLista(tipo); }
         async function carregarMembrosLista(tipo) { const collection = tipo === 'filhas' ? 'filhas' : 'conselho'; const snapshot = await db.collection(collection).orderBy('criadoEm', 'asc').get(); const lista = []; snapshot.forEach(doc => lista.push({ id: doc.id, ...doc.data() })); const container = document.getElementById('listaMembrosGerenciar'); if (!lista.length) { container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum membro cadastrado em ${tipo}.</div>`; return; } container.innerHTML = lista.map(m => { const proficienciaHtml = (tipo === 'filhas') ? `<label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="proficiencia-${m.id}" ${m.temProficiencia ? 'checked' : ''}> 📜 Teste de Proficiência</label>` : ''; return `<div class="membro-item" style="background: linear-gradient(145deg, rgba(42,27,74,0.9), rgba(26,16,53,0.95)); border-radius: 20px; padding: 15px; border: 1px solid var(--primary);"><div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;"><input type="text" value="${m.nome||''}" id="nome-${m.id}" placeholder="Nome" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;"><input type="text" value="${m.cargo||''}" id="cargo-${m.id}" placeholder="Cargo" style="flex:2; min-width:180px; background: rgba(26,16,53,0.9); border:1px solid var(--primary); border-radius:15px; padding:10px; color:white;">${proficienciaHtml}<div style="display: flex; gap: 8px;"><button class="botao" onclick="salvarMembro('${m.id}', '${tipo}')">💾</button><button class="botao perigo" onclick="deletarMembro('${m.id}', '${tipo}')">🗑️</button></div></div></div>`; }).join(''); container.innerHTML += `<button class="botao" onclick="adicionarMembro('${tipo}')" style="width:100%; margin-top:15px; padding:15px;">+ Adicionar ${tipo === 'filhas' ? 'Filha' : 'Membro do Conselho'}</button>`; }
         window.adicionarMembro = async function(tipo) { const collection = tipo === 'filhas' ? 'filhas' : 'conselho'; await db.collection(collection).add({ nome: 'Novo Membro', cargo: 'Novo Cargo', criadoEm: new Date(), criadoPor: usuarioAtual?.email || 'admin@fdji.com', temProficiencia: false }); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro adicionado! Edite nome e cargo.'); }
         window.salvarMembro = async function(docId, tipo) { const nome = document.getElementById(`nome-${docId}`).value; const cargo = document.getElementById(`cargo-${docId}`).value; const updateData = { nome, cargo }; if (tipo === 'filhas') { const cb = document.getElementById(`proficiencia-${docId}`); if (cb) updateData.temProficiencia = cb.checked; } await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).update(updateData); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro salvo!'); }
         window.deletarMembro = async function(docId, tipo) { if (!confirm('Deletar este membro?')) return; await db.collection(tipo === 'filhas' ? 'filhas' : 'conselho').doc(docId).delete(); await carregarMembrosLista(tipo); if (tipo === 'filhas') await atualizarGridFilhas(); alert('✅ Membro deletado!'); }
 
-        // ========== REGISTROS ==========
+
         async function carregarRegistros() { if (!gestaoAtual) { document.getElementById('listaRegistros').innerHTML = '<p>Selecione uma gestão</p>'; return; } const gestoesSnapshot = await db.collection('gestoes').get(); const gestoes = []; gestoesSnapshot.forEach(doc => gestoes.push({ id: doc.id, ...doc.data() })); document.getElementById('abasGestao').innerHTML = gestoes.map(g => `<button class="data-botao ${g.id===gestaoAtual?'ativo':''}" onclick="selecionarGestaoRegistros('${g.id}')">${g.ano} - ${g.numero}</button>`).join(''); const rituaisDoc = await db.collection('rituais').doc(gestaoAtual).get(); const rituais = rituaisDoc.exists ? rituaisDoc.data().rituais || {} : {}; const container = document.getElementById('listaRegistros'); if (!Object.keys(rituais).length) { container.innerHTML = '<p>Nenhum registro</p>'; return; } container.innerHTML = Object.entries(rituais).sort().reverse().map(([data, info]) => { let totalAnexos = 0; (info.filhas || []).forEach(f => { if (!f.presente && f.anexos) totalAnexos += f.anexos.length; }); (info.conselho || []).forEach(c => { if (!c.presente && c.anexos) totalAnexos += c.anexos.length; }); const anexoBadge = totalAnexos > 0 ? `<div style="font-size:0.7rem; margin-top:5px;">📎 ${totalAnexos} anexo(s)</div>` : ''; return `<div class="registro-card" style="background:rgba(26,16,53,0.7);border-radius:25px;padding:20px;border:1px solid var(--primary);"><h3>${data.split('-').reverse().join('/')}</h3><div style="text-align:center;color:var(--gold);">${gestoes.find(g=>g.id===gestaoAtual)?.ano||''} • ${gestoes.find(g=>g.id===gestaoAtual)?.rainha?.split(' ')[0]||'---'}</div><div style="display:flex;justify-content:space-around;margin:15px 0;"><div>👑 ${info.filhas?.filter(f=>f.presente).length||0}/${info.filhas?.length||0}</div><div>⚡ ${info.conselho?.filter(c=>c.presente).length||0}/${info.conselho?.length||0}</div><div style="color:var(--danger);">❌ ${(info.filhas?.filter(f=>!f.presente).length||0)+(info.conselho?.filter(c=>!c.presente).length||0)}</div></div>${anexoBadge}<div style="display:flex;gap:8px; margin-top:10px;"><button class="botao" onclick="verDetalhesFaltas('${data}')">Ver Faltas</button><button class="botao perigo" onclick="deletarRegistro('${data}')">Deletar</button></div></div>`; }).join(''); }
         window.verDetalhesFaltas = async function(data) { const rituais = await getRituaisAtuais(); const info = rituais[data]; if (!info) return; let html = '<div style="display:grid;gap:20px;">'; if (info.filhas?.filter(f=>!f.presente).length) { html += '<div><h3>👑 Filhas Ausentes</h3>'; info.filhas.filter(f=>!f.presente).forEach(f => html += `<div class="falta-item ${f.justificada?'justificada':'nao-justificada'}"><div><strong>${f.nome}</strong> <span class="badge ${f.aceita?'aceita':'rejeitada'}">${f.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${f.justificada?'✅ Sim':'❌ Não'}</div>${f.anexos?.length?`<div>Anexos: ${f.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`); html += '</div>'; } if (info.conselho?.filter(c=>!c.presente).length) { html += '<div><h3>⚡ Conselho Ausente</h3>'; info.conselho.filter(c=>!c.presente).forEach(c => html += `<div class="falta-item ${c.justificada?'justificada':'nao-justificada'}"><div><strong>${c.nome}</strong> <span class="badge ${c.aceita?'aceita':'rejeitada'}">${c.aceita?'✓ Aceita':'✗ Rejeitada'}</span></div><div>Justificativa: ${c.justificada?'✅ Sim':'❌ Não'}</div>${c.anexos?.length?`<div>Anexos: ${c.anexos.map(a=>`<a href="${a.url}" target="_blank">📄 ${a.nome}</a>`).join(', ')}</div>`:''}</div>`); html += '</div>'; } if (!info.filhas?.some(f=>!f.presente) && !info.conselho?.some(c=>!c.presente)) html = '<p style="color:var(--success);text-align:center;">✨ Todos presentes! ✨</p>'; html += '</div>'; document.getElementById('detalhesTitulo').innerHTML = `📅 Faltas - ${data.split('-').reverse().join('/')}`; document.getElementById('conteudoDetalhesFaltas').innerHTML = html; document.getElementById('modalDetalhesFaltas').style.display = 'block'; }
         window.selecionarGestaoRegistros = function(gestaoId) { gestaoAtual = gestaoId; carregarRegistros(); carregarGestoes(); }
         window.deletarRegistro = async function(data) { if (!confirm(`Deletar ${data}?`)) return; const rituais = await getRituaisAtuais(); delete rituais[data]; await db.collection('rituais').doc(gestaoAtual).set({ rituais }); await carregarRegistros(); await atualizarCardsGerais(); if (document.getElementById('paginaConselho').style.display !== 'none') await atualizarCardsConselho(); }
 
-        // ========== ALTERNÂNCIA ENTRE PÁGINAS ==========
         window.mostrarPagina = function(pagina) { document.getElementById('paginaFilhas').style.display = (pagina === 'filhas') ? 'block' : 'none'; document.getElementById('paginaConselho').style.display = (pagina === 'conselho') ? 'block' : 'none'; if (pagina === 'conselho') { carregarGridConselho(); atualizarCardsConselho(); document.getElementById('resultadoPesquisaConselho').style.display = 'none'; document.getElementById('gridConselho').style.display = 'grid'; document.getElementById('cardsConselho').style.display = 'grid'; } else { atualizarGridFilhas(); atualizarCardsGerais(); } }
     </script>
 </body>
